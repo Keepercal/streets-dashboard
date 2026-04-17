@@ -57,11 +57,15 @@ const Sidebar = ({ handleDropdown, handleToggle, boundaryData, selectedBoundary,
 
                 {/* Create a dropdown feature to select a Boundary */}
                 <DropdownItem
+                    options={boundaryOptions}
                     key={selectedBoundary}
                     label={boundaryOptions.label}
                     value={selectedBoundary}
-                    options={boundaryOptions}
-                    onChange={(key) => handleDropdown(boundaryOptions.key, key)}
+                    boundary_type={boundaryOptions.boundary_type}
+                    onChange={(value) => {
+                        const selected = boundaryOptions.find(opt => opt.value === value);
+                        handleDropdown(value, value, selected?.boundaryType, selected?.boundaryName)
+                    }}
                 />
                 
                 {/* Show the list of options if a Boundary is returned and the Overpass API returned the Ward boundary */}

@@ -22,8 +22,8 @@ export function useBoundary() {
     };
 
     // When user clicks on a boundary option
-    const loadBoundary = async (value) => {
-        console.log("ENTER loadBoundary", { value });
+    const loadBoundary = async (value, boundaryType, boundaryName) => {
+        console.log("ENTER loadBoundary", { value, boundaryType, boundaryName });
         clearBoundary(); // Reset states
         const requestID = ++currentRequest.current;
 
@@ -36,8 +36,8 @@ export function useBoundary() {
         setCondition("loading");
 
         try {
-            console.log("calling fetchBoundary", { value });
-            const result = await fetchBoundary(value); // Fetching from Overpass API
+            console.log("calling fetchBoundary", { value, boundaryType, boundaryName });
+            const result = await fetchBoundary(value, boundaryType, boundaryName); // Fetching from Overpass API
             if (requestID !== currentRequest.current) return;
 
             const geojson = osmtogeojson(result, {meta: true}); // Convert to GeoJSON
@@ -65,7 +65,7 @@ export function useBoundary() {
 }
 
 // Fetch features from OSM
-export function useMapFeature(boundaryName) {
+export function useMapFeature() {
     const [featureData, setFeatureData] = useState(null);
     const [featureGeojson, setFeatureGeojson] = useState(null);
     const [condition, setCondition] = useState("idle");
@@ -84,13 +84,13 @@ export function useMapFeature(boundaryName) {
     };
 
     // When user clicks on a feature toggle
-    const loadFeatures = async (boundary, tag, value, type) => {
-        console.log("ENTER loadFeatures", { boundary, tag, value, type });
+    const loadFeatures = async (boundaryName, featureTag, featureValue, featureType) => {
+        console.log("ENTER loadFeatures", { boundaryName, featureTag, featureValue, featureType });
         clearFeatures();
         const requestID = ++currentRequest.current;
 
         // If null, hide the popup
-        if (value === null) {
+        if (featureValue === null) {
             console.log("null");
             setCondition("idle");
             return;
@@ -100,8 +100,8 @@ export function useMapFeature(boundaryName) {
         setCondition("loading");
 
         try {
-            console.log("calling fetchMapFeature", { boundary, tag, value, type });
-            const result = await fetchMapFeature(boundary, tag, value, type); // Call function which interacts with Overpass API
+            console.log("calling fetchMapFeature", { boundaryName, featureTag, featureValue, featureType });
+            const result = await fetchMapFeature(boundaryName, featureTag, featureValue, featureType); // Call function which interacts with Overpass API
             if (requestID !== currentRequest.current) return;
 
             const geojson = osmtogeojson(result, { meta: true }); // Convert the result to GeoJSON

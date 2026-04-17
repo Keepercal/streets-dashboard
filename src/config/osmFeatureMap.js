@@ -72,7 +72,7 @@ export const FEATURE_MAP = {
     // STREET FURNITURE
     toilets: {
         tag: "amenity",
-        label: "Public Toilets",
+        label: "Toilets",
         group: "streetFurniture",
         type: "node"
     },

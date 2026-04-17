@@ -44,12 +44,35 @@ export default function App() {
     error: featureError,
   } = useMapFeature(selectedBoundary)
 
+  // Turn boundary options map into an array
+  const boundaryOptions = [
+    { value: "none", label: "None", boundaryType: "none", name:"None" },
+    ...Object.entries(BOUNDARY_MAP).map(([key, boundary]) => ({
+      value: key,
+      boundaryType: boundary.boundary_type,
+      boundaryName: boundary.name,
+      label: boundary.label,
+    }))
+  ]
+
+  // Turn feature options map into an array
+  const featureOptions = [
+    { value: 'none', label: "None" },
+    ...Object.entries(FEATURE_MAP).map(([key, feature]) => ({
+      value: key,
+      tag: feature.tag,
+      label: feature.label,
+      group: feature.group,
+      type: feature.type,
+    }))
+  ]
+
   // Update the selected boundary state when a dropdown option is chosen
-  const handleDropdown = (key, value) => {
-    console.log("ENTER handleDropdown:", { key, value });
+  const handleDropdown = (key, value, boundaryType, boundaryName) => {
+    console.log("ENTER handleDropdown:", { key, value, boundaryType, boundaryName });
     clearFeatures();
-    loadBoundary(value);
-    console.log("calling loadBoundary", { key, value })
+    loadBoundary(value, boundaryType, boundaryName);
+    console.log("calling loadBoundary", { key, value, boundaryType, boundaryName })
     setSelectedBoundary(value);
     setToggles({});
   }
@@ -72,27 +95,6 @@ export default function App() {
       clearFeatures();
     }
   }
-
-  // Turn boundary options map into an array
-  const boundaryOptions = [
-    { value: "none", label: "None" },
-    ...Object.entries(BOUNDARY_MAP).map(([key, boundary]) => ({
-      value: key,
-      label: boundary.label
-    }))
-  ]
-
-  // Turn feature options map into an array
-  const featureOptions = [
-    { value: 'none', label: "None" },
-    ...Object.entries(FEATURE_MAP).map(([key, feature]) => ({
-      value: key,
-      tag: feature.tag,
-      label: feature.label,
-      group: feature.group,
-      type: feature.type,
-    }))
-  ]
 
   // Handles the popups depending on the type of popup
   useEffect(() => {

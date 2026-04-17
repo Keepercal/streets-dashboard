@@ -1,46 +1,35 @@
-// Helper function to format the boundary name from a key (e.g. windmillHill) to a OSM value (e.g. Windmill Hill Ward)
-const formatBoundaryName = (boundaryName) => {
-    if (boundaryName === 'none') return '';
+async function callOverpass(query){
+    console.log("ENTER callOverpass", {query})
+    const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+    console.log(query)
 
-    const name = boundaryName
-        .split('_') // split snake_case
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // capitalize each word
-        .join(' '); // join with spaces
+    const res = await fetch(url);
+    console.log("HTTP Status", res.status)
 
-    return name + ' Ward';
-}
-
-function callOverpass(query){
-    // TODO: Modularise API call into its own function
+    return res;
 }
 
 // Fetch the boundary from Overpass
-export async function fetchBoundary(boundaryName){
+export async function fetchBoundary(boundaryKey, boundaryType, boundaryName){
     try{
-        console.info("ENTER fetchBoundary", {boundaryName})
-        if (!boundaryName || boundaryName === 'none') return null;
-
-        const formattedBoundaryName = formatBoundaryName(boundaryName);
+        console.info("ENTER fetchBoundary", {boundaryKey})
+        if (!boundaryKey || boundaryKey === 'none') return null;
 
         const query = `
             [out:json][timeout:60];
-            relation["boundary"="political"]["name"~"${formatBoundaryName(boundaryName)}"];
+            relation["boundary"="${boundaryType}"]["name"="${boundaryName}"];
             out geom meta;
         `;
 
-        const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
-        console.log(`fetching "${formattedBoundaryName}" boundary from Overpass...`)
-
-        const res = await fetch(url);
-        console.log("HTTP Status", res.status)
+        const res = await callOverpass(query)
 
         if (res.status === 504){ // If HTTP 504, call function again
             console.warn(`fetchBoundary returned ${res.status}, retrying...`)
-            return fetchBoundary(boundaryName);
+            return fetchBoundary(boundaryKey, boundaryType, boundaryName);
         }
 
         if (!res.ok && res.status !== 504){ // Any other type of HTTP error, throw error to user
-            console.info("EXIT fetchBoundary", {boundaryName});
+            console.info("EXIT fetchBoundary", {boundaryKey});
             if (res.status === 429){
                 throw new Error(
                     `HTTP Error: ${res.status} (${res.statusText}), try selecting the boundary again or wait a minute before selecting again`
@@ -56,7 +45,7 @@ export async function fetchBoundary(boundaryName){
         const data = await res.json();
 
         if(!data?.elements?.length){ // Throw error if Overpass API returns empty object
-            throw new Error(`Invalid boundary value "${boundaryName}". This mismatch likely caused an empty Overpass result.`)
+            throw new Error(`Invalid boundary value "${boundaryKey}". This mismatch likely caused an empty Overpass result.`)
         } else {
             console.clear()
             console.log(`success! recieved HTTP status ${res.status} (OK)`)
@@ -70,35 +59,29 @@ export async function fetchBoundary(boundaryName){
     }
 }
 
-export async function fetchMapFeature(boundaryName, tag, value, type){
+export async function fetchMapFeature(boundaryName, featureTag, featureValue, featureType){
     try{
-        console.log("ENTER fetchMapFeature", { boundaryName, tag, value, type })
+        console.log("ENTER fetchMapFeature", { boundaryName, featureTag, featureValue, featureType })
         if(!boundaryName || boundaryName === 'none') return null;
-
-        const formattedBoundaryName = formatBoundaryName(boundaryName);
 
         const query = `
             [out:json][timeout:60];
 
             relation
                 ["boundary"="political"]
-                ["name"~"${formattedBoundaryName}", i]->.rels;
+                ["name"~"${boundaryName}", i]->.rels;
             .rels map_to_area -> .area;
 
-            ${type}(area.area)["${tag}"="${value}"];
+            ${featureType}(area.area)["${featureTag}"="${featureValue}"];
 
             out tags geom meta;
             `;
 
-        const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
-        console.log("Fetching features from Overpass...")
-
-        const res = await fetch(url);
-        console.log("HTTP Status", res.status)
+        const res = await callOverpass(query);
 
         if (res.status === 504){
             console.warn(`fetchMapFeature returned ${res.status}, retrying...`)
-            return fetchMapFeature(boundaryName, tag, value, type);
+            return fetchMapFeature(boundaryName, featureTag, featureValue, featureType);
         }
 
         if (!res.ok && res.status !== 504){

@@ -1,26 +1,40 @@
 export const BOUNDARY_MAP = {
+    // ADMIN LEVEL 6
+    bristol: {
+        boundary_type: 'administrative',
+        name: 'City of Bristol',
+        label: 'Bristol',
+    },
+
+    // ADMIN LEVEL 10
     avonmouth: {
+        boundary_type: 'political',
+        name: "Avonmouth Ward",
         label: "Avonmouth",
-        query: "Avonmouth Ward"
     },
     cabot: {
+        boundary_type: 'political',
+        name: "Cabot Ward",
         label: "Cabot",
-        query: "Cabot Ward"
     },
     southville: {
+        boundary_type: 'political',
+        name: "Southville Ward",
         label: "Southville",
-        query: "Southville Ward"
     },
     bedminster: {
+        boundary_type: 'political',
+        name: "Bedminster Ward",
         label: "Bedminster",
-        query: "Bedminster Ward"
     },
     windmill_hill: {
+        boundary_type: 'political',
+        name: "Windmill Hill Ward",
         label: "Windmill Hill",
-        query: "Windmill Hill Ward"
     },
     lockleaze: {
+        boundary_type: 'political',
+        name: "Lockleaze Ward",
         label: "Lockleaze",
-        query: "Lockleaze Ward"
     },
 }
