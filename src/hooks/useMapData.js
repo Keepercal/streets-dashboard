@@ -6,7 +6,7 @@ import { fetchBoundary, fetchMapFeature } from '../services/overpass';
 export function useBoundary() {
     const [boundaryData, setBoundaryData] = useState(null);
     const [boundaryGeojson, setBoundaryGeojson] = useState(null);
-    const [condition, setCondition] = useState("idle");
+    const [status, setStatus] = useState("idle");
     const [error, setErrorMessage] = useState(null);
 
     let currentRequest = useRef(0);
@@ -15,10 +15,10 @@ export function useBoundary() {
         console.log("clearing all states relating to boundaries...");
         setBoundaryData(null);
         setBoundaryGeojson(null);
-        setCondition("idle");
+        setStatus("idle");
         setErrorMessage(null);
 
-        console.log({ boundaryData, boundaryGeojson, condition });
+        console.log({ boundaryData, boundaryGeojson, status });
     };
 
     // When user clicks on a boundary option
@@ -29,11 +29,11 @@ export function useBoundary() {
 
         if (value == "none") {
             console.debug("null");
-            setCondition("idle");
+            setStatus("idle");
             return;
         }
 
-        setCondition("loading");
+        setStatus("loading");
 
         try {
             console.log("calling fetchBoundary", { value, boundaryType, boundaryName });
@@ -44,12 +44,12 @@ export function useBoundary() {
 
             setBoundaryData(result);
             setBoundaryGeojson(geojson);
-            setCondition("success");
+            setStatus("success");
         } catch (err) {
             if (requestID !== currentRequest.current) return;
             setBoundaryData(null);
             setBoundaryGeojson(null);
-            setCondition("error");
+            setStatus("error");
             setErrorMessage(err);
         }
     };
@@ -59,7 +59,7 @@ export function useBoundary() {
         boundaryGeojson,
         clearBoundary,
         loadBoundary,
-        condition,
+        status,
         error,
     };
 }
@@ -68,7 +68,7 @@ export function useBoundary() {
 export function useMapFeature() {
     const [featureData, setFeatureData] = useState(null);
     const [featureGeojson, setFeatureGeojson] = useState(null);
-    const [condition, setCondition] = useState("idle");
+    const [status, setStatus] = useState("idle");
     const [error, setErrorMessage] = useState(null);
 
     let currentRequest = useRef(0);
@@ -77,10 +77,10 @@ export function useMapFeature() {
         console.log("ENTER clearFeatures");
         setFeatureData(null);
         setFeatureGeojson(null);
-        setCondition("idle");
+        setStatus("idle");
         setErrorMessage(null);
 
-        console.log({ featureData, featureGeojson, condition });
+        console.log({ featureData, featureGeojson, status });
     };
 
     // When user clicks on a feature toggle
@@ -92,12 +92,12 @@ export function useMapFeature() {
         // If null, hide the popup
         if (featureValue === null) {
             console.log("null");
-            setCondition("idle");
+            setStatus("idle");
             return;
         }
 
         // Show the loading popup
-        setCondition("loading");
+        setStatus("loading");
 
         try {
             console.log("calling fetchMapFeature", { boundaryName, featureTag, featureValue, featureType });
@@ -108,12 +108,12 @@ export function useMapFeature() {
 
             setFeatureData(result); // Store raw result
             setFeatureGeojson(geojson); // Store result in GeoJSON
-            setCondition("success"); // Hide popup
+            setStatus("success"); // Hide popup
         } catch (err) {
             if (requestID !== currentRequest.current) return;
             setFeatureData(null);
             setFeatureGeojson(null);
-            setCondition("error");
+            setStatus("error");
             setErrorMessage(err);
         }
     };
@@ -123,7 +123,7 @@ export function useMapFeature() {
         featureGeojson,
         loadFeatures,
         clearFeatures,
-        condition,
+        status,
         error,
     };
 }

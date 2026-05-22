@@ -24,23 +24,23 @@ export default function App() {
     message: '',
   });
 
-  // Deconstruct boundary return value
+  // Hook and deconstruct boundary return value
   const {
     boundaryData,
     boundaryGeojson,
     loadBoundary,
     clearBoundary,
-    condition: boundaryCondition,
+    status: boundaryStatus,
     error: boundaryError,
   } = useBoundary()
 
-  // Deconstruct feature return value
+  // Hook and deconstruct feature return value
   const {
     featureData,
     featureGeojson,
     loadFeatures,
     clearFeatures,
-    condition: featureCondition,
+    status: featureStatus,
     error: featureError,
   } = useMapFeature(selectedBoundary)
 
@@ -98,7 +98,7 @@ export default function App() {
 
   // Handles the popups depending on the type of popup
   useEffect(() => {
-    if (boundaryCondition === 'loading') { // Loading
+    if (boundaryStatus === 'loading') { // Loading
       setPopup({
         trigger: true,
         type: 'loading',
@@ -107,7 +107,7 @@ export default function App() {
         message: 'Fetching boundary data...'
       });
     }
-    if (boundaryCondition === 'success') { // Success
+    if (boundaryStatus === 'success') { // Success
       setPopup({
         trigger: false,
         type: 'idle',
@@ -116,7 +116,7 @@ export default function App() {
         message: ''
       });
     }
-    if (boundaryCondition === 'error') { // Error
+    if (boundaryStatus === 'error') { // Error
       setPopup({
         trigger: true,
         type: 'error',
@@ -125,10 +125,10 @@ export default function App() {
         message: boundaryError?.message
       });
     }
-  }, [boundaryCondition, boundaryError]);
+  }, [boundaryStatus, boundaryError]);
 
   useEffect(() => {
-    if (featureCondition === 'loading') { // Loading
+    if (featureStatus === 'loading') { // Loading
       setPopup({
         trigger: true,
         type: 'loading',
@@ -137,7 +137,7 @@ export default function App() {
         message: 'Fetching feature data...'
       });
     }
-    if (featureCondition === 'success') { // Success
+    if (featureStatus === 'success') { // Success
       setPopup({
         trigger: false,
         type: 'idle',
@@ -146,7 +146,7 @@ export default function App() {
         message: ''
       });
     }
-    if (featureCondition === 'error') { // Error
+    if (featureStatus === 'error') { // Error
       setPopup({
         trigger: true,
         type: 'error',
@@ -155,7 +155,7 @@ export default function App() {
         message: featureError?.message
       });
     }
-  }, [featureCondition, featureError]);
+  }, [featureStatus, featureError]);
 
   return (
     <div className="App">

@@ -6,6 +6,12 @@ export const FEATURE_MAP = {
         group: "ways",
         type: "way"
     },*/
+    parking: {
+        tag: "amenity",
+        label: "Parking",
+        group: "ways",
+        type: "way"
+    },
     cycleway: {
         tag: "highway",
         label: "Cycle Ways",
