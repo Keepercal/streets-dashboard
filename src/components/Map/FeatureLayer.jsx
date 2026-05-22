@@ -4,6 +4,7 @@ import L from "leaflet";
 
 export default function FeatureLayer({ features }) {
     const exclude = new Set([
+        "type",
         "id",
         "timestamp",
         "version",
@@ -29,11 +30,27 @@ export default function FeatureLayer({ features }) {
             onEachFeature={(feature, layer) => {
                 const props = feature.properties || {};
                 const lastUser = props.user;
+                const [featureType, osmID] = feature.id.split("/");
                 const container = document.createElement("div");
 
                 const title = document.createElement("div");
-                title.innerHTML = `<h3>Tags</h3>`;
+                const subtitle = document.createElement("div");
+
+                title.innerHTML = `
+                    <h2>
+                        <a
+                            href="https://www.openstreetmap.org/${featureType}/${osmID}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            ${featureType}: ${osmID} 
+                        </a>
+                    <h2>
+                `;
+                subtitle.innerHTML = `<h3>Tags</h3>`;
+
                 container.appendChild(title);
+                container.appendChild(subtitle);
 
                 Object.entries(props)
                     .filter(([k]) => !exclude.has(k))
@@ -43,7 +60,7 @@ export default function FeatureLayer({ features }) {
                         container.appendChild(row);
                     });
                 if (props.timestamp) {
-                    const formattedDate = new Date(props.timestamp).toLocaleDateString("eb-GB");
+                    const formattedDate = new Date(props.timestamp).toLocaleDateString("en-GB");
                     const timeAgoText = timeAgo(props.timestamp);
 
                     const editedRow = document.createElement("div");

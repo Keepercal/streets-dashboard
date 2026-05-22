@@ -6,6 +6,12 @@ export const FEATURE_MAP = {
         group: "ways",
         type: "way"
     },*/
+    parking: {
+        tag: "amenity",
+        label: "Parking",
+        group: "ways",
+        type: "way"
+    },
     cycleway: {
         tag: "highway",
         label: "Cycle Ways",
@@ -40,7 +46,7 @@ export const FEATURE_MAP = {
     },
     tiger: {
         tag: "crossing_ref",
-        label: "Tiger (Parallel)",
+        label: "Parallel",
         group: "crossings",
         type: "node"
     },
@@ -72,7 +78,7 @@ export const FEATURE_MAP = {
     // STREET FURNITURE
     toilets: {
         tag: "amenity",
-        label: "Public Toilets",
+        label: "Toilets",
         group: "streetFurniture",
         type: "node"
     },

@@ -6,7 +6,7 @@ import { fetchBoundary, fetchMapFeature } from '../services/overpass';
 export function useBoundary() {
     const [boundaryData, setBoundaryData] = useState(null);
     const [boundaryGeojson, setBoundaryGeojson] = useState(null);
-    const [condition, setCondition] = useState("idle");
+    const [status, setStatus] = useState("idle");
     const [error, setErrorMessage] = useState(null);
 
     let currentRequest = useRef(0);
@@ -15,41 +15,41 @@ export function useBoundary() {
         console.log("clearing all states relating to boundaries...");
         setBoundaryData(null);
         setBoundaryGeojson(null);
-        setCondition("idle");
+        setStatus("idle");
         setErrorMessage(null);
 
-        console.log({ boundaryData, boundaryGeojson, condition });
+        console.log({ boundaryData, boundaryGeojson, status });
     };
 
     // When user clicks on a boundary option
-    const loadBoundary = async (value) => {
-        console.log("ENTER loadBoundary", { value });
+    const loadBoundary = async (value, boundaryType, boundaryName) => {
+        console.log("ENTER loadBoundary", { value, boundaryType, boundaryName });
         clearBoundary(); // Reset states
         const requestID = ++currentRequest.current;
 
         if (value == "none") {
             console.debug("null");
-            setCondition("idle");
+            setStatus("idle");
             return;
         }
 
-        setCondition("loading");
+        setStatus("loading");
 
         try {
-            console.log("calling fetchBoundary", { value });
-            const result = await fetchBoundary(value); // Fetching from Overpass API
+            console.log("calling fetchBoundary", { value, boundaryType, boundaryName });
+            const result = await fetchBoundary(value, boundaryType, boundaryName); // Fetching from Overpass API
             if (requestID !== currentRequest.current) return;
 
             const geojson = osmtogeojson(result, {meta: true}); // Convert to GeoJSON
 
             setBoundaryData(result);
             setBoundaryGeojson(geojson);
-            setCondition("success");
+            setStatus("success");
         } catch (err) {
             if (requestID !== currentRequest.current) return;
             setBoundaryData(null);
             setBoundaryGeojson(null);
-            setCondition("error");
+            setStatus("error");
             setErrorMessage(err);
         }
     };
@@ -59,16 +59,16 @@ export function useBoundary() {
         boundaryGeojson,
         clearBoundary,
         loadBoundary,
-        condition,
+        status,
         error,
     };
 }
 
 // Fetch features from OSM
-export function useMapFeature(boundaryName) {
+export function useMapFeature() {
     const [featureData, setFeatureData] = useState(null);
     const [featureGeojson, setFeatureGeojson] = useState(null);
-    const [condition, setCondition] = useState("idle");
+    const [status, setStatus] = useState("idle");
     const [error, setErrorMessage] = useState(null);
 
     let currentRequest = useRef(0);
@@ -77,43 +77,43 @@ export function useMapFeature(boundaryName) {
         console.log("ENTER clearFeatures");
         setFeatureData(null);
         setFeatureGeojson(null);
-        setCondition("idle");
+        setStatus("idle");
         setErrorMessage(null);
 
-        console.log({ featureData, featureGeojson, condition });
+        console.log({ featureData, featureGeojson, status });
     };
 
     // When user clicks on a feature toggle
-    const loadFeatures = async (boundary, tag, value, type) => {
-        console.log("ENTER loadFeatures", { boundary, tag, value, type });
+    const loadFeatures = async (boundaryName, featureTag, featureValue, featureType) => {
+        console.log("ENTER loadFeatures", { boundaryName, featureTag, featureValue, featureType });
         clearFeatures();
         const requestID = ++currentRequest.current;
 
         // If null, hide the popup
-        if (value === null) {
+        if (featureValue === null) {
             console.log("null");
-            setCondition("idle");
+            setStatus("idle");
             return;
         }
 
         // Show the loading popup
-        setCondition("loading");
+        setStatus("loading");
 
         try {
-            console.log("calling fetchMapFeature", { boundary, tag, value, type });
-            const result = await fetchMapFeature(boundary, tag, value, type); // Call function which interacts with Overpass API
+            console.log("calling fetchMapFeature", { boundaryName, featureTag, featureValue, featureType });
+            const result = await fetchMapFeature(boundaryName, featureTag, featureValue, featureType); // Call function which interacts with Overpass API
             if (requestID !== currentRequest.current) return;
 
             const geojson = osmtogeojson(result, { meta: true }); // Convert the result to GeoJSON
 
             setFeatureData(result); // Store raw result
             setFeatureGeojson(geojson); // Store result in GeoJSON
-            setCondition("success"); // Hide popup
+            setStatus("success"); // Hide popup
         } catch (err) {
             if (requestID !== currentRequest.current) return;
             setFeatureData(null);
             setFeatureGeojson(null);
-            setCondition("error");
+            setStatus("error");
             setErrorMessage(err);
         }
     };
@@ -123,7 +123,7 @@ export function useMapFeature(boundaryName) {
         featureGeojson,
         loadFeatures,
         clearFeatures,
-        condition,
+        status,
         error,
     };
 }

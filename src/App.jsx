@@ -24,32 +24,55 @@ export default function App() {
     message: '',
   });
 
-  // Deconstruct boundary return value
+  // Hook and deconstruct boundary return value
   const {
     boundaryData,
     boundaryGeojson,
     loadBoundary,
     clearBoundary,
-    condition: boundaryCondition,
+    status: boundaryStatus,
     error: boundaryError,
   } = useBoundary()
 
-  // Deconstruct feature return value
+  // Hook and deconstruct feature return value
   const {
     featureData,
     featureGeojson,
     loadFeatures,
     clearFeatures,
-    condition: featureCondition,
+    status: featureStatus,
     error: featureError,
   } = useMapFeature(selectedBoundary)
 
+  // Turn boundary options map into an array
+  const boundaryOptions = [
+    { value: "none", label: "None", boundaryType: "none", name:"None" },
+    ...Object.entries(BOUNDARY_MAP).map(([key, boundary]) => ({
+      value: key,
+      boundaryType: boundary.boundary_type,
+      boundaryName: boundary.name,
+      label: boundary.label,
+    }))
+  ]
+
+  // Turn feature options map into an array
+  const featureOptions = [
+    { value: 'none', label: "None" },
+    ...Object.entries(FEATURE_MAP).map(([key, feature]) => ({
+      value: key,
+      tag: feature.tag,
+      label: feature.label,
+      group: feature.group,
+      type: feature.type,
+    }))
+  ]
+
   // Update the selected boundary state when a dropdown option is chosen
-  const handleDropdown = (key, value) => {
-    console.log("ENTER handleDropdown:", { key, value });
+  const handleDropdown = (key, value, boundaryType, boundaryName) => {
+    console.log("ENTER handleDropdown:", { key, value, boundaryType, boundaryName });
     clearFeatures();
-    loadBoundary(value);
-    console.log("calling loadBoundary", { key, value })
+    loadBoundary(value, boundaryType, boundaryName);
+    console.log("calling loadBoundary", { key, value, boundaryType, boundaryName })
     setSelectedBoundary(value);
     setToggles({});
   }
@@ -73,30 +96,9 @@ export default function App() {
     }
   }
 
-  // Turn boundary options map into an array
-  const boundaryOptions = [
-    { value: "none", label: "None" },
-    ...Object.entries(BOUNDARY_MAP).map(([key, boundary]) => ({
-      value: key,
-      label: boundary.label
-    }))
-  ]
-
-  // Turn feature options map into an array
-  const featureOptions = [
-    { value: 'none', label: "None" },
-    ...Object.entries(FEATURE_MAP).map(([key, feature]) => ({
-      value: key,
-      tag: feature.tag,
-      label: feature.label,
-      group: feature.group,
-      type: feature.type,
-    }))
-  ]
-
   // Handles the popups depending on the type of popup
   useEffect(() => {
-    if (boundaryCondition === 'loading') { // Loading
+    if (boundaryStatus === 'loading') { // Loading
       setPopup({
         trigger: true,
         type: 'loading',
@@ -105,7 +107,7 @@ export default function App() {
         message: 'Fetching boundary data...'
       });
     }
-    if (boundaryCondition === 'success') { // Success
+    if (boundaryStatus === 'success') { // Success
       setPopup({
         trigger: false,
         type: 'idle',
@@ -114,7 +116,7 @@ export default function App() {
         message: ''
       });
     }
-    if (boundaryCondition === 'error') { // Error
+    if (boundaryStatus === 'error') { // Error
       setPopup({
         trigger: true,
         type: 'error',
@@ -123,10 +125,10 @@ export default function App() {
         message: boundaryError?.message
       });
     }
-  }, [boundaryCondition, boundaryError]);
+  }, [boundaryStatus, boundaryError]);
 
   useEffect(() => {
-    if (featureCondition === 'loading') { // Loading
+    if (featureStatus === 'loading') { // Loading
       setPopup({
         trigger: true,
         type: 'loading',
@@ -135,7 +137,7 @@ export default function App() {
         message: 'Fetching feature data...'
       });
     }
-    if (featureCondition === 'success') { // Success
+    if (featureStatus === 'success') { // Success
       setPopup({
         trigger: false,
         type: 'idle',
@@ -144,7 +146,7 @@ export default function App() {
         message: ''
       });
     }
-    if (featureCondition === 'error') { // Error
+    if (featureStatus === 'error') { // Error
       setPopup({
         trigger: true,
         type: 'error',
@@ -153,7 +155,7 @@ export default function App() {
         message: featureError?.message
       });
     }
-  }, [featureCondition, featureError]);
+  }, [featureStatus, featureError]);
 
   return (
     <div className="App">
