@@ -1,5 +1,5 @@
 async function callOverpass(query){
-    console.log("ENTER callOverpass", {query})
+    console.log("ENTER callOverpass")
     const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
     console.log(query)
 
@@ -15,9 +15,17 @@ export async function fetchBoundary(boundaryKey, boundaryType, boundaryName){
         console.info("ENTER fetchBoundary", {boundaryKey})
         if (!boundaryKey || boundaryKey === 'none') return null;
 
-        const query = `
+        console.log(boundaryName)
+
+        /*const query = `
             [out:json][timeout:60];
             relation["boundary"="${boundaryType}"]["name"="${boundaryName}"];
+            out geom meta;
+        `;*/
+
+        const query = `
+            [out:json][timeout:60];
+            relation["name"="${boundaryName}"];
             out geom meta;
         `;
 
@@ -43,9 +51,10 @@ export async function fetchBoundary(boundaryKey, boundaryType, boundaryName){
         }
 
         const data = await res.json();
+        console.log(data);
 
         if(!data?.elements?.length){ // Throw error if Overpass API returns empty object
-            throw new Error(`Invalid boundary value "${boundaryKey}". This mismatch likely caused an empty Overpass result.`)
+            throw new Error(`Overpass returned an empty result.`)
         } else {
             console.clear()
             console.log(`success! recieved HTTP status ${res.status} (OK)`)
@@ -64,7 +73,8 @@ export async function fetchMapFeature(boundaryName, featureTag, featureValue, fe
         console.log("ENTER fetchMapFeature", { boundaryName, featureTag, featureValue, featureType })
         if(!boundaryName || boundaryName === 'none') return null;
 
-        const query = `
+        // Tags for ward boundaries have been changed
+        /*const query = `
             [out:json][timeout:60];
 
             relation
@@ -75,7 +85,19 @@ export async function fetchMapFeature(boundaryName, featureTag, featureValue, fe
             ${featureType}(area.area)["${featureTag}"="${featureValue}"];
 
             out tags geom meta;
-            `;
+            `;*/
+
+            const query = `
+                [out:json][timeout:60];
+
+                relation
+                    ["name"~"${boundaryName}", i]->.rels;
+                .rels map_to_area -> .area;
+
+                ${featureType}(area.area)["${featureTag}"="${featureValue}"];
+
+                out tags geom meta;
+                `;
 
         const res = await callOverpass(query);
 

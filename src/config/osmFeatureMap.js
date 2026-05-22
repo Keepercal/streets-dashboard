@@ -40,7 +40,7 @@ export const FEATURE_MAP = {
     },
     tiger: {
         tag: "crossing_ref",
-        label: "Tiger (Parallel)",
+        label: "Parallel",
         group: "crossings",
         type: "node"
     },

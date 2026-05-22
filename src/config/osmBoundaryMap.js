@@ -1,3 +1,55 @@
+const BRISTOL_WARDS = [
+    "Ashley",
+    "Bedminster",
+    "Bishopston",
+    "Brislington East",
+    "Brislington West",
+    "Bristol Clean Air Zone",
+    "Cabot",
+    "Clifton East",
+    "Clifton",
+    "Cotham",
+    "Eastville",
+    "Filwood",
+    "Frome Vale",
+    "Hartcliffe",
+    "Henbury",
+    "Hengrove",
+    "Henleaze",
+    "Hillfields",
+    "Horfield",
+    "Kingsweston",
+    "Knowle",
+    "Lockleaze",
+    "Redland",
+    "Southmead",
+    "Southville",
+    "St. George East",
+    "St. George West",
+    "Stockwood",
+    "Stoke Bishop",
+    "Westbury-on-Trym",
+    "Whitchurch Park",
+    "Windmill Hill"
+]
+
+const toSnakeCase = (str) =>
+  str
+    .toLowerCase()
+    .replace(/[.-]/g, " ")
+    .replace(/\s+/g, "_");
+
+const wardEntries = Object.fromEntries(
+    BRISTOL_WARDS.map((name) => [
+        toSnakeCase(name),
+        {
+            boundary_type: "political",
+            name: `${name} Ward`,
+            label: name,
+        },
+    ])
+);
+
 export const BOUNDARY_MAP = {
     // ADMIN LEVEL 6
     bristol: {
@@ -7,34 +59,5 @@ export const BOUNDARY_MAP = {
     },
 
     // ADMIN LEVEL 10
-    avonmouth: {
-        boundary_type: 'political',
-        name: "Avonmouth Ward",
-        label: "Avonmouth",
-    },
-    cabot: {
-        boundary_type: 'political',
-        name: "Cabot Ward",
-        label: "Cabot",
-    },
-    southville: {
-        boundary_type: 'political',
-        name: "Southville Ward",
-        label: "Southville",
-    },
-    bedminster: {
-        boundary_type: 'political',
-        name: "Bedminster Ward",
-        label: "Bedminster",
-    },
-    windmill_hill: {
-        boundary_type: 'political',
-        name: "Windmill Hill Ward",
-        label: "Windmill Hill",
-    },
-    lockleaze: {
-        boundary_type: 'political',
-        name: "Lockleaze Ward",
-        label: "Lockleaze",
-    },
+    ...wardEntries,
 }
