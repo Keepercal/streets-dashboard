@@ -39,6 +39,7 @@ export default function FeatureLayer({ features }) {
 
     return (
         <GeoJSON
+            key={features?.features?.length}
             data={features}
             pointToLayer={(feature, latlng) => {
                 const timestamp = feature.properties?.timestamp;
