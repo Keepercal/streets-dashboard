@@ -20,7 +20,11 @@ function FilterPanel({ features, filters, setFilters }) {
         });
     });
 
-    const tags = [...tagSet].sort();
+    const activeKeys = new Set (filters.map(f => f.key));
+
+    const tags = [...tagSet]
+        .filter(tag => !activeKeys.has(tag))
+        .sort();
 
     const getValues = (key) =>
         tagValueMap[key] ? [...tagValueMap[key]].sort() : [];

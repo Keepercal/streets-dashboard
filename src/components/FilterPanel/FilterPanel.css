@@ -17,6 +17,11 @@
     user-select: none;
     font-weight: bold;
     padding: 5px 0;
+    
+}
+
+.filter-header h3{
+    margin: 0px
 }
 
 .filter-content {
@@ -25,6 +30,18 @@
     transition: max-height 0.2s ease;
 }
 
+.filter-content h4{
+    margin: 10px 0px 5px 0px;
+}
+
 .filter_panel.collapsed .filter-content {
     max-height: 0;
+}
+
+.filter-item span{
+    padding-right: 10px
+}
+
+.filter-row strong{
+    padding-right: 10px
 }
