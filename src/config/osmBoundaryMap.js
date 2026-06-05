@@ -4,7 +4,6 @@ const BRISTOL_WARDS = [
     "Bishopston",
     "Brislington East",
     "Brislington West",
-    "Bristol Clean Air Zone",
     "Cabot",
     "Clifton East",
     "Clifton",

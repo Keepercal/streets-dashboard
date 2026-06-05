@@ -1,0 +1,47 @@
+.filter-panel{
+    position: fixed;
+    bottom: 0;
+
+    overflow-y: auto;
+    padding: 0px 15px 0px 15px;
+    margin: 8px;
+
+    background-color: #25cc78;
+    color: #ecf0f1;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    font-weight: bold;
+    padding: 5px 0;
+    
+}
+
+.filter-header h3{
+    margin: 0px
+}
+
+.filter-content {
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.2s ease;
+}
+
+.filter-content h4{
+    margin: 10px 0px 5px 0px;
+}
+
+.filter_panel.collapsed .filter-content {
+    max-height: 0;
+}
+
+.filter-item span{
+    padding-right: 10px
+}
+
+.filter-row strong{
+    padding-right: 10px
+}

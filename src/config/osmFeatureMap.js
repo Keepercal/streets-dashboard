@@ -36,7 +36,20 @@ export const FEATURE_MAP = {
         tag: "crossing",
         label: "Unmarked Crossings",
         group: "crossings",
-        type: "node"
+        type: "node",
+
+        filter: {
+            rules: [
+                {
+                    key: "tactile_paving",
+                    label: "Tactile Paving"
+                },
+                {
+                    key: "kerb",
+                    label: "Kerb"
+                },
+            ]
+        }
     },
     zebra: {
         tag: "crossing_ref",

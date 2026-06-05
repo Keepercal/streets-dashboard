@@ -13,8 +13,24 @@ export default function FeatureLayer({ features }) {
         "uid",
     ]);
 
-    var pinIcon = L.icon({
+    var pinGreen = L.icon({
         iconUrl: './assets/pins/pinGreen.svg',
+        iconSize: [30, 30],
+        iconAnchor: [15, 30],
+
+        popupAnchor: [0, -30],
+    })
+
+    var pinYellow = L.icon({
+        iconUrl: './assets/pins/pinYellow.svg',
+        iconSize: [30, 30],
+        iconAnchor: [15, 30],
+
+        popupAnchor: [0, -30],
+    })
+
+    var pinRed = L.icon({
+        iconUrl: './assets/pins/pinRed.svg',
         iconSize: [30, 30],
         iconAnchor: [15, 30],
 
@@ -23,10 +39,27 @@ export default function FeatureLayer({ features }) {
 
     return (
         <GeoJSON
+            key={features?.features?.length}
             data={features}
             pointToLayer={(feature, latlng) => {
-                return L.marker(latlng, { icon: pinIcon });
+                const timestamp = feature.properties?.timestamp;
+
+                let icon = pinRed; // default
+
+                if (timestamp) {
+                    const editedDate = new Date (timestamp);
+                    const daysSinceEdit = (Date.now() - editedDate.getTime()) / (1000 * 60 * 60 * 24);
+
+                    if (daysSinceEdit <= 365){
+                        icon = pinGreen;
+                    } else if (daysSinceEdit <= 1095.75) {
+                        icon = pinYellow;
+                    }
+                }
+
+                return L.marker(latlng, { icon });
             }}
+
             onEachFeature={(feature, layer) => {
                 const props = feature.properties || {};
                 const lastUser = props.user;

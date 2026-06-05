@@ -3,17 +3,45 @@
 import Map from './components/Map/Map';
 import Sidebar from './components/Sidebar/Sidebar';
 import Popup from './components/Popup/Popup';
+import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
+import Legend from './components/Legend/Legend.jsx'
 
 import { createRoot } from 'react-dom/client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useBoundary, useMapFeature } from './hooks/useMapData.js'
 
 import { BOUNDARY_MAP } from "./config/osmBoundaryMap.js";
 import { FEATURE_MAP } from "./config/osmFeatureMap.js";
 
+function evaluateFeature(feature, filters) {
+    const tags = feature.properties || {};
+
+    return filters.every(filter => {
+        const value = tags[filter.key];
+
+        switch (filter.operator) {
+            case "equals":
+                return String(value ?? "") === filter.value;
+
+            case "not_equals":
+                return String(value ?? "") !== filter.value
+
+            case "exists":
+                return value !== undefined;
+
+            case "missing":
+                return value === undefined;
+
+            default:
+                return true;
+        }
+    })
+}
+
 export default function App() {
   const [selectedBoundary, setSelectedBoundary] = useState('none'); // Default the dropdown to None
   const [toggles, setToggles] = useState({}); // Default the toggles to false (off)
+  const [filters, setFilters] = useState([]);
 
   // Set the popup to idle 
   const [popup, setPopup] = useState({
@@ -46,7 +74,7 @@ export default function App() {
 
   // Turn boundary options map into an array
   const boundaryOptions = [
-    { value: "none", label: "None", boundaryType: "none", name:"None" },
+    { value: "none", label: "None", boundaryType: "none", name: "None" },
     ...Object.entries(BOUNDARY_MAP).map(([key, boundary]) => ({
       value: key,
       boundaryType: boundary.boundary_type,
@@ -66,6 +94,17 @@ export default function App() {
       type: feature.type,
     }))
   ]
+
+  const filteredGeojson = useMemo(() => {
+    if (!featureGeojson) return null;
+
+    return {
+      ...featureGeojson,
+      features: featureGeojson.features.filter(feature =>
+        evaluateFeature(feature, filters)
+      )
+    };
+  }, [featureGeojson, filters])
 
   // Update the selected boundary state when a dropdown option is chosen
   const handleDropdown = (key, value, boundaryType, boundaryName) => {
@@ -205,8 +244,18 @@ export default function App() {
       <div className="main-content">
         <Map
           boundary={boundaryGeojson} // The boundary in GeoJSON format
-          features={featureGeojson} // The features in GeoJSON format
+          features={filteredGeojson} // The features in GeoJSON format
         />
+        {featureData && (
+          <FilterPanel
+            features={featureGeojson}
+            filters={filters}
+            setFilters={setFilters}
+          />
+        )}
+        {featureData && (
+          <Legend />
+        )}
       </div>
     </div>
   );
