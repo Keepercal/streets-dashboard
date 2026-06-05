@@ -210,7 +210,9 @@ export default function App() {
           features={featureGeojson} // The features in GeoJSON format
         />
         {featureData && (
-          <FilterPanel/>
+          <FilterPanel
+            features={featureGeojson}
+          />
         )}
         {featureData && (
           <Legend/>

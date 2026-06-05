@@ -1,13 +1,30 @@
-.filter_panel{
+.filter-panel{
     position: fixed;
     bottom: 0;
 
-    width: 100px;
-    height: 50px;
     overflow-y: auto;
-    padding-left: 15px;
+    padding: 0px 15px 0px 15px;
     margin: 8px;
 
     background-color: #25cc78;
     color: #ecf0f1;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    font-weight: bold;
+    padding: 5px 0;
+}
+
+.filter-content {
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.2s ease;
+}
+
+.filter_panel.collapsed .filter-content {
+    max-height: 0;
 }
