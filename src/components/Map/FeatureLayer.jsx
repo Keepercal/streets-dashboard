@@ -49,9 +49,9 @@ export default function FeatureLayer({ features }) {
                     const editedDate = new Date (timestamp);
                     const daysSinceEdit = (Date.now() - editedDate.getTime()) / (1000 * 60 * 60 * 24);
 
-                    if (daysSinceEdit <= 90){
+                    if (daysSinceEdit <= 365){
                         icon = pinGreen;
-                    } else if (daysSinceEdit <= 365) {
+                    } else if (daysSinceEdit <= 1095.75) {
                         icon = pinYellow;
                     }
                 }

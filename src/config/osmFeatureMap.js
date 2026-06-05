@@ -40,8 +40,14 @@ export const FEATURE_MAP = {
 
         filter: {
             rules: [
-                "tactile_paving",
-                "kerb",
+                {
+                    key: "tactile_paving",
+                    label: "Tactile Paving"
+                },
+                {
+                    key: "kerb",
+                    label: "Kerb"
+                },
             ]
         }
     },

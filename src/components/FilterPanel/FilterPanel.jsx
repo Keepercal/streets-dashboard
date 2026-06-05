@@ -2,7 +2,7 @@ import './FilterPanel.css';
 
 const FilterPanel = () => {
     return(
-        <div class="filter_panel">
+        <div className="filter_panel">
             <p>Filter Panel</p>
         </div>
     )

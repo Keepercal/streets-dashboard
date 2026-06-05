@@ -4,6 +4,7 @@ import Map from './components/Map/Map';
 import Sidebar from './components/Sidebar/Sidebar';
 import Popup from './components/Popup/Popup';
 import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
+import Legend from './components/Legend/Legend.jsx'
 
 import { createRoot } from 'react-dom/client';
 import { useState, useEffect } from 'react';
@@ -210,6 +211,9 @@ export default function App() {
         />
         {featureData && (
           <FilterPanel/>
+        )}
+        {featureData && (
+          <Legend/>
         )}
       </div>
     </div>
