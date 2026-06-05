@@ -3,6 +3,7 @@
 import Map from './components/Map/Map';
 import Sidebar from './components/Sidebar/Sidebar';
 import Popup from './components/Popup/Popup';
+import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
 
 import { createRoot } from 'react-dom/client';
 import { useState, useEffect } from 'react';
@@ -207,6 +208,9 @@ export default function App() {
           boundary={boundaryGeojson} // The boundary in GeoJSON format
           features={featureGeojson} // The features in GeoJSON format
         />
+        {featureData && (
+          <FilterPanel/>
+        )}
       </div>
     </div>
   );

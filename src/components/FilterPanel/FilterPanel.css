@@ -1,0 +1,13 @@
+.filter_panel{
+    position: fixed;
+    bottom: 0;
+
+    width: 100px;
+    height: 50px;
+    overflow-y: auto;
+    padding-left: 15px;
+    margin: 8px;
+
+    background-color: #25cc78;
+    color: #ecf0f1;
+}
