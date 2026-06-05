@@ -4,22 +4,31 @@ import './FilterPanel.css';
 function FilterPanel({ features, filters, setFilters }) {
     const [collapsed, setCollapsed] = useState(true);
 
-    const tagSet = new Set();
+    const tagSet = new Set(); // Extract all tag keys
+    const tagValueMap = {}; // Extract tag values per key
 
     features?.features?.forEach(feature => {
         const tags = feature?.properties || {};
 
-        Object.keys(tags).forEach(tag => {
-            tagSet.add(tag);
+        Object.entries(tags).forEach(([key, value]) => {
+            tagSet.add(key);
+
+            if (!tagValueMap[key]) {
+                tagValueMap[key] = new Set();
+            }
+            tagValueMap[key].add(value);
         });
     });
 
     const tags = [...tagSet].sort();
 
+    const getValues = (key) =>
+        tagValueMap[key] ? [...tagValueMap[key]].sort() : [];
+
     return (
         <div className="filter-panel">
 
-            {/* Always visible */}
+            {/* Header */}
             <div
                 className="filter-header"
                 onClick={() => setCollapsed(!collapsed)}
@@ -46,47 +55,53 @@ function FilterPanel({ features, filters, setFilters }) {
 
                                     <select
                                         value={filter.operator}
-                                        onChange={(e) => {
-                                            const value = e.target.value;
-
+                                        onChange={(e) => 
                                             setFilters(prev =>
                                                 prev.map((f, i) =>
                                                     i === index
-                                                        ? {...f, operator: value}
+                                                        ? {...f, operator: e.target.value}
                                                         : f
                                                 )
-                                            );
-                                        }}
+                                            )
+                                        }
                                     >
                                         <option value="equals">equals</option>
-                                        <option value="not_equals">
-                                            not equals
-                                        </option>
+                                        <option value="not_equals">not equals</option>
                                         <option value="exists">exists</option>
                                         <option value="missing">missing</option>
                                     </select>
-
+                                    
+                                    {/* Value dropdown (dynamic per tag) */}
                                     {filter.operator !== "exists" &&
                                         filter.operator !== "missing" && (
-                                            <input
-                                                type="text"
+                                            <select
                                                 value={filter.value}
-                                                onChange={(e) => {
-                                                    const newFilters = [...filters];
-                                                    newFilters[index].value =
-                                                        e.target.value;
-                                                    setFilters(newFilters);
-                                                }}
-                                                placeholder="Value"
-                                            />
+                                                onChange={(e) =>
+                                                    setFilters(prev =>
+                                                        prev.map((f, i) =>
+                                                            i === index
+                                                                ? {...f, value: e.target.value}
+                                                                : f
+                                                        )
+                                                    )
+                                                }
+                                            >
+                                                <option value="">
+                                                    -- any value --
+                                                </option>
+
+                                                {getValues(filter.key).map(val => (
+                                                    <option key={val} value={val}>
+                                                        {val}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         )}
 
                                     <button
                                         onClick={() =>
-                                            setFilters(
-                                                filters.filter(
-                                                    (_, i) => i !== index
-                                                )
+                                            setFilters( prev =>
+                                                prev.filter((_, i) => i !== index)
                                             )
                                         }
                                     >
