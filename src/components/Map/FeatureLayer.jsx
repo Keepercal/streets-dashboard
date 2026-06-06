@@ -1,3 +1,6 @@
+// Creates a new feature point to be placed on the map
+// Feature position is derived from Overpass feature's metadata
+
 import { GeoJSON } from 'react-leaflet'
 import { timeAgo } from '../../utils/timeAgo'
 import L from "leaflet";
