@@ -1,13 +1,29 @@
 .filter-panel{
     position: fixed;
     bottom: 0;
+    max-height: 500px;
 
-    overflow-y: auto;
-    padding: 0px 15px 0px 15px;
+    display: flex;
+    flex-direction: column;
+
+    padding: 15px;
     margin: 8px;
 
-    background-color: #25cc78;
+    background-color: rgba(37, 204, 120);
     color: #ecf0f1;
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    transition: width 0.3s ease-in-out;
+}
+
+.filter-panel.collapsed{
+    width: 115px;
+}
+
+.filter-panel.expanded{
+    width: 450px;
 }
 
 .filter-header {
@@ -16,26 +32,52 @@
     cursor: pointer;
     user-select: none;
     font-weight: bold;
-    padding: 5px 0;
-    
 }
 
 .filter-header h3{
     margin: 0px
 }
 
-.filter-content {
-    max-height: 500px;
+.filter-content-wrapper{
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    transition: max-height 0.2s ease;
+    transition:
+        max-height 0.6s ease,
+        opacity 0.6s ease,
+        transform 0.6s ease;
+}
+
+.filter-content-wrapper.collapsed{
+    max-height: 0px;
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.filter-content-wrapper.expanded{
+    max-height: 50vh;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.filter-content {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+.arrow{
+    display: inline-block;
+    margin-left: 6px;
+    transition: transform 0.3s ease;
+}
+
+.arrow.open{
+    transform: rotate(90deg);
 }
 
 .filter-content h4{
     margin: 10px 0px 5px 0px;
-}
-
-.filter_panel.collapsed .filter-content {
-    max-height: 0;
 }
 
 .filter-item span{
@@ -44,4 +86,14 @@
 
 .filter-row strong{
     padding-right: 10px
+}
+
+.filter-item span{
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    outline-width: 5px;
+}
+
+#filter-select{
+    width: 175px
 }

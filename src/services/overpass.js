@@ -68,10 +68,10 @@ export async function fetchBoundary(boundaryKey, boundaryType, boundaryName){
     }
 }
 
-export async function fetchMapFeature(boundaryName, featureTag, featureValue, featureType){
+export async function fetchMapFeature(boundaryKey, featureTag, featureValue, featureType){
     try{
-        console.log("ENTER fetchMapFeature", { boundaryName, featureTag, featureValue, featureType })
-        if(!boundaryName || boundaryName === 'none') return null;
+        console.log("ENTER fetchMapFeature", { boundaryKey, featureTag, featureValue, featureType })
+        if(!boundaryKey || boundaryKey === 'none') return null;
 
         // Tags for ward boundaries have been changed
         /*const query = `
@@ -91,7 +91,7 @@ export async function fetchMapFeature(boundaryName, featureTag, featureValue, fe
                 [out:json][timeout:60];
 
                 relation
-                    ["name"~"${boundaryName}", i]->.rels;
+                    ["name"~"${boundaryKey}", i]->.rels;
                 .rels map_to_area -> .area;
 
                 ${featureType}(area.area)["${featureTag}"="${featureValue}"];
@@ -103,11 +103,11 @@ export async function fetchMapFeature(boundaryName, featureTag, featureValue, fe
 
         if (res.status === 504){
             console.warn(`fetchMapFeature returned ${res.status}, retrying...`)
-            return fetchMapFeature(boundaryName, featureTag, featureValue, featureType);
+            return fetchMapFeature(boundaryKey, featureTag, featureValue, featureType);
         }
 
         if (!res.ok && res.status !== 504){
-            console.info("EXIT fetchMapFeature", {boundaryName});
+            console.info("EXIT fetchMapFeature", {boundaryKey});
             throw new Error(
                 `HTTP Error: ${res.status} (${res.statusText}), try selecting the feature again`
             );

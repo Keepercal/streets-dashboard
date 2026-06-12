@@ -1,50 +1,58 @@
-import { useState } from 'react';
+// Dynamically generates filter controls from feature properties.
+// Users can add, modify, and remove attribute-based filters.
+
+import { useState, useMemo } from 'react';
 import './FilterPanel.css';
 
 function FilterPanel({ features, filters, setFilters }) {
-    const [collapsed, setCollapsed] = useState(true);
+    const [collapsed, setCollapsed] = useState(true); // Panel initially beginds collapsed
 
-    const tagSet = new Set(); // Extract all tag keys
-    const tagValueMap = {}; // Extract tag values per key
+    // Extract all unique property keys and values from the feature collection
+    // Memorised so this only reruns when the feature data changes
+    const { tagSet, tagValueMap } = useMemo(() =>{
+        const tagSet = new Set(); // Stores unique tag/property names of features
+        const tagValueMap = {}; // Maps each tag to its unique values
 
-    features?.features?.forEach(feature => {
-        const tags = feature?.properties || {};
+        features?.features?.forEach(feature => { // Scan every feature to build the avaliable filter options
+            const tags = feature?.properties || {};
 
-        Object.entries(tags).forEach(([key, value]) => {
-            tagSet.add(key);
+            Object.entries(tags).forEach(([key, value]) => { // Process each property key/value pair on the feature
+                tagSet.add(key);
 
-            if (!tagValueMap[key]) {
-                tagValueMap[key] = new Set();
-            }
-            tagValueMap[key].add(value);
+                if (!tagValueMap[key]) { // Create a set for a key if it doesn't exist yet
+                    tagValueMap[key] = new Set();
+                }
+                tagValueMap[key].add(value); // Store the unique value for this property key
+            });
         });
-    });
 
-    const activeKeys = new Set (filters.map(f => f.key));
+        return { tagSet, tagValueMap };
+    }, [features]);
 
-    const tags = [...tagSet]
-        .filter(tag => !activeKeys.has(tag))
-        .sort();
+    const activeKeys = new Set (filters.map(f => f.key)); // Dertime which filters already exist
 
-    const getValues = (key) =>
+    const tags = [...tagSet] // Build avaliable tags list
+        .filter(tag => !activeKeys.has(tag)) // Remove tags already in use
+        .sort(); // Alphabetically sort
+
+    const getValues = (key) => // Return all known values of a tag, sorted alphavetically
         tagValueMap[key] ? [...tagValueMap[key]].sort() : [];
 
     return (
-        <div className="filter-panel">
+        <div className={`filter-panel ${collapsed ? "collapsed" : "expanded"}`}>
 
             {/* Header */}
-            <div
-                className="filter-header"
-                onClick={() => setCollapsed(!collapsed)}
-            >
+            <div className="filter-header" onClick={() => setCollapsed(!collapsed)}>
                 <h3>
-                    Filter Panel {collapsed ? "▸" : "▾"}
+                    Filter Panel
+                    <span className={`arrow ${collapsed ? "" : "open"}`}>
+                        ▸
+                    </span>
                 </h3>
             </div>
 
-            {!collapsed && (
-                <div className="filter-content">
-
+            <div className={`filter-content-wrapper ${collapsed ? "collapsed" : "expanded"}`}>
+                <div className={`filter-content ${collapsed ? "collapsed" : "expanded"}`}>
                     {/* Active Filters */}
                     {filters.length > 0 && (
                         <div className="active-filters">
@@ -69,6 +77,7 @@ function FilterPanel({ features, filters, setFilters }) {
                                             )
                                         }
                                     >
+                                        <option value="...">...</option>
                                         <option value="equals">equals</option>
                                         <option value="not_equals">not equals</option>
                                         <option value="exists">exists</option>
@@ -76,31 +85,33 @@ function FilterPanel({ features, filters, setFilters }) {
                                     </select>
                                     
                                     {/* Value dropdown (dynamic per tag) */}
-                                    {filter.operator !== "exists" &&
-                                        filter.operator !== "missing" && (
-                                            <select
-                                                value={filter.value}
-                                                onChange={(e) =>
-                                                    setFilters(prev =>
-                                                        prev.map((f, i) =>
-                                                            i === index
-                                                                ? {...f, value: e.target.value}
-                                                                : f
+                                    {filter.operator !== "..." &&
+                                        filter.operator !== "exists" &&
+                                            filter.operator !== "missing" && (
+                                                <select
+                                                    id="filter-select"
+                                                    value={filter.value}
+                                                    onChange={(e) =>
+                                                        setFilters(prev =>
+                                                            prev.map((f, i) =>
+                                                                i === index
+                                                                    ? {...f, value: e.target.value}
+                                                                    : f
+                                                            )
                                                         )
-                                                    )
-                                                }
-                                            >
-                                                <option value="">
-                                                    -- any value --
-                                                </option>
-
-                                                {getValues(filter.key).map(val => (
-                                                    <option key={val} value={val}>
-                                                        {val}
+                                                    }
+                                                >
+                                                    <option value="">
+                                                        -- any value --
                                                     </option>
-                                                ))}
-                                            </select>
-                                        )}
+
+                                                    {getValues(filter.key).map(val => (
+                                                        <option key={val} value={val}>
+                                                            {val}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            )}
 
                                     <button
                                         onClick={() =>
@@ -129,7 +140,7 @@ function FilterPanel({ features, filters, setFilters }) {
                                         ...prev,
                                         {
                                             key: tag,
-                                            operator: "equals",
+                                            operator: "...",
                                             value: ""
                                         }
                                     ])
@@ -139,10 +150,9 @@ function FilterPanel({ features, filters, setFilters }) {
                             </button>
                         </div>
                     ))}
-
                 </div>
-            )}
-        </div>
+            </div>
+    </div>
     );
 }
 

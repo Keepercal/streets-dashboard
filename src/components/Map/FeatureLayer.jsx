@@ -1,8 +1,13 @@
+// Creates a new feature point to be placed on the map
+// Feature position is derived from Overpass feature's metadata
+
 import { GeoJSON } from 'react-leaflet'
 import { timeAgo } from '../../utils/timeAgo'
 import L from "leaflet";
 
 export default function FeatureLayer({ features }) {
+
+    // Fields not displayed in the popup
     const exclude = new Set([
         "type",
         "id",
@@ -13,6 +18,7 @@ export default function FeatureLayer({ features }) {
         "uid",
     ]);
 
+    // Marker icons based on feature recency
     var pinGreen = L.icon({
         iconUrl: './assets/pins/pinGreen.svg',
         iconSize: [30, 30],
@@ -39,35 +45,95 @@ export default function FeatureLayer({ features }) {
 
     return (
         <GeoJSON
-            key={features?.features?.length}
+            // Forces re-render when filter match state changes on features
+            key={JSON.stringify(features?.features?.map(f => f._matchesFilters))}
             data={features}
-            pointToLayer={(feature, latlng) => {
+
+            style={(feature) => {
+                const match = feature._matchesFilters !== false;
+
                 const timestamp = feature.properties?.timestamp;
 
-                let icon = pinRed; // default
+                let color = "#D83F29"; // Default to red
 
                 if (timestamp) {
-                    const editedDate = new Date (timestamp);
+                    const editedDate = new Date(timestamp);
                     const daysSinceEdit = (Date.now() - editedDate.getTime()) / (1000 * 60 * 60 * 24);
 
-                    if (daysSinceEdit <= 365){
-                        icon = pinGreen;
+                    if (daysSinceEdit <= 365) {
+                        color = "#739D55";
                     } else if (daysSinceEdit <= 1095.75) {
-                        icon = pinYellow;
+                        color = "#E0C055"; // Moderately old edit (~3 years)
                     }
                 }
 
-                return L.marker(latlng, { icon });
+                if (!match) {
+                    return {
+                        color,
+                        opacity: 0.15,
+                        weight: 2,
+                        fillOpacity: 0.05,
+                    };
+                }
+
+                return {
+                    color,
+                    opacity: 1,
+                    weight: 3,
+                    fillOpacity: 0.2,
+                };
             }}
 
+            // Converts each GeoJSON point into a Leaflet marker
+            pointToLayer={(feature, latlng) => {
+                //console.log(feature.id, feature._matchesFilters);
+                const match = feature._matchesFilters !== false;
+
+                const timestamp = feature.properties?.timestamp;
+
+                let icon = pinRed; // Default to red pin
+
+                // Choose icon colour based on how recently the feature was edited
+                if (timestamp) {
+                    const editedDate = new Date(timestamp);
+                    const daysSinceEdit = (Date.now() - editedDate.getTime()) / (1000 * 60 * 60 * 24);
+
+                    if (daysSinceEdit <= 365) {
+                        icon = pinGreen; // Recently edited
+                    } else if (daysSinceEdit <= 1095.75) {
+                        icon = pinYellow; // Moderately old edit (~3 years)
+                    }
+                }
+
+                const marker = L.marker(latlng, { icon });
+
+                // Visually dim filtered-out features
+                if (!match) {
+                    marker.setOpacity(0.15);
+                    marker.options.interactive = false; // Disable clicks/popup
+                    marker.setZIndexOffset(match ? 1000 : 0);
+                } else {
+                    marker.setOpacity(1);
+                    marker.setZIndexOffset(1000); // Keeps active markers on top
+                }
+
+                return marker;
+            }}
+
+            // Create popup content for each feature
             onEachFeature={(feature, layer) => {
+
                 const props = feature.properties || {};
                 const lastUser = props.user;
+
+                // Split OSM feature ID (e.g. "node/12345")
                 const [featureType, osmID] = feature.id.split("/");
+
+                // Container for popup DOM content
                 const container = document.createElement("div");
 
+                // Header with link to OpenStreetMap feature page
                 const title = document.createElement("div");
-                const subtitle = document.createElement("div");
 
                 title.innerHTML = `
                     <h2>
@@ -80,11 +146,14 @@ export default function FeatureLayer({ features }) {
                         </a>
                     <h2>
                 `;
+                // Section header for tags/properties
+                const subtitle = document.createElement("div");
                 subtitle.innerHTML = `<h3>Tags</h3>`;
 
                 container.appendChild(title);
                 container.appendChild(subtitle);
 
+                // Render all feature properties except excluded metadata fields
                 Object.entries(props)
                     .filter(([k]) => !exclude.has(k))
                     .forEach(([key, value]) => {
@@ -92,8 +161,12 @@ export default function FeatureLayer({ features }) {
                         row.innerHTML = `<strong>${key}</strong>: ${value}`;
                         container.appendChild(row);
                     });
+
+                // Add metadata footer if feature has edit timestamp
                 if (props.timestamp) {
-                    const formattedDate = new Date(props.timestamp).toLocaleDateString("en-GB");
+                    const formattedDate =
+                        new Date(props.timestamp).toLocaleDateString("en-GB");
+
                     const timeAgoText = timeAgo(props.timestamp);
 
                     const editedRow = document.createElement("div");
@@ -109,6 +182,7 @@ export default function FeatureLayer({ features }) {
                     container.appendChild(editedRow);
                 }
 
+                // Attach popup DOM to Leaflet layer
                 layer.bindPopup(container);
             }}
         />

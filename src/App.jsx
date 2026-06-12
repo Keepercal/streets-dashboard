@@ -5,38 +5,15 @@ import Sidebar from './components/Sidebar/Sidebar';
 import Popup from './components/Popup/Popup';
 import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
 import Legend from './components/Legend/Legend.jsx'
+import FeatureCount from './components/FeatureCount/FeatureCount.jsx'
 
 import { createRoot } from 'react-dom/client';
 import { useState, useEffect, useMemo } from 'react';
 import { useBoundary, useMapFeature } from './hooks/useMapData.js'
+import { evaluateFeature } from './utils/evaluteFeatures.js';
 
 import { BOUNDARY_MAP } from "./config/osmBoundaryMap.js";
 import { FEATURE_MAP } from "./config/osmFeatureMap.js";
-
-function evaluateFeature(feature, filters) {
-    const tags = feature.properties || {};
-
-    return filters.every(filter => {
-        const value = tags[filter.key];
-
-        switch (filter.operator) {
-            case "equals":
-                return String(value ?? "") === filter.value;
-
-            case "not_equals":
-                return String(value ?? "") !== filter.value
-
-            case "exists":
-                return value !== undefined;
-
-            case "missing":
-                return value === undefined;
-
-            default:
-                return true;
-        }
-    })
-}
 
 export default function App() {
   const [selectedBoundary, setSelectedBoundary] = useState('none'); // Default the dropdown to None
@@ -100,9 +77,10 @@ export default function App() {
 
     return {
       ...featureGeojson,
-      features: featureGeojson.features.filter(feature =>
-        evaluateFeature(feature, filters)
-      )
+      features: featureGeojson.features.map(feature => ({
+        ...feature,
+        _matchesFilters: evaluateFeature(feature, filters)
+      }))
     };
   }, [featureGeojson, filters])
 
@@ -255,6 +233,11 @@ export default function App() {
         )}
         {featureData && (
           <Legend />
+        )}
+        {featureData && (
+          <FeatureCount 
+            features={featureData}
+          />
         )}
       </div>
     </div>
