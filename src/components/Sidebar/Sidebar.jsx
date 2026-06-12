@@ -49,7 +49,7 @@ const renderGroup = (groupName, featureOptions, toggles, handleToggle) => {
 const Sidebar = ({ handleDropdown, handleToggle, boundaryData, selectedBoundary, toggles, boundaryOptions, featureOptions }) => {
     return (
         <div className="sidebar"> 
-            <div className="sidebar-content">
+            <div className="sidebar-header">
                 <h1 className="sidebar-title">{ window.APP_NAME }</h1>
                 <p className="version-tag">{ window.APP_VERSION }</p>
 
@@ -69,18 +69,20 @@ const Sidebar = ({ handleDropdown, handleToggle, boundaryData, selectedBoundary,
                 />
                 
                 {/* Show the list of options if a Boundary is returned and the Overpass API returned the Ward boundary */}
-                {boundaryData && (
-                    <>
-                        <h3>Ways</h3>
-                        {renderGroup("ways", featureOptions, toggles, handleToggle)}
+                <div className="sidebar-content">
+                    {boundaryData && (
+                        <>
+                            <h3>Ways</h3>
+                            {renderGroup("ways", featureOptions, toggles, handleToggle)}
 
-                        <h3>Crossings</h3>
-                        {renderGroup("crossings", featureOptions, toggles, handleToggle)}
+                            <h3>Crossings</h3>
+                            {renderGroup("crossings", featureOptions, toggles, handleToggle)}
 
-                        <h3>Street Furniture</h3>
-                        {renderGroup("streetFurniture", featureOptions, toggles, handleToggle)}
-                    </>
-                )}
+                            <h3>Street Furniture</h3>
+                            {renderGroup("streetFurniture", featureOptions, toggles, handleToggle)}
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );
