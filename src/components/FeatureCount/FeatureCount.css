@@ -6,7 +6,7 @@
     overflow-y: auto;
     padding: 0px 10px 0px 10px;
 
-    background-color: rgba(0, 0, 0, 0.50);
+    background-color: rgba(0, 0, 0, 0.40);
     color: #ecf0f1;
 
     backdrop-filter: blur(6px);
@@ -22,5 +22,5 @@
 
 .feature-count-item p {
     font-size: 12px;
-    margin: 5px;
+    margin: 2px;
 }

@@ -57,6 +57,12 @@ export const BOUNDARY_MAP = {
         label: 'Bristol',
     },
 
+    curry_rivel: {
+        boundary_type: 'administrative',
+        name: 'Curry Rivel',
+        label: 'Curry Rivel'
+    },
+
     // ADMIN LEVEL 10
     ...wardEntries,
 }
