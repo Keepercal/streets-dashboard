@@ -1,11 +1,11 @@
-export const FEATURE_MAP = {    
+export const FEATURE_MAP = {
     // WAYS
-    /*lcn: {
+    lcn: {
         tag: "network",
         label: "Local Cycling Network",
         group: "ways",
-        type: "way"
-    },*/
+        type: "relation"
+    },
     parking: {
         tag: "amenity",
         label: "Parking",

@@ -10,7 +10,6 @@ export function useBoundary() {
     const [error, setErrorMessage] = useState(null);
 
     let currentRequest = useRef(0);
-    const cache = useRef(new Map()); // Cache previously fetched features
 
     const clearBoundary = () => {
         console.log("clearing all states relating to boundaries...");

@@ -77,7 +77,7 @@ function FilterPanel({ features, filters, setFilters }) {
                                             )
                                         }
                                     >
-                                        <option value=""></option>
+                                        <option value="...">...</option>
                                         <option value="equals">equals</option>
                                         <option value="not_equals">not equals</option>
                                         <option value="exists">exists</option>
@@ -85,7 +85,7 @@ function FilterPanel({ features, filters, setFilters }) {
                                     </select>
                                     
                                     {/* Value dropdown (dynamic per tag) */}
-                                    {filter.operator !== "" &&
+                                    {filter.operator !== "..." &&
                                         filter.operator !== "exists" &&
                                             filter.operator !== "missing" && (
                                                 <select
@@ -140,7 +140,7 @@ function FilterPanel({ features, filters, setFilters }) {
                                         ...prev,
                                         {
                                             key: tag,
-                                            operator: "",
+                                            operator: "...",
                                             value: ""
                                         }
                                     ])

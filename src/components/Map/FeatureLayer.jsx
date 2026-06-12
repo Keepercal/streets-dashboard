@@ -49,6 +49,41 @@ export default function FeatureLayer({ features }) {
             key={JSON.stringify(features?.features?.map(f => f._matchesFilters))}
             data={features}
 
+            style={(feature) => {
+                const match = feature._matchesFilters !== false;
+
+                const timestamp = feature.properties?.timestamp;
+
+                let color = "#D83F29"; // Default to red
+
+                if (timestamp) {
+                    const editedDate = new Date(timestamp);
+                    const daysSinceEdit = (Date.now() - editedDate.getTime()) / (1000 * 60 * 60 * 24);
+
+                    if (daysSinceEdit <= 365) {
+                        color = "#739D55";
+                    } else if (daysSinceEdit <= 1095.75) {
+                        color = "#E0C055"; // Moderately old edit (~3 years)
+                    }
+                }
+
+                if (!match) {
+                    return {
+                        color,
+                        opacity: 0.15,
+                        weight: 2,
+                        fillOpacity: 0.05,
+                    };
+                }
+
+                return {
+                    color,
+                    opacity: 1,
+                    weight: 3,
+                    fillOpacity: 0.2,
+                };
+            }}
+
             // Converts each GeoJSON point into a Leaflet marker
             pointToLayer={(feature, latlng) => {
                 //console.log(feature.id, feature._matchesFilters);
@@ -57,13 +92,13 @@ export default function FeatureLayer({ features }) {
                 const timestamp = feature.properties?.timestamp;
 
                 let icon = pinRed; // Default to red pin
-                
+
                 // Choose icon colour based on how recently the feature was edited
                 if (timestamp) {
-                    const editedDate = new Date (timestamp);
+                    const editedDate = new Date(timestamp);
                     const daysSinceEdit = (Date.now() - editedDate.getTime()) / (1000 * 60 * 60 * 24);
 
-                    if (daysSinceEdit <= 365){
+                    if (daysSinceEdit <= 365) {
                         icon = pinGreen; // Recently edited
                     } else if (daysSinceEdit <= 1095.75) {
                         icon = pinYellow; // Moderately old edit (~3 years)
@@ -73,7 +108,7 @@ export default function FeatureLayer({ features }) {
                 const marker = L.marker(latlng, { icon });
 
                 // Visually dim filtered-out features
-                if (!match){
+                if (!match) {
                     marker.setOpacity(0.15);
                     marker.options.interactive = false; // Disable clicks/popup
                     marker.setZIndexOffset(match ? 1000 : 0);
@@ -126,10 +161,10 @@ export default function FeatureLayer({ features }) {
                         row.innerHTML = `<strong>${key}</strong>: ${value}`;
                         container.appendChild(row);
                     });
-                
+
                 // Add metadata footer if feature has edit timestamp
                 if (props.timestamp) {
-                    const formattedDate = 
+                    const formattedDate =
                         new Date(props.timestamp).toLocaleDateString("en-GB");
 
                     const timeAgoText = timeAgo(props.timestamp);

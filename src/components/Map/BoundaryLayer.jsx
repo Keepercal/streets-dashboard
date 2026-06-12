@@ -7,7 +7,7 @@ export default function BoundarLayer({ boundary }) {
             style={{
                 color: "red",
                 weight: 2,
-                fillOpacity: 0.05,
+                fillOpacity: 0.04,
             }}
         />
     )
