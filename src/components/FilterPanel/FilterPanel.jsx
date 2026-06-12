@@ -39,7 +39,7 @@ function FilterPanel({ features, filters, setFilters }) {
         tagValueMap[key] ? [...tagValueMap[key]].sort() : [];
 
     return (
-        <div className="filter-panel">
+        <div className={`filter-panel ${collapsed ? "collapsed" : "expanded"}`}>
 
             {/* Header */}
             <div className="filter-header" onClick={() => setCollapsed(!collapsed)}>
@@ -51,104 +51,106 @@ function FilterPanel({ features, filters, setFilters }) {
                 </h3>
             </div>
 
-            <div className={`filter-content ${collapsed ? "collapsed" : "expanded"}`}>
-                {/* Active Filters */}
-                {filters.length > 0 && (
-                    <div className="active-filters">
-                        <h4>Active Filters</h4>
+            <div className={`filter-content-wrapper ${collapsed ? "collapsed" : "expanded"}`}>
+                <div className={`filter-content ${collapsed ? "collapsed" : "expanded"}`}>
+                    {/* Active Filters */}
+                    {filters.length > 0 && (
+                        <div className="active-filters">
+                            <h4>Active Filters</h4>
 
-                        {filters.map((filter, index) => (
-                            <div
-                                key={`${filter.key}-${index}`}
-                                className="filter-row"
-                            >
-                                <strong>{filter.key}</strong>
+                            {filters.map((filter, index) => (
+                                <div
+                                    key={`${filter.key}-${index}`}
+                                    className="filter-row"
+                                >
+                                    <strong>{filter.key}</strong>
 
-                                <select
-                                    value={filter.operator}
-                                    onChange={(e) => 
-                                        setFilters(prev =>
-                                            prev.map((f, i) =>
-                                                i === index
-                                                    ? {...f, operator: e.target.value}
-                                                    : f
+                                    <select
+                                        value={filter.operator}
+                                        onChange={(e) => 
+                                            setFilters(prev =>
+                                                prev.map((f, i) =>
+                                                    i === index
+                                                        ? {...f, operator: e.target.value}
+                                                        : f
+                                                )
                                             )
-                                        )
-                                    }
-                                >
-                                    <option value=""></option>
-                                    <option value="equals">equals</option>
-                                    <option value="not_equals">not equals</option>
-                                    <option value="exists">exists</option>
-                                    <option value="missing">missing</option>
-                                </select>
-                                
-                                {/* Value dropdown (dynamic per tag) */}
-                                {filter.operator !== "" &&
-                                    filter.operator !== "exists" &&
-                                        filter.operator !== "missing" && (
-                                            <select
-                                                id="filter-select"
-                                                value={filter.value}
-                                                onChange={(e) =>
-                                                    setFilters(prev =>
-                                                        prev.map((f, i) =>
-                                                            i === index
-                                                                ? {...f, value: e.target.value}
-                                                                : f
+                                        }
+                                    >
+                                        <option value=""></option>
+                                        <option value="equals">equals</option>
+                                        <option value="not_equals">not equals</option>
+                                        <option value="exists">exists</option>
+                                        <option value="missing">missing</option>
+                                    </select>
+                                    
+                                    {/* Value dropdown (dynamic per tag) */}
+                                    {filter.operator !== "" &&
+                                        filter.operator !== "exists" &&
+                                            filter.operator !== "missing" && (
+                                                <select
+                                                    id="filter-select"
+                                                    value={filter.value}
+                                                    onChange={(e) =>
+                                                        setFilters(prev =>
+                                                            prev.map((f, i) =>
+                                                                i === index
+                                                                    ? {...f, value: e.target.value}
+                                                                    : f
+                                                            )
                                                         )
-                                                    )
-                                                }
-                                            >
-                                                <option value="">
-                                                    -- any value --
-                                                </option>
-
-                                                {getValues(filter.key).map(val => (
-                                                    <option key={val} value={val}>
-                                                        {val}
+                                                    }
+                                                >
+                                                    <option value="">
+                                                        -- any value --
                                                     </option>
-                                                ))}
-                                            </select>
-                                        )}
 
-                                <button
-                                    onClick={() =>
-                                        setFilters( prev =>
-                                            prev.filter((_, i) => i !== index)
-                                        )
-                                    }
-                                >
-                                    ✕
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                                                    {getValues(filter.key).map(val => (
+                                                        <option key={val} value={val}>
+                                                            {val}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            )}
 
-                {/* Available Tags */}
-                <h4>Available Tags</h4>
+                                    <button
+                                        onClick={() =>
+                                            setFilters( prev =>
+                                                prev.filter((_, i) => i !== index)
+                                            )
+                                        }
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
-                {tags.map(tag => (
-                    <div key={tag} className="filter-item">
-                        <span>{tag}</span>
+                    {/* Available Tags */}
+                    <h4>Available Tags</h4>
 
-                        <button
-                            onClick={() =>
-                                setFilters(prev => [
-                                    ...prev,
-                                    {
-                                        key: tag,
-                                        operator: "",
-                                        value: ""
-                                    }
-                                ])
-                            }
-                        >
-                            +
-                        </button>
-                    </div>
-                ))}
+                    {tags.map(tag => (
+                        <div key={tag} className="filter-item">
+                            <span>{tag}</span>
+
+                            <button
+                                onClick={() =>
+                                    setFilters(prev => [
+                                        ...prev,
+                                        {
+                                            key: tag,
+                                            operator: "",
+                                            value: ""
+                                        }
+                                    ])
+                                }
+                            >
+                                +
+                            </button>
+                        </div>
+                    ))}
+                </div>
             </div>
     </div>
     );

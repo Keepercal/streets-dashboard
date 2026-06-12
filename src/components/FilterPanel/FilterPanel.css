@@ -3,12 +3,27 @@
     bottom: 0;
     max-height: 500px;
 
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+
     padding: 15px;
     margin: 8px;
 
-    background-color: #25cc78;
+    background-color: rgba(37, 204, 120);
     color: #ecf0f1;
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    transition: width 0.3s ease-in-out;
+}
+
+.filter-panel.collapsed{
+    width: 115px;
+}
+
+.filter-panel.expanded{
+    width: 450px;
 }
 
 .filter-header {
@@ -17,30 +32,38 @@
     cursor: pointer;
     user-select: none;
     font-weight: bold;
-    margin-bottom: 5px
 }
 
 .filter-header h3{
     margin: 0px
 }
 
+.filter-content-wrapper{
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition:
+        max-height 0.6s ease,
+        opacity 0.6s ease,
+        transform 0.6s ease;
+}
+
+.filter-content-wrapper.collapsed{
+    max-height: 0px;
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.filter-content-wrapper.expanded{
+    max-height: 50vh;
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .filter-content {
     overflow-y: auto;
-    transition: max-height 0.6s ease, opacity 0.6s ease, transform 0.6s ease;
-    transform-origin: top;
-}
-
-.filter-content.collapsed {
-    max-height: 0px;
-    opacity: 0px;
-    transform: translateY(-8px);
-    pointer-events: none
-}
-
-.filter-content.expanded {
-    max-height: 1000px;
-    opacity: 1;
-    transform: translateY(0)
+    flex: 1;
+    min-height: 0;
 }
 
 .arrow{
@@ -55,10 +78,6 @@
 
 .filter-content h4{
     margin: 10px 0px 5px 0px;
-}
-
-.filter_panel.collapsed .filter-content {
-    max-height: 0;
 }
 
 .filter-item span{

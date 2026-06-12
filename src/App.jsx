@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar/Sidebar';
 import Popup from './components/Popup/Popup';
 import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
 import Legend from './components/Legend/Legend.jsx'
+import FeatureCount from './components/FeatureCount/FeatureCount.jsx'
 
 import { createRoot } from 'react-dom/client';
 import { useState, useEffect, useMemo } from 'react';
@@ -232,6 +233,11 @@ export default function App() {
         )}
         {featureData && (
           <Legend />
+        )}
+        {featureData && (
+          <FeatureCount 
+            features={featureData}
+          />
         )}
       </div>
     </div>
