@@ -76,6 +76,7 @@ function FilterPanel({ features, filters, setFilters }) {
                                         )
                                     }
                                 >
+                                    <option value=""></option>
                                     <option value="equals">equals</option>
                                     <option value="not_equals">not equals</option>
                                     <option value="exists">exists</option>
@@ -83,32 +84,33 @@ function FilterPanel({ features, filters, setFilters }) {
                                 </select>
                                 
                                 {/* Value dropdown (dynamic per tag) */}
-                                {filter.operator !== "exists" &&
-                                    filter.operator !== "missing" && (
-                                        <select
-                                            id="filter-select"
-                                            value={filter.value}
-                                            onChange={(e) =>
-                                                setFilters(prev =>
-                                                    prev.map((f, i) =>
-                                                        i === index
-                                                            ? {...f, value: e.target.value}
-                                                            : f
+                                {filter.operator !== "" &&
+                                    filter.operator !== "exists" &&
+                                        filter.operator !== "missing" && (
+                                            <select
+                                                id="filter-select"
+                                                value={filter.value}
+                                                onChange={(e) =>
+                                                    setFilters(prev =>
+                                                        prev.map((f, i) =>
+                                                            i === index
+                                                                ? {...f, value: e.target.value}
+                                                                : f
+                                                        )
                                                     )
-                                                )
-                                            }
-                                        >
-                                            <option value="">
-                                                -- any value --
-                                            </option>
-
-                                            {getValues(filter.key).map(val => (
-                                                <option key={val} value={val}>
-                                                    {val}
+                                                }
+                                            >
+                                                <option value="">
+                                                    -- any value --
                                                 </option>
-                                            ))}
-                                        </select>
-                                    )}
+
+                                                {getValues(filter.key).map(val => (
+                                                    <option key={val} value={val}>
+                                                        {val}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        )}
 
                                 <button
                                     onClick={() =>
@@ -137,7 +139,7 @@ function FilterPanel({ features, filters, setFilters }) {
                                     ...prev,
                                     {
                                         key: tag,
-                                        operator: "equals",
+                                        operator: "",
                                         value: ""
                                     }
                                 ])

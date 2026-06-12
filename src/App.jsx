@@ -9,7 +9,7 @@ import Legend from './components/Legend/Legend.jsx'
 import { createRoot } from 'react-dom/client';
 import { useState, useEffect, useMemo } from 'react';
 import { useBoundary, useMapFeature } from './hooks/useMapData.js'
-import { evaluateFeature } from './services/evaluteFeatures.js';
+import { evaluateFeature } from './utils/evaluteFeatures.js';
 
 import { BOUNDARY_MAP } from "./config/osmBoundaryMap.js";
 import { FEATURE_MAP } from "./config/osmFeatureMap.js";
@@ -76,9 +76,10 @@ export default function App() {
 
     return {
       ...featureGeojson,
-      features: featureGeojson.features.filter(feature =>
-        evaluateFeature(feature, filters)
-      )
+      features: featureGeojson.features.map(feature => ({
+        ...feature,
+        _matchesFilters: evaluateFeature(feature, filters)
+      }))
     };
   }, [featureGeojson, filters])
 

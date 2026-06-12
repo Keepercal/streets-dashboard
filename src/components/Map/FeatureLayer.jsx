@@ -42,9 +42,13 @@ export default function FeatureLayer({ features }) {
 
     return (
         <GeoJSON
-            key={features?.features?.length}
+            key={JSON.stringify(features?.features?.map(f => f._matchesFilters))}
             data={features}
+
             pointToLayer={(feature, latlng) => {
+                console.log(feature.id, feature._matchesFilters);
+                const match = feature._matchesFilters !== false;
+
                 const timestamp = feature.properties?.timestamp;
 
                 let icon = pinRed; // default
@@ -60,7 +64,17 @@ export default function FeatureLayer({ features }) {
                     }
                 }
 
-                return L.marker(latlng, { icon });
+                const marker = L.marker(latlng, { icon });
+
+                if (!match){
+                    marker.setOpacity(0.25);
+                    marker.options.interactive = false;
+                    marker.setZIndexOffset(match ? 1000 : 0);
+                } else {
+                    marker.setOpacity(1);
+                }
+
+                return marker;
             }}
 
             onEachFeature={(feature, layer) => {
