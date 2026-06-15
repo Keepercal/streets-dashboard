@@ -9,17 +9,23 @@
     padding: 15px;
     margin: 8px;
 
-    background-color: rgba(37, 204, 120);
+    background-color: rgba(37, 204, 120, 0.6);
     color: #ecf0f1;
 
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(6px);
 
     transition: width 0.3s ease-in-out;
+    transition: background-color 0.3s ease;
+}
+
+.filter-panel:hover{
+    background-color: rgba(37, 204, 120, 1);
+    transition: background-color 0.3s ease;
 }
 
 .filter-panel.collapsed{
-    width: 115px;
+    width: 120px;
 }
 
 .filter-panel.expanded{

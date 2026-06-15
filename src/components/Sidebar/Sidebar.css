@@ -1,5 +1,5 @@
 body {
-    font-family: 'noto sans cham', roboto;
+    font-family: "Google Sans Flex", sans-serif;
 }
 
 h2, h3{
@@ -13,7 +13,7 @@ h2, h3{
 }
 
 .version-tag{
-    margin-top: 0px;
+    margin: 0px;
     color: rgba(255, 255, 255, 0.5);
 }
 
@@ -24,15 +24,35 @@ h2, h3{
 
     width: 250px;
     height: 100vh;
-    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
     padding-left: 15px;
 
     background-color: #223d57;
     color: #ecf0f1;
+
+}
+
+.sidebar-header{
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+    min-height: 0;
+
+    -bottom: 5px;
 }
 
 .sidebar-content{
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+
     width: 100%;
+    padding-right: 6px;
 }
 
 .dropdown-btn{
