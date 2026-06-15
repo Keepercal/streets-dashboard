@@ -72,11 +72,17 @@ const Sidebar = ({ handleDropdown, handleToggle, boundaryData, selectedBoundary,
                 <div className="sidebar-content">
                     {boundaryData && (
                         <>
+                            <h3>Networks</h3>
+                            {renderGroup("networks", featureOptions, toggles, handleToggle)}
+
                             <h3>Ways</h3>
                             {renderGroup("ways", featureOptions, toggles, handleToggle)}
 
                             <h3>Crossings</h3>
                             {renderGroup("crossings", featureOptions, toggles, handleToggle)}
+
+                            <h3>Public Transport</h3>
+                            {renderGroup("publicTransport", featureOptions, toggles, handleToggle)}
 
                             <h3>Street Furniture</h3>
                             {renderGroup("streetFurniture", featureOptions, toggles, handleToggle)}

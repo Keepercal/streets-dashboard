@@ -1,11 +1,21 @@
 export const FEATURE_MAP = {
-    // WAYS
+    // Networks
+
     lcn: {
         tag: "network",
         label: "Local Cycling Network",
-        group: "ways",
+        group: "networks",
         type: "relation"
     },
+
+    bus: {
+        tag: "route",
+        label: "Bus Network",
+        group: "networks",
+        type: "relation",
+    },
+
+    // WAYS
     parking: {
         tag: "amenity",
         label: "Parking",
@@ -88,16 +98,24 @@ export const FEATURE_MAP = {
         type: "node"
     },
 
-    // STREET FURNITURE
-    toilets: {
-        tag: "amenity",
-        label: "Toilets",
-        group: "streetFurniture",
+    // PUBLIC TRANSPORT
+    station: {
+        tag: "railway",
+        label: "Railway Stations",
+        group: "publicTransport",
         type: "node"
     },
     bus_stop: {
         tag: "highway",
         label: "Bus Stops",
+        group: "publicTransport",
+        type: "node"
+    },
+
+    // STREET FURNITURE
+    toilets: {
+        tag: "amenity",
+        label: "Toilets",
         group: "streetFurniture",
         type: "node"
     },
