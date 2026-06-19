@@ -19,15 +19,7 @@ export default function App() {
   const [selectedBoundary, setSelectedBoundary] = useState('none'); // Default the dropdown to None
   const [toggles, setToggles] = useState({}); // Default the toggles to false (off)
   const [filters, setFilters] = useState([]);
-
-  // Set the popup to idle 
-  const [popup, setPopup] = useState({
-    trigger: false,
-    type: 'idle', // 'idle' | 'loading' | 'error' | 'success'
-    source: null, // 'boundary' | 'feature'
-    title: '',
-    message: '',
-  });
+  const [popupDismissed, setPopupDismissed] = useState(false);
 
   // Hook and deconstruct boundary return value
   const {
@@ -48,6 +40,15 @@ export default function App() {
     status: featureStatus,
     error: featureError,
   } = useMapFeature(selectedBoundary)
+
+  useEffect(() => {
+    if (
+      boundaryStatus === 'loading' ||
+      featureStatus === 'loading'
+    ) {
+      setPopupDismissed(false)
+    }
+  }, [boundaryStatus, featureStatus]); 
 
   // Turn boundary options map into an array
   const boundaryOptions = [
@@ -114,65 +115,66 @@ export default function App() {
   }
 
   // Handles the popups depending on the type of popup
-  useEffect(() => {
-    if (boundaryStatus === 'loading') { // Loading
-      setPopup({
+  const popup = useMemo(() => {
+    // If user closed it
+    if (popupDismissed){
+      return{
+        trigger: false,
+        type: 'idle',
+        source: null,
+        title: '',
+        message: ''
+      };
+    }
+
+    if (boundaryStatus === 'loading') {
+      return {
         trigger: true,
         type: 'loading',
         source: 'boundary',
         title: 'Loading',
         message: 'Fetching boundary data...'
-      });
+      };
     }
-    if (boundaryStatus === 'success') { // Success
-      setPopup({
-        trigger: false,
-        type: 'idle',
-        source: 'boundary',
-        title: '',
-        message: ''
-      });
-    }
-    if (boundaryStatus === 'error') { // Error
-      setPopup({
+
+    if (boundaryStatus === 'error') {
+      return {
         trigger: true,
         type: 'error',
         source: 'boundary',
         title: 'Error',
         message: boundaryError?.message
-      });
+      };
     }
-  }, [boundaryStatus, boundaryError]);
 
-  useEffect(() => {
-    if (featureStatus === 'loading') { // Loading
-      setPopup({
+    if (featureStatus === 'loading') {
+      return {
         trigger: true,
         type: 'loading',
         source: 'feature',
         title: 'Loading',
         message: 'Fetching feature data...'
-      });
+      };
     }
-    if (featureStatus === 'success') { // Success
-      setPopup({
-        trigger: false,
-        type: 'idle',
-        source: 'feature',
-        title: '',
-        message: ''
-      });
-    }
-    if (featureStatus === 'error') { // Error
-      setPopup({
+
+    if (featureStatus === 'error') {
+      return {
         trigger: true,
         type: 'error',
         source: 'feature',
         title: 'Error',
         message: featureError?.message
-      });
+      };
     }
-  }, [featureStatus, featureError]);
+
+    return {
+      trigger: false,
+      type: 'idle',
+      source: null,
+      title: '',
+      message: ''
+    };
+  }, [boundaryStatus, featureStatus, boundaryError, featureError, popupDismissed]);
 
   return (
     <div className="App">
@@ -183,10 +185,7 @@ export default function App() {
         message={popup.message}
 
         onClose={() => { // When the close button is pressed, change the popup state
-          setPopup(prev => ({
-            ...prev,
-            trigger: false
-          }));
+          setPopupDismissed(true);
 
           if (popup.source === 'boundary') {
             // Reset everything related to boundary
@@ -235,7 +234,7 @@ export default function App() {
           <Legend />
         )}
         {featureData && (
-          <FeatureCount 
+          <FeatureCount
             features={featureData}
           />
         )}

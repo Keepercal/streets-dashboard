@@ -53,6 +53,8 @@ export default function FeatureLayer({ features }) {
                 const match = feature._matchesFilters !== false;
 
                 const timestamp = feature.properties?.timestamp;
+                const YEAR = 365;
+                const THREE_YEARS = 3 * 365;
 
                 let color = "#D83F29"; // Default to red
 
@@ -60,9 +62,9 @@ export default function FeatureLayer({ features }) {
                     const editedDate = new Date(timestamp);
                     const daysSinceEdit = (Date.now() - editedDate.getTime()) / (1000 * 60 * 60 * 24);
 
-                    if (daysSinceEdit <= 365) {
+                    if (daysSinceEdit <= YEAR) { // Recent edit (< 1 year)
                         color = "#739D55";
-                    } else if (daysSinceEdit <= 1095.75) {
+                    } else if (daysSinceEdit <= THREE_YEARS) {
                         color = "#E0C055"; // Moderately old edit (~3 years)
                     }
                 }
@@ -110,7 +112,7 @@ export default function FeatureLayer({ features }) {
                 // Visually dim filtered-out features
                 if (!match) {
                     marker.setOpacity(0.15);
-                    marker.options.interactive = false; // Disable clicks/popup
+                    marker.off() // Disable clicks/popup
                     marker.setZIndexOffset(match ? 1000 : 0);
                 } else {
                     marker.setOpacity(1);
@@ -124,7 +126,56 @@ export default function FeatureLayer({ features }) {
             onEachFeature={(feature, layer) => {
 
                 const props = feature.properties || {};
-                const lastUser = props.user;
+                const lastUser = props.user; // Last user to edit feature
+                const geom = feature.geometry
+                let lon, lat;
+
+                if (!geom){ // Throw if the feature is missing geometry
+                    console.error("Missing geometry", feature);
+                    return;
+                }
+
+                if (geom.type === "Point"){ // If the feature is a Point (Node), update lon lat from array
+                    [lon, lat] = geom.coordinates;
+                }
+
+                else if (geom.type === "LineString"){ // If the feature is a LineString, calculate the centre
+                    // geometry is array of {lat, lon}
+                    const coords = geom.coordinates;
+
+                    const lons = coords.map(p => p[0]);
+                    const lats = coords.map(p => p[1]);
+
+                    lon = (Math.min(...lons) + Math.max(...lons)) / 2;
+                    lat = (Math.min(...lats) + Math.max(...lats)) / 2;
+
+                    console.log("way")
+                } 
+                
+                else if (geom.type === "Polygon"){ // If the feature is a Polygon, calculate the centre
+                    const ring = geom.coordinates[0]; // outer ring
+
+                    const lons = ring.map(p => p[0]);
+                    const lats = ring.map(p => p[1]);
+
+                    lon = (Math.min(...lons) + Math.max(...lons)) / 2;
+                    lat = (Math.min(...lats) + Math.max(...lats)) / 2;
+                } 
+                
+                else if (geom.type === "MultiPolygon"){ // If the feature is a MultiPolygon, calculate the centre
+                    const ring = geom.coordinates[0][0];
+
+                    const lons = ring.map(p => p[0]);
+                    const lats = ring.map(p => p[1]);
+
+                    lon = (Math.min(...lons) + Math.max(...lons)) / 2;
+                    lat = (Math.min(...lats) + Math.max(...lats)) / 2;
+                } 
+                
+                else{
+                    console.error("Unknown geometry format", geom.type);
+                    return;
+                }
 
                 // Split OSM feature ID (e.g. "node/12345")
                 const [featureType, osmID] = feature.id.split("/");
@@ -135,7 +186,7 @@ export default function FeatureLayer({ features }) {
                 // Header with link to OpenStreetMap feature page
                 const title = document.createElement("div");
 
-                title.innerHTML = `
+                title.innerHTML = ` 
                     <h2>
                         <a
                             href="https://www.openstreetmap.org/${featureType}/${osmID}"
@@ -144,13 +195,31 @@ export default function FeatureLayer({ features }) {
                         >
                             ${featureType}: ${osmID} 
                         </a>
-                    <h2>
+                    </h2>
                 `;
+
+                // Section for link to Google Maps
+                const googleLink = document.createElement("div");
+
+                googleLink.innerHTML = `
+                    <h3>
+                        <a
+                            href="https://www.google.com/maps?q=${lat},${lon}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            View in Google Maps
+                        </a>
+                    </h3>
+                `;
+
                 // Section header for tags/properties
                 const subtitle = document.createElement("div");
                 subtitle.innerHTML = `<h3>Tags</h3>`;
 
+                // Populate the popup
                 container.appendChild(title);
+                container.appendChild(googleLink)
                 container.appendChild(subtitle);
 
                 // Render all feature properties except excluded metadata fields
@@ -158,7 +227,7 @@ export default function FeatureLayer({ features }) {
                     .filter(([k]) => !exclude.has(k))
                     .forEach(([key, value]) => {
                         const row = document.createElement("div");
-                        row.innerHTML = `<strong>${key}</strong>: ${value}`;
+                        row.textContent = `${key}: ${value}`;
                         container.appendChild(row);
                     });
 
