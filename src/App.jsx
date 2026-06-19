@@ -91,7 +91,7 @@ export default function App() {
     clearFeatures();
     loadBoundary(value, boundaryType, boundaryName);
     console.log("calling loadBoundary", { key, value, boundaryType, boundaryName })
-    setSelectedBoundary(value);
+    setSelectedBoundary(boundaryName); //CHANGE TO VALUE IF BROKEN
     setToggles({});
   }
 

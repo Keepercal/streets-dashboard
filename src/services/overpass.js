@@ -91,13 +91,13 @@ export async function fetchMapFeature(boundaryKey, featureTag, featureValue, fea
                 [out:json][timeout:60];
 
                 relation
-                    ["name"~"${boundaryKey}", i]->.rels;
+                    ["name"="${boundaryKey}"]->.rels;
                 .rels map_to_area -> .area;
 
                 ${featureType}(area.area)["${featureTag}"="${featureValue}"];
 
                 out tags geom meta;
-                `;
+            `;
 
         const res = await callOverpass(query);
 

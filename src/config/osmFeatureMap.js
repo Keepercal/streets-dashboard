@@ -1,6 +1,5 @@
 export const FEATURE_MAP = {
     // Networks
-
     lcn: {
         tag: "network",
         label: "Local Cycling Network",
@@ -142,5 +141,33 @@ export const FEATURE_MAP = {
         label: "Wayfinding",
         group: "streetFurniture",
         type: "node"
+    },
+
+    // Public Services
+    hospital: {
+        tag: "amenity",
+        label: "Hospitals",
+        group: "publicServices",
+        type: "way"
+    },
+    police: {
+        tag: "amenity",
+        label: "Police",
+        group: "publicServices",
+        type: "way"
+    },
+    fire_station: {
+        tag: "amenity",
+        label: "Fire Stations",
+        group: "publicServices",
+        type: "way"
+    },
+
+    // POIs
+    monument: {
+        tag: "historic",
+        label: "Monuments",
+        group: "poi",
+        type: "way"
     },
 }

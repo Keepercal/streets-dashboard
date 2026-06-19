@@ -84,8 +84,14 @@ const Sidebar = ({ handleDropdown, handleToggle, boundaryData, selectedBoundary,
                             <h3>Public Transport</h3>
                             {renderGroup("publicTransport", featureOptions, toggles, handleToggle)}
 
+                            <h3>Public Services</h3>
+                            {renderGroup("publicServices", featureOptions, toggles, handleToggle)}
+
                             <h3>Street Furniture</h3>
                             {renderGroup("streetFurniture", featureOptions, toggles, handleToggle)}
+
+                            <h3>Points of Interest</h3>
+                            {renderGroup("poi", featureOptions, toggles, handleToggle)}
                         </>
                     )}
                 </div>
