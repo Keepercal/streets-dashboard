@@ -8,6 +8,7 @@ export default function BoundarLayer({ boundary }) {
                 color: "red",
                 weight: 2,
                 fillOpacity: 0.04,
+                interactive: false,
             }}
         />
     )

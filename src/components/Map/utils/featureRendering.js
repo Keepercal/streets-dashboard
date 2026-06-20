@@ -75,8 +75,8 @@ export function stylePolygon(feature) {
 
         if (daysSinceEdit <= YEAR) { // Recent edit (< 1 year)
             color = "#739D55";
-        } else if (daysSinceEdit <= THREE_YEARS) {
-            color = "#E0C055"; // Moderately old edit (~3 years)
+        } else if (daysSinceEdit <= THREE_YEARS) { // Moderately old edit (~3 years)
+            color = "#E0C055"; 
         }
     }
 

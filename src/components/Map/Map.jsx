@@ -11,8 +11,8 @@ import FitBounds from './controls/FitBounds'
 import ZoomTracker from "./controls/ZoomTracker"
 
 function Map({ boundary, features }) {
-  const position = [51.4538, -2.5918];
-  const [zoom, setZoom] = useState(13);
+  const position = [51.4538, -2.5918]; // Default position
+  const [zoom, setZoom] = useState(13); // Distance where points show
 
   return (
     <div className="map-container">

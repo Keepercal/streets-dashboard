@@ -1,25 +1,39 @@
-.popup{
-    position:fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.2);
+/* =========================
+    POPUP OVERLAY
+========================= */
+
+.popup {
+    position: fixed;
+    inset: 0; /* replaces top/left/width/height */
 
     display: flex;
     justify-content: center;
     align-items: center;
+
+    background-color: rgba(0, 0, 0, 0.2);
+
     z-index: 9999;
 }
 
-.popup-inner{
+/* =========================
+    POPUP CONTENT
+========================= */
+
+.popup-inner {
     position: relative;
-    padding: 32px;
+
     width: 100%;
     max-width: 640px;
-    background-color: white;
+
+    padding: 32px;
+
+    background-color: #fff;
     border-radius: 10px;
 }
+
+/* =========================
+    CLOSE BUTTON
+========================= */
 
 .popup-inner .close-btn {
     position: absolute;
@@ -27,19 +41,34 @@
     right: 16px;
 }
 
-.popup-title.error{
-    color: red;
+/* =========================    
+    STATES
+========================= */
+
+.popup-title.error {
+    color: #d93025; /* slightly more modern red */
 }
 
-.spinner{
+/* =========================
+    LOADING SPINNER
+========================= */
+
+.spinner {
     width: 30px;
     height: 30px;
-    border: 4px solid #ccc;
-    border-top: 4px solid #333;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+
     margin-top: 10px;
+
+    border: 4px solid #ccc;
+    border-top-color: #333;
+    border-radius: 50%;
+
+    animation: spin 1s linear infinite;
 }
+
+/* =========================
+    ANIMATION
+========================= */
 
 @keyframes spin {
     to {

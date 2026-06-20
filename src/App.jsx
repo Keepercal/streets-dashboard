@@ -64,14 +64,18 @@ export default function App() {
   // Turn feature options map into an array
   const featureOptions = [
     { value: 'none', label: "None" },
-    ...Object.entries(FEATURE_MAP).map(([key, feature]) => ({
-      value: key,
-      tag: feature.tag,
-      label: feature.label,
-      group: feature.group,
-      type: feature.type,
-    }))
-  ]
+    ...Object.entries(FEATURE_MAP).flatMap(([group, features]) =>
+      Object.entries(features).map(([key, feature]) => ({
+        value: key,
+        key,
+        group,
+        tag: feature.tag,
+        label: feature.label,
+        type: feature.type,
+        filter: feature.filter
+      }))
+    )
+  ];
 
   const filteredGeojson = useMemo(() => {
     if (!featureGeojson) return null;

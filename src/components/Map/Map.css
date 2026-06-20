@@ -1,18 +1,34 @@
-html, body, #root {
+/* =========================
+    APP LAYOUT BASE
+========================= */
+
+html,
+body,
+#root {
     height: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
 }
 
-.map-container{
-    height: 100vh;
-    width: 100%;
+/* =========================
+    MAP CONTAINER
+========================= */
+
+.map-container {
     position: relative;
+
+    width: 100%;
+    height: 100vh;
+
     z-index: 0;
 }
 
-.leaflet-popup-content{
-    font-family: 'Courier New', Courier, monospace;
+/* =========================
+    LEAFLET POPUP STYLING
+========================= */
+
+.leaflet-popup-content {
+    font-family: "Courier New", Courier, monospace;
     font-size: 13.5px;
 }
