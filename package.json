@@ -1,8 +1,8 @@
 {
-  "name": "healthy-streets-dashboard",
+  "name": "streets-dashboard",
   "private": true,
-  "version": "0.3.2-alpha",
-  "homepage": "https://keepercal.github.io/healthy-streets-dashboard/",
+  "version": "0.3.3-alpha",
+  "homepage": "https://keepercal.github.io/streets-dashboard/",
   "type": "module",
   "scripts": {
     "build": "vite build",

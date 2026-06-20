@@ -1,146 +1,192 @@
 export const FEATURE_MAP = {
-    // Networks
-
-    lcn: {
-        tag: "network",
-        label: "Local Cycling Network",
-        group: "networks",
-        type: "relation"
-    },
-
-    bus: {
-        tag: "route",
-        label: "Bus Network",
-        group: "networks",
-        type: "relation",
-    },
-
-    // WAYS
-    parking: {
-        tag: "amenity",
-        label: "Parking",
-        group: "ways",
-        type: "way"
-    },
-    cycleway: {
-        tag: "highway",
-        label: "Cycle Ways",
-        group: "ways",
-        type: "way"
-    },
-    shared_footway: {
-        tag: "highway",
-        label: "Shared-Use Footways",
-        group: "ways",
-        type: "way"
-    },
-    school_street: {
-        tag: "traffic_intervention",
-        label: "School Streets",
-        group: "ways",
-        type: "way"
-    },
-
-    // CROSSINGS
-    unmarked: {
-        tag: "crossing",
-        label: "Unmarked Crossings",
-        group: "crossings",
-        type: "node",
-
-        filter: {
-            rules: [
-                {
-                    key: "tactile_paving",
-                    label: "Tactile Paving"
-                },
-                {
-                    key: "kerb",
-                    label: "Kerb"
-                },
-            ]
+    networks: {
+        lcn: {
+            tag: "network",
+            label: "Local Cycling Network",
+            type: "relation",
+        },
+        bus: {
+            tag: "route",
+            label: "Bus Network",
+            type: "relation",
         }
     },
-    zebra: {
-        tag: "crossing_ref",
-        label: "Zebra",
-        group: "crossings",
-        type: "node"
-    },
-    tiger: {
-        tag: "crossing_ref",
-        label: "Parallel",
-        group: "crossings",
-        type: "node"
-    },
-    pelican: {
-        tag: "crossing_ref",
-        label: "Pelican",
-        group: "crossings",
-        type: "node"
-    },
-    puffin: {
-        tag: "crossing_ref",
-        label: "Puffin",
-        group: "crossings",
-        type: "node"
-    },
-    toucan: {
-        tag: "crossing_ref",
-        label: "Toucan",
-        group: "crossings",
-        type: "node"
-    },
-    pegasus: {
-        tag: "crossing_ref",
-        label: "Pegasus (Equestrian)",
-        group: "crossings",
-        type: "node"
+
+    ways: {
+        parking: {
+            tag: "amenity",
+            label: "Parking",
+            type: "way",
+        },
+        cycleway: {
+            tag: "highway",
+            label: "Cycle Ways",
+            type: "way",
+        },
+        shared_footway: {
+            tag: "highway",
+            label: "Shared-Use Footways",
+            type: "way",
+        },
+        school_street: {
+            tag: "traffic_intervention",
+            label: "School Streets",
+            type: "way",
+        }
     },
 
-    // PUBLIC TRANSPORT
-    station: {
-        tag: "railway",
-        label: "Railway Stations",
-        group: "publicTransport",
-        type: "node"
-    },
-    bus_stop: {
-        tag: "highway",
-        label: "Bus Stops",
-        group: "publicTransport",
-        type: "node"
+    crossings: {
+        unmarked: {
+            tag: "crossing",
+            label: "Unmarked Crossings",
+            type: "node",
+            filter: {
+                rules: [
+                    { key: "tactile_paving", label: "Tactile Paving" },
+                    { key: "kerb", label: "Kerb" }
+                ]
+            }
+        },
+        zebra: {
+            tag: "crossing_ref",
+            label: "Zebra",
+            type: "node",
+        },
+        tiger: {
+            tag: "crossing_ref",
+            label: "Parallel",
+            type: "node",
+        },
+        pelican: {
+            tag: "crossing_ref",
+            label: "Pelican",
+            type: "node",
+        },
+        puffin: {
+            tag: "crossing_ref",
+            label: "Puffin",
+            type: "node",
+        },
+        toucan: {
+            tag: "crossing_ref",
+            label: "Toucan",
+            type: "node",
+        },
+        pegasus: {
+            tag: "crossing_ref",
+            label: "Pegasus (Equestrian)",
+            type: "node",
+        }
     },
 
-    // STREET FURNITURE
-    toilets: {
-        tag: "amenity",
-        label: "Toilets",
-        group: "streetFurniture",
-        type: "node"
+    publicTransport: {
+        station: {
+            tag: "railway",
+            label: "Railway Stations",
+            type: "node",
+        },
+        bus_stop: {
+            tag: "highway",
+            label: "Bus Stops",
+            type: "node",
+        }
     },
-    bicycle_parking: {
-        tag: "amenity",
-        label: "Bicycle Parking",
-        group: "streetFurniture",
-        type: "node"
+
+    streetFurniture: {
+        toilets: {
+            tag: "amenity",
+            label: "Toilets",
+            type: "node",
+        },
+        bicycle_parking: {
+            tag: "amenity",
+            label: "Bicycle Parking",
+            type: "node",
+        },
+        bench: {
+            tag: "amenity",
+            label: "Benches",
+            type: "node",
+        },
+        artwork: {
+            tag: "tourism",
+            label: "Artwork",
+            type: "node",
+        },
+        wayfinding: {
+            tag: "tourism",
+            label: "Wayfinding",
+            type: "node",
+        }
     },
-    bench: {
-        tag: "amenity",
-        label: "Benches",
-        group: "streetFurniture",
-        type: "node"
+
+    publicServices: {
+        hospital: {
+            tag: "amenity",
+            label: "Hospitals",
+            type: "way",
+        },
+        police: {
+            tag: "amenity",
+            label: "Police",
+            type: "way",
+        },
+        fire_station: {
+            tag: "amenity",
+            label: "Fire Stations",
+            type: "way",
+        }
     },
-    artwork: {
-        tag: "tourism",
-        label: "Artwork",
-        group: "streetFurniture",
-        type: "node"
+
+    poi: {
+        monument: {
+            tag: "historic",
+            label: "Monuments",
+            type: "way",
+        },
+        place_of_worship: {
+            tag: "amenity",
+            label: "Places of Worship",
+            type: "way",
+        }
     },
-    wayfinding: {
-        tag: "tourism",
-        label: "Wayfinding",
-        group: "streetFurniture",
-        type: "node"
+
+    buildings: {
+        pub: {
+            tag: "amenity",
+            label: "Pub",
+            type: "way",
+        }
     },
-}
+
+    recreation: {
+        pitch: {
+            tag: "leisure",
+            label: "Sports Pitch",
+            type: "way",
+        },
+        playground: {
+            tag: "leisure",
+            label: "Playground",
+            type: "way"
+        },
+        park: {
+            tag: "leisure",
+            label: "Park",
+            type: "way",
+        }
+    },
+
+    landuse: {
+        retail: {
+            tag: "landuse",
+            label: "Retail",
+            type: "way"
+        },
+        industrial: {
+            tag: "landuse",
+            label: "Industrial",
+            type: "way"
+        },
+    }
+};

@@ -79,7 +79,6 @@ export function useMapFeature() {
         console.log("ENTER clearFeatures");
         setFeatureData(null);
         setFeatureGeojson(null);
-        setStatus("idle");
         setErrorMessage(null);
 
         console.log({ featureData, featureGeojson, status });
@@ -93,7 +92,6 @@ export function useMapFeature() {
 
         // If null, hide the popup
         if (featureValue === null) {
-            console.log("null");
             setStatus("idle");
             return;
         }
@@ -118,10 +116,10 @@ export function useMapFeature() {
             return;
         }
 
-        // Only clear UI if request being made
-        clearFeatures();
-
-        // Show the loading popup
+        // Flush states and show loading popup
+        setFeatureData(null);
+        setFeatureGeojson(null);
+        setErrorMessage(null);
         setStatus("loading");
 
         try {
@@ -158,8 +156,8 @@ export function useMapFeature() {
             if (requestID !== currentRequest.current) return;
             setFeatureData(null);
             setFeatureGeojson(null);
-            setStatus("error");
             setErrorMessage(err);
+            setStatus("error");
         }
     };
 

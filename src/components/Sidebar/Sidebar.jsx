@@ -1,11 +1,15 @@
 import './Sidebar.css';
+import { useState, useEffect, useMemo } from "react";
 
-const DropdownItem = ({value, options, onChange}) => {
+const DropdownItem = ({ value, options, onChange }) => {
     return (
         <div className="dropdown-item">
             <label>
-                <select className="dropdown-btn" value={value} onChange={(e) => onChange(e.target.value)}>
-                    {options.map((opt) => (
+                <select
+                    className="dropdown-btn"
+                    value={value} onChange={(e) => onChange(e.target.value)}
+                >
+                    {(options || []).map((opt) => (
                         <option key={opt.value} value={opt.value}>
                             {opt.label}
                         </option>
@@ -13,14 +17,14 @@ const DropdownItem = ({value, options, onChange}) => {
                 </select>
             </label>
         </div>
-    )
-}   
+    );
+};
 
-const ToggleItem = ({label, checked, onChange}) => {
-    return(
+const ToggleItem = ({ label, checked, onChange }) => {
+    return (
         <div className="toggle-item">
             <label>
-                <input 
+                <input
                     type="checkbox"
                     checked={!!checked}
                     onChange={onChange}
@@ -28,66 +32,128 @@ const ToggleItem = ({label, checked, onChange}) => {
                 {label}
             </label>
         </div>
-    )
+    );
 };
 
-const renderGroup = (groupName, featureOptions, toggles, handleToggle) => {
-    return (featureOptions ? Object.entries(featureOptions) : [])
-        .filter(([_, featureOptions]) => featureOptions.group === groupName)
-        .map(([key, featureOptions]) => (
-            <ToggleItem
-                key={key}
-                tag={featureOptions.tag}
-                label={featureOptions.label}
-                type={featureOptions.type}
-                checked={toggles[key]}
-                onChange={() => handleToggle(key, featureOptions.tag, featureOptions.value, featureOptions.type)}
-            />
-    ))
-}
+const Sidebar = ({
+    handleDropdown,
+    handleToggle, boundaryData,
+    selectedBoundary, toggles,
+    boundaryOptions,
+    featureOptions
+}) => {
 
-const Sidebar = ({ handleDropdown, handleToggle, boundaryData, selectedBoundary, toggles, boundaryOptions, featureOptions }) => {
+    const [openGroups, setOpenGroups] = useState({});
+
+    const GROUP_LABELS = { // WHEN ADDING NEW GROUP TO FEATURE MAP, ADD CUSTOM HEADER HERE!!!
+        networks: "Networks",
+        ways: "Ways",
+        crossings: "Crossings",
+        publicTransport: "Public Transport",
+        publicServices: "Public Services",
+        streetFurniture: "Street Furniture",
+        poi: "Points of Interest",
+        buildings: "Buildings",
+        recreation: "Recreation",
+        landuse: "Land Use",
+    };
+
+    const groupedFeatures = useMemo(() => {
+        return Object.entries(featureOptions || {}).reduce(
+            (acc, [key, feature]) => {
+                const group = feature.group;
+
+                if (!group){
+                    console.warn("Feature missing group:", key, feature);
+                    return acc;
+                }
+
+                if (!acc[group]) acc[group] = [];
+
+                acc[group].push({ key, ...feature });
+
+                return acc;
+            },
+            {}
+        );
+    }, [featureOptions]);
+
+    useEffect(() => {
+        if (!featureOptions) return;
+
+        setOpenGroups(prev => {
+            const groups = Object.values(featureOptions).reduce((acc, feature) => {
+
+                if(!feature?.group) return acc;
+
+                acc[feature.group] = false; // all closed initially
+                return acc;
+            }, {});
+
+            return { ...groups, ...prev };
+        });
+    }, [featureOptions]);
+
+    const toggleGroup = (group) => {
+        setOpenGroups(prev => ({
+            ...prev,
+            [group]: !prev[group],
+        }))
+    }
+
     return (
-        <div className="sidebar"> 
+        <div className="sidebar">
             <div className="sidebar-header">
-                <h1 className="sidebar-title">{ window.APP_NAME }</h1>
-                <p className="version-tag">{ window.APP_VERSION }</p>
+                <h1 className="sidebar-title">{window.APP_NAME}</h1>
+                <p className="version-tag">{window.APP_VERSION}</p>
 
                 <h2>Select Boundary</h2>
 
                 {/* Create a dropdown feature to select a Boundary */}
                 <DropdownItem
                     options={boundaryOptions}
-                    key={selectedBoundary}
-                    label={boundaryOptions.label}
                     value={selectedBoundary}
-                    boundary_type={boundaryOptions.boundary_type}
                     onChange={(value) => {
                         const selected = boundaryOptions.find(opt => opt.value === value);
-                        handleDropdown(value, value, selected?.boundaryType, selected?.boundaryName)
+                        handleDropdown(value, value, selected?.boundaryType, selected?.boundaryName);
                     }}
                 />
-                
+
                 {/* Show the list of options if a Boundary is returned and the Overpass API returned the Ward boundary */}
                 <div className="sidebar-content">
-                    {boundaryData && (
-                        <>
-                            <h3>Networks</h3>
-                            {renderGroup("networks", featureOptions, toggles, handleToggle)}
+                    {boundaryData &&
+                        Object.entries(groupedFeatures).map(([group, features]) => (
+                            <div key={group}>
+                                <h3
+                                    className="group-header"
+                                    onClick={() => toggleGroup(group)}
+                                >
+                                    {GROUP_LABELS[group] || group}{" "}
+                                    <span
+                                        className={`arrow ${openGroups[group] ? "rotated" : ""}`}
+                                    >
+                                        ▸
+                                    </span>
+                                </h3>
 
-                            <h3>Ways</h3>
-                            {renderGroup("ways", featureOptions, toggles, handleToggle)}
-
-                            <h3>Crossings</h3>
-                            {renderGroup("crossings", featureOptions, toggles, handleToggle)}
-
-                            <h3>Public Transport</h3>
-                            {renderGroup("publicTransport", featureOptions, toggles, handleToggle)}
-
-                            <h3>Street Furniture</h3>
-                            {renderGroup("streetFurniture", featureOptions, toggles, handleToggle)}
-                        </>
-                    )}
+                                <div
+                                    className={`group-content ${openGroups[group] ? "open" : ""}`}
+                                >
+                                    {features.map(({ key, label, tag, type }) => (
+                                        <ToggleItem
+                                            key={key}
+                                            label={label}
+                                            checked={toggles[key]}
+                                            onChange={() =>
+                                                handleToggle(key, tag, key, type)
+                                            }
+                                        />
+                                    ))}
+                                </div>
+                                
+                            </div>
+                        ))
+                    }
                 </div>
             </div>
         </div>
