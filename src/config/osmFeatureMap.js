@@ -157,5 +157,36 @@ export const FEATURE_MAP = {
             label: "Pub",
             type: "way",
         }
+    },
+
+    recreation: {
+        pitch: {
+            tag: "leisure",
+            label: "Sports Pitch",
+            type: "way",
+        },
+        playground: {
+            tag: "leisure",
+            label: "Playground",
+            type: "way"
+        },
+        park: {
+            tag: "leisure",
+            label: "Park",
+            type: "way",
+        }
+    },
+
+    landuse: {
+        retail: {
+            tag: "landuse",
+            label: "Retail",
+            type: "way"
+        },
+        industrial: {
+            tag: "landuse",
+            label: "Industrial",
+            type: "way"
+        },
     }
 };

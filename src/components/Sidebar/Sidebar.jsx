@@ -54,6 +54,8 @@ const Sidebar = ({
         streetFurniture: "Street Furniture",
         poi: "Points of Interest",
         buildings: "Buildings",
+        recreation: "Recreation",
+        landuse: "Land Use",
     };
 
     const groupedFeatures = useMemo(() => {
