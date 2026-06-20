@@ -170,4 +170,11 @@ export const FEATURE_MAP = {
         group: "poi",
         type: "way"
     },
+
+    place_of_worship: {
+        tag: "amenity",
+        label: "Places of Worship",
+        group: "poi",
+        type: "way"
+    },
 }
