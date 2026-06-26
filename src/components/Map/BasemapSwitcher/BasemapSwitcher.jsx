@@ -1,7 +1,7 @@
-import "../Map.css";
+import "./BasemapSwitcher.css";
 
 /**
- * BasemapControl
+ * BasemapSwitcher
  * ---------------
  * A Google Maps-style basemap switcher.
  * Displays the active basemap as a thumbnail and allows switching layers.
@@ -11,21 +11,21 @@ const basemaps = [
     {
         id: "map",
         label: "Map",
-        preview: "/images/map.jpeg"
+        preview: "/streets-dashboard/images/map.jpeg"
     },
     {
         id: "openstreetmap",
         label: "OSM",
-        preview: "/images/osm.jpeg"
+        preview: "/streets-dashboard/images/osm.jpeg"
     },
     {
         id: "satellite",
         label: "Satellite",
-        preview: "/images/satellite.jpeg"
+        preview: "/streets-dashboard/images/satellite.jpeg"
     }
 ];
 
-function BasemapControl({ basemap, setBasemap }) {
+function BasemapSwitcher({ basemap, setBasemap }) {
     const activeLayer = basemaps.find(b => b.id === basemap);
 
     return (
@@ -63,4 +63,4 @@ function BasemapControl({ basemap, setBasemap }) {
     );
 }
 
-export default BasemapControl;
+export default BasemapSwitcher;

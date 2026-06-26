@@ -1,4 +1,4 @@
-import './popup.css';
+import './StatusPopup.css';
 import { BarLoader } from "react-spinners";
 
 /**
@@ -9,7 +9,7 @@ import { BarLoader } from "react-spinners";
  * - alerts
  * - custom content injection (children)
  */
-function Popup({
+function StatusPopup({
     trigger,
     type,
     title,
@@ -60,4 +60,4 @@ function Popup({
     );
 }
 
-export default Popup;
+export default StatusPopup;

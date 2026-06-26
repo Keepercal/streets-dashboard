@@ -8,7 +8,7 @@ import BoundaryLayer from "./layers/BoundaryLayer";
 import FeatureLayer from "./layers/FeatureLayer";
 import FitBounds from "./controls/FitBounds";
 import ZoomTracker from "./controls/ZoomTracker";
-import BasemapControl from "./controls/BasemapControl";
+import BasemapSwitcher from "./BasemapSwitcher/BasemapSwitcher";
 
 /**
  * Map
@@ -51,7 +51,7 @@ function Map({ boundary, features }) {
         <div className="map-container">
 
             {/* Basemap switcher UI */}
-            <BasemapControl
+            <BasemapSwitcher
                 basemap={basemap}
                 setBasemap={setBasemap}
             />

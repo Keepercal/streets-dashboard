@@ -4,7 +4,7 @@ import { GeoJSON } from 'react-leaflet'
 import L from "leaflet";
 
 import bindFeaturePopup from '../utils/bindFeaturePopup'
-import { stylePolygon, createFeatureMarker } from '../utils/featureRendering'
+import { createFeatureMarker, stylePolygon } from '../utils/featureRendering'
 
 // Fields not displayed in the popup
 const EXCLUDE_KEYS = new Set([
@@ -61,11 +61,15 @@ export default function FeatureLayer({ features, zoom }) {
         bindFeaturePopup(feature, layer, EXCLUDE_KEYS);
     };
 
+    const filterKey = JSON.stringify(
+        features.features.map(f => f._matchesFilters)
+    );
+
     return (
         <>
             <GeoJSON
                 data={features}
-                key={JSON.stringify(features?.features?.map(f => f._matchesFilters))} // Forces re-render when filter match state changes on features
+                key={`features-${filterKey}`} // Forces re-render when filter match state changes on features
                 
                 style={(feature) => stylePolygon(feature)} // Styles polygons based on the time ago they were edited
                 
@@ -76,6 +80,8 @@ export default function FeatureLayer({ features, zoom }) {
             {zoom < 15 && (
                 <GeoJSON // Show marker on polygon if user zooms out
                     data={overviewFeatures}
+                    key={`overview-${filterKey}`}
+
                     pointToLayer={createFeatureMarker} // Converts each GeoJSON point into a Leaflet marker
                     onEachFeature={handleEachFeature}
                 />

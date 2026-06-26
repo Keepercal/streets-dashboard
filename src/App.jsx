@@ -8,19 +8,23 @@
 import { createRoot } from 'react-dom/client';
 import { useState, useEffect, useMemo } from 'react';
 
+/* High level components */
 import Map from './components/Map/Map';
 import Sidebar from './components/Sidebar/Sidebar';
-import Popup from './components/Popup/Popup';
-import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
-import Legend from './components/Legend/Legend.jsx';
-import FeatureCount from './components/FeatureCount/FeatureCount.jsx';
+import Popup from './components/StatusPopup/StatusPopup.jsx';
 
+/* Map related components */
+import FilterPanel from './components/Map/FilterPanel/FilterPanel.jsx';
+import Legend from './components/Map/Legend/Legend.jsx';
+import FeatureCount from './components/Map/FeatureCounter/FeatureCounter.jsx';
+
+/* Hooks */
 import { useBoundary, useMapFeature } from './hooks/useMapData.js';
-import { evaluateFeature } from './utils/evaluteFeatures.js';
+import { evaluateFeature } from './utils/evaluateFeatures.js';
 
+/* Maps */
 import { BOUNDARY_MAP } from './config/osmBoundaryMap.js';
 import { FEATURE_MAP } from './config/osmFeatureMap.js';
-
 
 export default function App() {
   const [selectedBoundary, setSelectedBoundary] = useState('none');
@@ -46,7 +50,7 @@ export default function App() {
     error: featureError,
   } = useMapFeature(selectedBoundary);
 
-  /**
+  /*
    * Reset popup dismissal when loading starts
    */
   useEffect(() => {
@@ -81,7 +85,7 @@ export default function App() {
     ),
   ]), []);
 
-  /**
+  /*
    * Handle feature filtering
    */
   const filteredGeojson = useMemo(() => {
@@ -98,7 +102,7 @@ export default function App() {
     };
   }, [featureGeojson, filters]);
 
-  /**
+  /*
    * Handle boundary selection
    */
   const handleDropdown = (_key, value, boundaryType, boundaryName) => {

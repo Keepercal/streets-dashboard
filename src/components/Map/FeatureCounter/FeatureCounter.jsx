@@ -1,4 +1,4 @@
-import "./FeatureCount.css";
+import "./FeatureCounter.css";
 
 /**
  * FeatureCount
@@ -11,7 +11,7 @@ import "./FeatureCount.css";
  * This component expects a GeoJSON-like structure where:
  * features.features.elements contains an array of elements with a `type` field.
  */
-const FeatureCount = ({ features }) => {
+const FeatureCounter = ({ features }) => {
     // Counters for OSM-style feature types
     let nodeCount = 0;
     let wayCount = 0;
@@ -47,4 +47,4 @@ const FeatureCount = ({ features }) => {
     );
 };
 
-export default FeatureCount;
+export default FeatureCounter;
