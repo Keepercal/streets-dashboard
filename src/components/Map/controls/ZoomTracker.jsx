@@ -1,10 +1,17 @@
-import { useMapEvent } from 'react-leaflet'
+import { useMapEvent } from "react-leaflet";
 
-export default function ZoomTracker({ onZoom }){
-    useMapEvent({
-        zoomend(e){
-            onZoom(e.target.getZoom());
-        }
+/**
+ * ZoomTracker
+ * -----------
+ * Listens to Leaflet zoom events and reports zoom level
+ * back to parent state via `onZoom`.
+ */
+export default function ZoomTracker({ onZoom }) {
+    useMapEvent("zoomend", (e) => {
+        if (!onZoom) return;
+
+        onZoom(e.target.getZoom());
     });
+
     return null;
 }

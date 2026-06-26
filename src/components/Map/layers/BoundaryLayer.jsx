@@ -1,15 +1,23 @@
-import { GeoJSON } from 'react-leaflet'
+import { GeoJSON } from "react-leaflet";
 
-export default function BoundarLayer({ boundary }) {
+/**
+ * BoundaryLayer
+ * --------------
+ * Renders a GeoJSON boundary overlay on the map.
+ * Styled as a subtle red outline with low fill opacity.
+ */
+export default function BoundaryLayer({ boundary }) {
+    const style = {
+        color: "red",
+        weight: 2,
+        fillOpacity: 0.04,
+        interactive: false
+    };
+
     return (
         <GeoJSON
             data={boundary}
-            style={{
-                color: "red",
-                weight: 2,
-                fillOpacity: 0.04,
-                interactive: false,
-            }}
+            style={style}
         />
-    )
+    );
 }

@@ -1,104 +1,107 @@
-import { timeAgo } from '../../../utils/timeAgo'
+import { timeAgo } from "../../../utils/timeAgo";
 
-export default function bindFeaturePopup(feature, layer, exclude){
+/**
+ * bindFeaturePopup
+ * -----------------
+ * Creates and attaches a Leaflet popup for an OSM feature.
+ * Handles:
+ * - geometry centroid calculation
+ * - OSM + Google Maps links
+ * - property filtering
+ * - metadata footer
+ */
+
+export default function bindFeaturePopup(feature, layer, exclude) {
     const props = feature.properties || {};
-    const lastUser = props.user; // Last user to edit feature
-    const geom = feature.geometry
-    let lon, lat;
+    const geom = feature.geometry;
 
-    if (!geom) { // Throw if the feature is missing geometry
+    if (!geom) {
         console.error("Missing geometry", feature);
         return;
     }
 
-    if (geom.type === "Point") { // If the feature is a Point (Node), update lon lat from array
-        [lon, lat] = geom.coordinates;
+    let lon, lat;
+
+    // -------------------------
+    // Resolve feature center
+    // -------------------------
+    switch (geom.type) {
+        case "Point":
+            [lon, lat] = geom.coordinates;
+            break;
+
+        case "LineString": {
+            const coords = geom.coordinates;
+            const lons = coords.map(p => p[0]);
+            const lats = coords.map(p => p[1]);
+
+            lon = (Math.min(...lons) + Math.max(...lons)) / 2;
+            lat = (Math.min(...lats) + Math.max(...lats)) / 2;
+            break;
+        }
+
+        case "Polygon": {
+            const ring = geom.coordinates[0];
+            const lons = ring.map(p => p[0]);
+            const lats = ring.map(p => p[1]);
+
+            lon = (Math.min(...lons) + Math.max(...lons)) / 2;
+            lat = (Math.min(...lats) + Math.max(...lats)) / 2;
+            break;
+        }
+
+        case "MultiPolygon": {
+            const ring = geom.coordinates[0][0];
+            const lons = ring.map(p => p[0]);
+            const lats = ring.map(p => p[1]);
+
+            lon = (Math.min(...lons) + Math.max(...lats)) / 2;
+            lat = (Math.min(...lats) + Math.max(...lats)) / 2;
+            break;
+        }
+
+        default:
+            console.error("Unknown geometry format", geom.type);
+            return;
     }
 
-    else if (geom.type === "LineString") { // If the feature is a LineString, calculate the centre
-        // geometry is array of {lat, lon}
-        const coords = geom.coordinates;
+    // -------------------------
+    // OSM ID parsing
+    // -------------------------
+    const [featureType, osmID] = (feature.id || "").split("/");
 
-        const lons = coords.map(p => p[0]);
-        const lats = coords.map(p => p[1]);
-
-        lon = (Math.min(...lons) + Math.max(...lons)) / 2;
-        lat = (Math.min(...lats) + Math.max(...lats)) / 2;
-
-        console.log("way")
-    }
-
-    else if (geom.type === "Polygon") { // If the feature is a Polygon, calculate the centre
-        const ring = geom.coordinates[0]; // outer ring
-
-        const lons = ring.map(p => p[0]);
-        const lats = ring.map(p => p[1]);
-
-        lon = (Math.min(...lons) + Math.max(...lons)) / 2;
-        lat = (Math.min(...lats) + Math.max(...lats)) / 2;
-    }
-
-    else if (geom.type === "MultiPolygon") { // If the feature is a MultiPolygon, calculate the centre
-        const ring = geom.coordinates[0][0];
-
-        const lons = ring.map(p => p[0]);
-        const lats = ring.map(p => p[1]);
-
-        lon = (Math.min(...lons) + Math.max(...lons)) / 2;
-        lat = (Math.min(...lats) + Math.max(...lats)) / 2;
-    }
-
-    else {
-        console.error("Unknown geometry format", geom.type);
-        return;
-    }
-
-    // Split OSM feature ID (e.g. "node/12345")
-    const [featureType, osmID] = feature.id.split("/");
-
-    // Container for popup DOM content
+    // -------------------------
+    // Popup container
+    // -------------------------
     const container = document.createElement("div");
 
-    // Header with link to OpenStreetMap feature page
-    const title = document.createElement("div");
+    container.innerHTML = `
+        <h2>
+            <a
+                href="https://www.openstreetmap.org/${featureType}/${osmID}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                ${featureType}: ${osmID}
+            </a>
+        </h2>
 
-    title.innerHTML = ` 
-                        <h2>
-                            <a
-                                href="https://www.openstreetmap.org/${featureType}/${osmID}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                ${featureType}: ${osmID} 
-                            </a>
-                        </h2>
-                    `;
+        <h3>
+            <a
+                href="https://www.google.com/maps?q=${lat},${lon}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                View in Google Maps
+            </a>
+        </h3>
 
-    // Section for link to Google Maps
-    const googleLink = document.createElement("div");
+        <h3>Tags</h3>
+    `;
 
-    googleLink.innerHTML = `
-                        <h3>
-                            <a
-                                href="https://www.google.com/maps?q=${lat},${lon}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                View in Google Maps
-                            </a>
-                        </h3>
-                    `;
-
-    // Section header for tags/properties
-    const subtitle = document.createElement("div");
-    subtitle.innerHTML = `<h3>Tags</h3>`;
-
-    // Populate the popup
-    container.appendChild(title);
-    container.appendChild(googleLink)
-    container.appendChild(subtitle);
-
-    // Render all feature properties except excluded metadata fields
+    // -------------------------
+    // Feature properties
+    // -------------------------
     Object.entries(props)
         .filter(([k]) => !exclude.has(k))
         .forEach(([key, value]) => {
@@ -107,11 +110,11 @@ export default function bindFeaturePopup(feature, layer, exclude){
             container.appendChild(row);
         });
 
-    // Add metadata footer if feature has edit timestamp
+    // -------------------------
+    // Metadata footer
+    // -------------------------
     if (props.timestamp) {
-        const formattedDate =
-            new Date(props.timestamp).toLocaleDateString("en-GB");
-
+        const formattedDate = new Date(props.timestamp).toLocaleDateString("en-GB");
         const timeAgoText = timeAgo(props.timestamp);
 
         const editedRow = document.createElement("div");
@@ -120,13 +123,13 @@ export default function bindFeaturePopup(feature, layer, exclude){
         editedRow.style.opacity = "0.75";
 
         editedRow.innerHTML = `
-                            <strong>Last edited:</strong> ${formattedDate} (${timeAgoText})
-                            <strong>Last edited by:</strong> ${lastUser || "Unknown"}
-                        `;
+            <strong>Last edited:</strong> ${formattedDate} (${timeAgoText})
+            <br />
+            <strong>Last edited by:</strong> ${props.user || "Unknown"}
+        `;
 
         container.appendChild(editedRow);
     }
 
-    // Attach popup DOM to Leaflet layer
     layer.bindPopup(container);
 }

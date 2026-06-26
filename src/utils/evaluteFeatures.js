@@ -1,15 +1,25 @@
+/**
+ * evaluateFeature
+ * ---------------
+ * Evaluates whether a GeoJSON feature matches all provided filter rules.
+ *
+ * Each filter is applied using AND logic.
+ * Returns true only if all filters pass.
+ */
 export function evaluateFeature(feature, filters) {
-    const tags = feature.properties || {};
+    const tags = feature?.properties ?? {};
 
-    return filters.every(filter => {
+    return filters.every((filter) => {
         const value = tags[filter.key];
+
+        const normalisedValue = String(value ?? "");
 
         switch (filter.operator) {
             case "equals":
-                return String(value ?? "") === filter.value;
+                return normalisedValue === filter.value;
 
             case "not_equals":
-                return String(value ?? "") !== filter.value
+                return normalisedValue !== filter.value;
 
             case "exists":
                 return value !== undefined;
@@ -18,7 +28,8 @@ export function evaluateFeature(feature, filters) {
                 return value === undefined;
 
             default:
+                // Unknown operators are treated as non-blocking
                 return true;
         }
-    })
+    });
 }

@@ -1,32 +1,60 @@
 import './popup.css';
-import {BarLoader} from "react-spinners";
+import { BarLoader } from "react-spinners";
 
-function Popup({ trigger, type, title, message, onClose, chilren}) {
+/**
+ * Popup component
+ * ----------------
+ * Generic modal popup used for:
+ * - loading states
+ * - alerts
+ * - custom content injection (children)
+ */
+function Popup({
+    trigger,
+    type,
+    title,
+    message,
+    onClose,
+    children
+}) {
     if (!trigger) return null;
 
     return (
         <div className="popup">
             <div className="popup-inner">
 
-                <button className="close-btn" onClick={onClose}>
+                {/* Close button */}
+                <button
+                    className="close-btn"
+                    onClick={onClose}
+                >
                     Close
                 </button>
 
-                {/* Header */}
-                {title && <h3 className={`popup-title ${type}`}>{title}</h3>}
+                {/* Title */}
+                {title && (
+                    <h3 className={`popup-title ${type}`}>
+                        {title}
+                    </h3>
+                )}
 
                 {/* Message */}
-                {message &&(
+                {message && (
                     <p className={`popup-message ${type}`}>
                         {message}
                     </p>
                 )}
 
-                {type === 'loading' &&(
-                    <BarLoader/>
+                {/* Loading state */}
+                {type === "loading" && (
+                    <div className="popup-loader">
+                        <BarLoader />
+                    </div>
                 )}
 
-                {/* Optional custom content */}
+                {/* Custom content */}
+                {children}
+
             </div>
         </div>
     );

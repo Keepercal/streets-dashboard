@@ -1,24 +1,28 @@
-import '../Map.css'
+import "../Map.css";
+
+/**
+ * BasemapControl
+ * ---------------
+ * A Google Maps-style basemap switcher.
+ * Displays the active basemap as a thumbnail and allows switching layers.
+ */
 
 const basemaps = [
     {
         id: "map",
         label: "Map",
-        preview: "public/images/map.jpeg"
+        preview: "/images/map.jpeg"
     },
-
     {
         id: "openstreetmap",
         label: "OSM",
-        preview: "public/images/osm.jpeg"
+        preview: "/images/osm.jpeg"
     },
-
     {
-        id:
-            "satellite",
+        id: "satellite",
         label: "Satellite",
-        preview: "public/images/satellite.jpeg"
-    },
+        preview: "/images/satellite.jpeg"
+    }
 ];
 
 function BasemapControl({ basemap, setBasemap }) {
@@ -26,11 +30,15 @@ function BasemapControl({ basemap, setBasemap }) {
 
     return (
         <div className="basemap-control">
+
+            {/* Active layer preview */}
             <div className="layers-button">
                 <div
                     className="layers-thumbnail"
                     style={{
-                        backgroundImage: `url(${activeLayer?.preview})`
+                        backgroundImage: activeLayer
+                            ? `url(${activeLayer.preview})`
+                            : "none"
                     }}
                 />
                 <div className="layers-label">
@@ -38,6 +46,7 @@ function BasemapControl({ basemap, setBasemap }) {
                 </div>
             </div>
 
+            {/* Layer selector */}
             <div className="layers-menu">
                 {basemaps.map((layer) => (
                     <button
@@ -51,9 +60,7 @@ function BasemapControl({ basemap, setBasemap }) {
                 ))}
             </div>
         </div>
-    )
-
-};
+    );
+}
 
 export default BasemapControl;
-
