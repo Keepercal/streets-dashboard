@@ -30,45 +30,58 @@ const BRISTOL_WARDS = [
     "Westbury-on-Trym",
     "Whitchurch Park",
     "Windmill Hill"
-]
+];
 
-const toSnakeCase = (str) =>
-  str
-    .toLowerCase()
-    .replace(/[.-]/g, " ")
-    .replace(/\s+/g, "_");
+/**
+ * Converts a name into a URL-safe key
+ */
+const toSlug = (str) =>
+    str
+        .toLowerCase()
+        .replace(/[^\w\s]/g, "") // remove punctuation
+        .replace(/\s+/g, "_");
 
+/**
+ * Convert wards into config entries
+ */
 const wardEntries = Object.fromEntries(
     BRISTOL_WARDS.map((name) => [
-        toSnakeCase(name),
+        toSlug(name),
         {
-            boundary_type: "political",
+            boundaryType: "political",
             name: `${name} Ward`,
             label: name,
         },
     ])
 );
 
+/**
+ * Master boundary registry
+ */
 export const BOUNDARY_MAP = {
+    // -----------------------
     // ADMIN LEVEL 6
+    // -----------------------
     bristol: {
-        boundary_type: 'administrative',
-        name: 'City of Bristol',
-        label: 'Bristol',
+        boundaryType: "administrative",
+        name: "City of Bristol",
+        label: "Bristol",
     },
 
     curry_rivel: {
-        boundary_type: 'administrative',
-        name: 'Curry Rivel',
-        label: 'Curry Rivel',
+        boundaryType: "administrative",
+        name: "Curry Rivel",
+        label: "Curry Rivel",
     },
 
     yeovil: {
-        boundary_type: 'administrative',
-        name: 'Yeovil',
-        label: 'Yeovil',
+        boundaryType: "administrative",
+        name: "Yeovil",
+        label: "Yeovil",
     },
 
-    // ADMIN LEVEL 10
+    // -----------------------
+    // ADMIN LEVEL 10 (wards)
+    // -----------------------
     ...wardEntries,
-}
+};

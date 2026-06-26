@@ -11,6 +11,10 @@ body,
     overflow: hidden;
 }
 
+:root{
+    --basemap-tile-size: 68px;
+}
+
 /* =========================
     MAP CONTAINER
 ========================= */
@@ -23,10 +27,6 @@ body,
 
     z-index: 0;
 }
-
-/* =========================
-    LEAFLET POPUP STYLING
-========================= */
 
 .leaflet-popup-content {
     font-family: "Courier New", Courier, monospace;

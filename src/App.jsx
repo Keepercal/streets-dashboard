@@ -1,27 +1,37 @@
-// npm run dev: Locally host the app for development
-// npm run deploy: Builds and deploys to live GitHub Pages site
-import Map from './components/Map/Map';
-import Sidebar from './components/Sidebar/Sidebar';
-import Popup from './components/Popup/Popup';
-import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
-import Legend from './components/Legend/Legend.jsx'
-import FeatureCount from './components/FeatureCount/FeatureCount.jsx'
+/**
+ * App Entry Point
+ * -----------
+ * npm run dev: Local development server
+ * npm run deploy: Builds and deploys to GitHub Pages
+ */
 
 import { createRoot } from 'react-dom/client';
 import { useState, useEffect, useMemo } from 'react';
-import { useBoundary, useMapFeature } from './hooks/useMapData.js'
-import { evaluateFeature } from './utils/evaluteFeatures.js';
 
-import { BOUNDARY_MAP } from "./config/osmBoundaryMap.js";
-import { FEATURE_MAP } from "./config/osmFeatureMap.js";
+/* High level components */
+import Map from './components/Map/Map';
+import Sidebar from './components/Sidebar/Sidebar';
+import Popup from './components/StatusPopup/StatusPopup.jsx';
+
+/* Map related components */
+import FilterPanel from './components/Map/FilterPanel/FilterPanel.jsx';
+import Legend from './components/Map/Legend/Legend.jsx';
+import FeatureCount from './components/Map/FeatureCounter/FeatureCounter.jsx';
+
+/* Hooks */
+import { useBoundary, useMapFeature } from './hooks/useMapData.js';
+import { evaluateFeature } from './utils/evaluateFeatures.js';
+
+/* Maps */
+import { BOUNDARY_MAP } from './config/osmBoundaryMap.js';
+import { FEATURE_MAP } from './config/osmFeatureMap.js';
 
 export default function App() {
-  const [selectedBoundary, setSelectedBoundary] = useState('none'); // Default the dropdown to None
-  const [toggles, setToggles] = useState({}); // Default the toggles to false (off)
+  const [selectedBoundary, setSelectedBoundary] = useState('none');
+  const [toggles, setToggles] = useState({});
   const [filters, setFilters] = useState([]);
   const [popupDismissed, setPopupDismissed] = useState(false);
 
-  // Hook and deconstruct boundary return value
   const {
     boundaryData,
     boundaryGeojson,
@@ -29,9 +39,8 @@ export default function App() {
     clearBoundary,
     status: boundaryStatus,
     error: boundaryError,
-  } = useBoundary()
+  } = useBoundary();
 
-  // Hook and deconstruct feature return value
   const {
     featureData,
     featureGeojson,
@@ -39,31 +48,30 @@ export default function App() {
     clearFeatures,
     status: featureStatus,
     error: featureError,
-  } = useMapFeature(selectedBoundary)
+  } = useMapFeature(selectedBoundary);
 
+  /*
+   * Reset popup dismissal when loading starts
+   */
   useEffect(() => {
-    if (
-      boundaryStatus === 'loading' ||
-      featureStatus === 'loading'
-    ) {
-      setPopupDismissed(false)
+    if (boundaryStatus === 'loading' || featureStatus === 'loading') {
+      console.log('[DEBUG] Loading started → resetting popupDismissed');
+      setPopupDismissed(false);
     }
-  }, [boundaryStatus, featureStatus]); 
+  }, [boundaryStatus, featureStatus]);
 
-  // Turn boundary options map into an array
-  const boundaryOptions = [
-    { value: "none", label: "None", boundaryType: "none", name: "None" },
+  const boundaryOptions = useMemo(() => ([
+    { key: 'none', boundaryType: 'none', name: 'None', label: 'None' },
     ...Object.entries(BOUNDARY_MAP).map(([key, boundary]) => ({
-      value: key,
-      boundaryType: boundary.boundary_type,
-      boundaryName: boundary.name,
+      key: key,
+      boundaryType: boundary.boundaryType,
+      name: boundary.name,
       label: boundary.label,
-    }))
-  ]
+    })),
+  ]), []);
 
-  // Turn feature options map into an array
-  const featureOptions = [
-    { value: 'none', label: "None" },
+  const featureOptions = useMemo(() => ([
+    { value: 'none', label: 'None' },
     ...Object.entries(FEATURE_MAP).flatMap(([group, features]) =>
       Object.entries(features).map(([key, feature]) => ({
         value: key,
@@ -72,11 +80,13 @@ export default function App() {
         tag: feature.tag,
         label: feature.label,
         type: feature.type,
-        filter: feature.filter
       }))
-    )
-  ];
+    ),
+  ]), []);
 
+  /*
+   * Handle feature filtering
+   */
   const filteredGeojson = useMemo(() => {
     if (!featureGeojson) return null;
 
@@ -84,90 +94,133 @@ export default function App() {
       ...featureGeojson,
       features: featureGeojson.features.map(feature => ({
         ...feature,
-        _matchesFilters: evaluateFeature(feature, filters)
-      }))
+        _matchesFilters: evaluateFeature(feature, filters),
+      })),
     };
-  }, [featureGeojson, filters])
+  }, [featureGeojson, filters]);
 
-  // Update the selected boundary state when a dropdown option is chosen
-  const handleDropdown = (key, value, boundaryType, boundaryName) => {
-    console.log("ENTER handleDropdown:", { key, value, boundaryType, boundaryName });
+  /*
+   * Handle boundary selection
+   */
+  const handleDropdown = (boundaryKey, boundaryType, boundaryName) => {
+    console.log('[DEBUG] handleDropdown ENTER:', {
+      boundaryKey,
+      boundaryType,
+      boundaryName,
+    });
+
     clearFeatures();
-    loadBoundary(value, boundaryType, boundaryName);
-    console.log("calling loadBoundary", { key, value, boundaryType, boundaryName })
-    setSelectedBoundary(boundaryName); //CHANGE TO VALUE IF BROKEN
+
+    console.log('[DEBUG] Calling loadBoundary:', {
+      boundaryKey,
+      boundaryType,
+      boundaryName,
+    });
+
+    loadBoundary(boundaryKey, boundaryType, boundaryName);
+
+    console.log('[DEBUG] Updating selectedBoundary:', boundaryKey);
+
+    setSelectedBoundary(boundaryKey); 
+
     setToggles({});
-  }
+  };
 
-  // When an option from the list of toggles is clicked
-  const handleToggle = (key, tag, value, type) => {
-    console.log("ENTER handleToggle:", { key, tag, value, type });
-    setToggles({})
-    const nextValue = !toggles[key];
+  /**
+   * Handle feature toggle
+   */
+  const handleToggle = (featureKey, featureTag, featureValue, featureType) => {
+    console.log('[DEBUG] handleToggle ENTER:', {
+      featureKey,
+      featureTag,
+      featureValue,
+      featureType,
+      selectedBoundary,
+    });
 
-    setToggles(prev => ({
-      ...prev,
-      [key]: nextValue
-    }));
+    setToggles(prev => {
+      const nextValue = !prev[featureKey];
 
-    if (nextValue) {
-      console.log("calling loadFeatures", { selectedBoundary, tag, value, type })
-      loadFeatures(selectedBoundary, tag, value, type);
-    } else {
-      clearFeatures();
-    }
-  }
+      console.log('[DEBUG] Toggle computed:', {
+        featureKey,
+        from: prev[featureKey],
+        to: nextValue,
+      });
 
-  // Handles the popups depending on the type of popup
+      if (nextValue) {
+        console.log('[DEBUG] Calling loadFeatures:', {
+          selectedBoundary,
+          featureTag,
+          featureValue,
+          featureType,
+        });
+
+        loadFeatures(selectedBoundary, featureTag, featureValue, featureType);
+      } else {
+        console.log('[DEBUG] Clearing features');
+        clearFeatures();
+      }
+
+      return {
+        ...prev,
+        [featureKey]: nextValue,
+      };
+    });
+  };
+
   const popup = useMemo(() => {
-    // If user closed it
-    if (popupDismissed){
-      return{
+    if (popupDismissed) {
+      console.log('[DEBUG] Popup dismissed → idle state');
+      return {
         trigger: false,
         type: 'idle',
         source: null,
         title: '',
-        message: ''
+        message: '',
       };
     }
 
     if (boundaryStatus === 'loading') {
+      console.log('[DEBUG] Popup: boundary loading');
       return {
         trigger: true,
         type: 'loading',
         source: 'boundary',
         title: 'Loading',
-        message: 'Fetching boundary data...'
+        message: 'Fetching boundary data...',
       };
     }
 
     if (boundaryStatus === 'error') {
+      console.log('[DEBUG] Popup: boundary error', boundaryError);
       return {
         trigger: true,
         type: 'error',
         source: 'boundary',
         title: 'Error',
-        message: boundaryError?.message
+        message: boundaryError?.message,
       };
     }
 
     if (featureStatus === 'loading') {
+      console.log('[DEBUG] Popup: feature loading');
       return {
         trigger: true,
         type: 'loading',
         source: 'feature',
         title: 'Loading',
-        message: 'Fetching feature data...'
+        message: 'Fetching feature data...',
       };
     }
 
     if (featureStatus === 'error') {
+      console.log('[DEBUG] Popup: feature error', featureError);
       return {
         trigger: true,
         type: 'error',
         source: 'feature',
         title: 'Error',
-        message: featureError?.message
+        message: featureError?.message,
       };
     }
 
@@ -176,9 +229,15 @@ export default function App() {
       type: 'idle',
       source: null,
       title: '',
-      message: ''
+      message: '',
     };
-  }, [boundaryStatus, featureStatus, boundaryError, featureError, popupDismissed]);
+  }, [
+    boundaryStatus,
+    featureStatus,
+    boundaryError,
+    featureError,
+    popupDismissed,
+  ]);
 
   return (
     <div className="App">
@@ -187,12 +246,13 @@ export default function App() {
         type={popup.type}
         title={popup.title}
         message={popup.message}
+        onClose={() => {
+          console.log('[DEBUG] Popup closed:', popup);
 
-        onClose={() => { // When the close button is pressed, change the popup state
           setPopupDismissed(true);
 
           if (popup.source === 'boundary') {
-            // Reset everything related to boundary
+            console.log('[DEBUG] Resetting boundary state');
             setSelectedBoundary('none');
             clearBoundary();
             clearFeatures();
@@ -200,7 +260,7 @@ export default function App() {
           }
 
           if (popup.source === 'feature') {
-            // Only reset feature related states
+            console.log('[DEBUG] Clearing feature state');
             clearFeatures();
             setToggles({});
           }
@@ -211,42 +271,30 @@ export default function App() {
         <Sidebar
           handleDropdown={handleDropdown}
           handleToggle={handleToggle}
-
-          boundaryOptions={boundaryOptions} // Boundary map
-          featureOptions={featureOptions} // Feature map
-
-          boundaryData={boundaryData} // Pass along data relating to the boundary
-          featureData={featureData} // Pass along data relating to features
-
-          selectedBoundary={selectedBoundary} // Flag containing the selected boundary
-          toggles={toggles} // Menu options
+          boundaryOptions={boundaryOptions}
+          featureOptions={featureOptions}
+          boundaryData={boundaryData}
+          featureData={featureData}
+          selectedBoundary={selectedBoundary}
+          toggles={toggles}
         />
       </div>
+
       <div className="main-content">
-        <Map
-          boundary={boundaryGeojson} // The boundary in GeoJSON format
-          features={filteredGeojson} // The features in GeoJSON format
-        />
-        {featureData && (
-          <FilterPanel
-            features={featureGeojson}
-            filters={filters}
-            setFilters={setFilters}
-          />
-        )}
-        {featureData && (
-          <Legend />
-        )}
-        {featureData && (
-          <FeatureCount
-            features={featureData}
-          />
-        )}
+        <Map boundary={boundaryGeojson} features={filteredGeojson} />
+
+        {featureData && <FilterPanel
+          features={featureGeojson}
+          filters={filters}
+          setFilters={setFilters}
+        />}
+
+        {featureData && <Legend />}
+
+        {featureData && <FeatureCount features={featureData} />}
       </div>
     </div>
   );
 }
 
-createRoot(document.getElementById('root')).render(
-  <App />
-);
+createRoot(document.getElementById('root')).render(<App />);

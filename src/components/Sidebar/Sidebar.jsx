@@ -1,51 +1,24 @@
 import './Sidebar.css';
 import { useState, useEffect, useMemo } from "react";
-
-const DropdownItem = ({ value, options, onChange }) => {
-    return (
-        <div className="dropdown-item">
-            <label>
-                <select
-                    className="dropdown-btn"
-                    value={value} onChange={(e) => onChange(e.target.value)}
-                >
-                    {(options || []).map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                        </option>
-                    ))}
-                </select>
-            </label>
-        </div>
-    );
-};
-
-const ToggleItem = ({ label, checked, onChange }) => {
-    return (
-        <div className="toggle-item">
-            <label>
-                <input
-                    type="checkbox"
-                    checked={!!checked}
-                    onChange={onChange}
-                />
-                {label}
-            </label>
-        </div>
-    );
-};
+import DropdownItem from './DropdownItem';
+import ToggleItem from './ToggleItem';
 
 const Sidebar = ({
     handleDropdown,
-    handleToggle, boundaryData,
-    selectedBoundary, toggles,
+    handleToggle,
+    boundaryData,
+    selectedBoundary,
+    toggles,
     boundaryOptions,
     featureOptions
 }) => {
 
     const [openGroups, setOpenGroups] = useState({});
 
-    const GROUP_LABELS = { // WHEN ADDING NEW GROUP TO FEATURE MAP, ADD CUSTOM HEADER HERE!!!
+    /**
+     * Human-readable group labels
+     */
+    const GROUP_LABELS = {
         networks: "Networks",
         ways: "Ways",
         crossings: "Crossings",
@@ -58,15 +31,15 @@ const Sidebar = ({
         landuse: "Land Use",
     };
 
+    /**
+     * Group features by category
+     */
     const groupedFeatures = useMemo(() => {
         return Object.entries(featureOptions || {}).reduce(
             (acc, [key, feature]) => {
                 const group = feature.group;
 
-                if (!group){
-                    console.warn("Feature missing group:", key, feature);
-                    return acc;
-                }
+                if (!group) return acc;
 
                 if (!acc[group]) acc[group] = [];
 
@@ -78,28 +51,36 @@ const Sidebar = ({
         );
     }, [featureOptions]);
 
+    /**
+     * Initialize group open/closed state
+     */
     useEffect(() => {
         if (!featureOptions) return;
 
-        setOpenGroups(prev => {
-            const groups = Object.values(featureOptions).reduce((acc, feature) => {
+        setOpenGroups((prev) => {
+            const initial = Object.values(featureOptions).reduce(
+                (acc, feature) => {
+                    if (feature?.group) {
+                        acc[feature.group] = false;
+                    }
+                    return acc;
+                },
+                {}
+            );
 
-                if(!feature?.group) return acc;
-
-                acc[feature.group] = false; // all closed initially
-                return acc;
-            }, {});
-
-            return { ...groups, ...prev };
+            return { ...initial, ...prev };
         });
     }, [featureOptions]);
 
+    /**
+     * Toggle group visibility
+     */
     const toggleGroup = (group) => {
-        setOpenGroups(prev => ({
+        setOpenGroups((prev) => ({
             ...prev,
             [group]: !prev[group],
-        }))
-    }
+        }));
+    };
 
     return (
         <div className="sidebar">
@@ -109,17 +90,23 @@ const Sidebar = ({
 
                 <h2>Select Boundary</h2>
 
-                {/* Create a dropdown feature to select a Boundary */}
                 <DropdownItem
-                    options={boundaryOptions}
-                    value={selectedBoundary}
-                    onChange={(value) => {
-                        const selected = boundaryOptions.find(opt => opt.value === value);
-                        handleDropdown(value, value, selected?.boundaryType, selected?.boundaryName);
+                    selectedBoundary={selectedBoundary}
+                    boundaryOptions={boundaryOptions}
+                    onChange={(boundaryKey) => {
+                        console.log(boundaryOptions)
+                        const selected = boundaryOptions.find( // Looks up boundary in an array 
+                            opt => opt.key === boundaryKey // SHOULD BE LOOKUP UP WITH KEY // opt.key === boundaryKey
+                        );
+
+                        handleDropdown(
+                            boundaryKey,
+                            selected?.boundaryType,
+                            selected?.name,
+                        );
                     }}
                 />
 
-                {/* Show the list of options if a Boundary is returned and the Overpass API returned the Ward boundary */}
                 <div className="sidebar-content">
                     {boundaryData &&
                         Object.entries(groupedFeatures).map(([group, features]) => (
@@ -128,16 +115,20 @@ const Sidebar = ({
                                     className="group-header"
                                     onClick={() => toggleGroup(group)}
                                 >
-                                    {GROUP_LABELS[group] || group}{" "}
+                                    {GROUP_LABELS[group] || group}
                                     <span
-                                        className={`arrow ${openGroups[group] ? "rotated" : ""}`}
+                                        className={`arrow ${
+                                            openGroups[group] ? "rotated" : ""
+                                        }`}
                                     >
                                         ▸
                                     </span>
                                 </h3>
 
                                 <div
-                                    className={`group-content ${openGroups[group] ? "open" : ""}`}
+                                    className={`group-content ${
+                                        openGroups[group] ? "open" : ""
+                                    }`}
                                 >
                                     {features.map(({ key, label, tag, type }) => (
                                         <ToggleItem
@@ -150,10 +141,8 @@ const Sidebar = ({
                                         />
                                     ))}
                                 </div>
-                                
                             </div>
-                        ))
-                    }
+                        ))}
                 </div>
             </div>
         </div>

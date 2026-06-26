@@ -1,12 +1,12 @@
 /**
- * useEvaluateFeature
- * -------------------
+ * evaluateFeature
+ * ---------------
  * Evaluates whether a GeoJSON feature matches all provided filter rules.
  *
- * Each filter is applied using an AND condition.
+ * Each filter is applied using AND logic.
  * Returns true only if all filters pass.
  */
-export function useEvaluateFeature(feature, filters) {
+export function evaluateFeature(feature, filters) {
     const tags = feature?.properties ?? {};
 
     return filters.every((filter) => {

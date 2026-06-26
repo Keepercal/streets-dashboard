@@ -12,30 +12,35 @@
     padding: 15px;
     margin-left: 8px;
 
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+
     max-height: 500px;
 
     color: #ecf0f1;
 
-    background-color: rgba(37, 204, 120, 0.8);
+    background-color: rgba(56, 189, 248, 0.8);
 
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(6px);
 
     transition: width 0.3s ease, background-color 0.3s ease;
+
+    width: 130px;
 }
 
 /* hover state */
 .filter-panel:hover {
-    background-color: rgba(37, 204, 120, 1);
+    background-color: rgba(56, 189, 248, 1);
 }
 
 /* size states */
-.filter-panel.collapsed {
-    width: 130px;
+.filter-panel{
+    max-width: 450px;
 }
 
-.filter-panel.expanded {
-    width: 450px;
+.filter-panel.expanded{
+    width: fit-content;
 }
 
 /* =========================
@@ -104,7 +109,7 @@
 }
 
 .arrow.open {
-    transform: rotate(90deg);
+    transform: rotate(180deg);
 }
 
 /* =========================
@@ -115,6 +120,14 @@
     margin: 10px 0 5px;
 }
 
+.filter-item{
+    margin-bottom: 2px;
+}
+
+.filter-item button{
+    margin-right: 5px;
+}
+
 .filter-item span {
     padding-right: 10px;
 
@@ -122,7 +135,7 @@
     font-weight: bold;
 }
 
-.filter-row strong {
+.filter-item strong {
     padding-right: 10px;
 
     font-family: "Courier New", Courier, monospace;

@@ -1,3 +1,13 @@
+/**
+ * timeAgo
+ * -------
+ * Converts a timestamp into a human-readable relative time string.
+ *
+ * Examples:
+ * - "just now"
+ * - "5 minutes ago"
+ * - "2 days ago"
+ */
 export function timeAgo(timestamp) {
     const diffMs = Date.now() - new Date(timestamp).getTime();
 
@@ -7,31 +17,28 @@ export function timeAgo(timestamp) {
     const month = 30.44 * day;
     const year = 365.25 * day;
 
-    const minutes = Math.floor(diffMs / minute);
-    const hours = Math.floor(diffMs / hour);
-    const days = Math.floor(diffMs / day);
-    const months = Math.floor(diffMs / month);
-    const years = Math.floor(diffMs / year);
+    const format = (value, unit) =>
+        `${value} ${unit}${value !== 1 ? "s" : ""} ago`;
 
-    if (minutes < 1) {
+    if (diffMs < minute) {
         return "just now";
     }
 
-    if (minutes < 60) {
-        return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+    if (diffMs < hour) {
+        return format(Math.floor(diffMs / minute), "minute");
     }
 
-    if (hours < 24) {
-        return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+    if (diffMs < day) {
+        return format(Math.floor(diffMs / hour), "hour");
     }
 
-    if (days < 30) {
-        return `${days} day${days !== 1 ? "s" : ""} ago`;
+    if (diffMs < month) {
+        return format(Math.floor(diffMs / day), "day");
     }
 
-    if (months < 12) {
-        return `${months} month${months !== 1 ? "s" : ""} ago`;
+    if (diffMs < year) {
+        return format(Math.floor(diffMs / month), "month");
     }
 
-    return `${years} year${years !== 1 ? "s" : ""} ago`;
+    return format(Math.floor(diffMs / year), "year");
 }

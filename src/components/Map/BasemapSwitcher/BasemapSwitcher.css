@@ -1,0 +1,148 @@
+/* =========================
+    BASEMAP CONTROL WRAPPER
+========================= */
+
+.basemap-control {
+    position: absolute;
+    top: 10px;
+    left: 50px;
+    z-index: 9999;
+
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+
+}
+
+.basemap-control:hover .layers-menu{
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* =========================
+    BASEMAP LAYERS BUTTON (MAIN TILE)
+========================= */
+
+.layers-button{
+    width: var(--basemap-tile-size);
+    height: var(--basemap-tile-size);
+
+    border-radius: 10px;
+
+    background: #f2f2f2;
+    border: 1px solid rgba(0,0,0,0.08);
+
+    box-shadow:
+        0 1px 2px rgba(0,0,0,0.15),
+        0 2px 8px rgba(0,0,0,0.15);
+    
+    overflow: hidden;
+    cursor: pointer;
+
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.layers-button:hover{
+    transform: translateY(-1px);
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.18),
+        0 6px 18px rgba(0,0,0,0.12);
+}
+
+.layers-thumbnail {
+    height: 52px;
+    width: 100%;
+
+    background: linear-gradient(135deg, #dfe9f3, #ffffff);
+    background-size: cover;
+    background-position: center;
+
+    position: relative;
+}
+
+.layers-thumbnail::after{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: 18px;
+    opacity: 0.7;
+}
+
+.layers-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #3c4043;
+
+    text-align: center;
+    padding: 6px 4px;
+}
+
+.layers-menu{
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(10px);
+
+    transition: all 0.2s ease;
+}
+
+.layers-menu button {
+    width: var(--basemap-tile-size);
+    height: var(--basemap-tile-size);
+
+    padding: 0;
+    margin: 0;
+    
+    border: none;
+    border-radius: 10px;
+
+    align-items: center;
+
+    background: white;
+    cursor: pointer;
+
+    overflow: hidden;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+
+    font-size: 0;
+
+    display: grid;
+    grid-template-rows: 45px 1fr; 
+}
+
+.layers-menu button.active{
+    outline: 2px solid #1a73e8;
+    outline-offset: 1px;
+}
+
+.layers-menu button img {
+    width: 100%;
+    height: 45px;
+    object-fit: cover;
+    display: block;
+}
+
+.layers-menu button span {
+    font-size: 10px;
+    font-weight: 500;
+    color: #3c4043;
+    line-height: 1;
+}
+
+.layers-label{
+    line-height: 1;
+}
+
+/* =========================
+    LEAFLET POPUP STYLING
+========================= */

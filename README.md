@@ -1,4 +1,4 @@
-###### v0.3.3-alpha
+###### v0.3.4-alpha
 # Streets Dashboard
 This web application is build for transport planners, engineers, or any public or private sector professionals involved with the built environment to search for particular features on streets. 
 
@@ -11,15 +11,10 @@ There are a number of selectable options such as pedestrian crossings and cycle 
 <br>*Overpass Turbo* 👉 https://overpass-turbo.eu/
 
 ## What's new?
-### v0.3.3-alpha 
+### v0.4.0-alpha 
 
 ### Added
-- Filtering features! When a feature is selected, you can filter the points displayed on the map depending on the tags, such as whether a point is missing a particular tag.
-
-### Changes
-
-- Points on the map are colour coded based on the time since the the specific feature was last edited
-- Loaded features are now stored in the cache so they don't have to be reloaded
+- You can change the basemap layer for the map, showing you OpenStreetMap layer or satellite view.
 
 
 
