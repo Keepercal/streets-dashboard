@@ -80,7 +80,6 @@ export default function App() {
         tag: feature.tag,
         label: feature.label,
         type: feature.type,
-        filter: feature.filter,
       }))
     ),
   ]), []);
@@ -90,8 +89,6 @@ export default function App() {
    */
   const filteredGeojson = useMemo(() => {
     if (!featureGeojson) return null;
-
-    console.log('[DEBUG] Recomputing filteredGeojson');
 
     return {
       ...featureGeojson,
@@ -105,58 +102,60 @@ export default function App() {
   /*
    * Handle boundary selection
    */
-  const handleDropdown = (boundaryName, boundaryType, name) => {
+  const handleDropdown = (boundaryKey, boundaryType, boundaryName) => {
     console.log('[DEBUG] handleDropdown ENTER:', {
-      boundaryName,
+      boundaryKey,
       boundaryType,
-      name,
+      boundaryName,
     });
 
     clearFeatures();
 
     console.log('[DEBUG] Calling loadBoundary:', {
+      boundaryKey,
       boundaryType,
-      name,
+      boundaryName,
     });
 
-    loadBoundary(boundaryName, boundaryType, name);
+    loadBoundary(boundaryKey, boundaryType, boundaryName);
 
-    console.log('[DEBUG] Updating selectedBoundary:', name);
+    console.log('[DEBUG] Updating selectedBoundary:', boundaryKey);
 
-    setSelectedBoundary(name); // consider switching to `value`
+    setSelectedBoundary(boundaryKey); 
+
     setToggles({});
   };
 
   /**
    * Handle feature toggle
    */
-  const handleToggle = (key, tag, value, type) => {
+  const handleToggle = (featureKey, featureTag, featureValue, featureType) => {
     console.log('[DEBUG] handleToggle ENTER:', {
-      key,
-      tag,
-      value,
-      type,
+      featureKey,
+      featureTag,
+      featureValue,
+      featureType,
       selectedBoundary,
     });
 
     setToggles(prev => {
-      const nextValue = !prev[key];
+      const nextValue = !prev[featureKey];
 
       console.log('[DEBUG] Toggle computed:', {
-        key,
-        from: prev[key],
+        featureKey,
+        from: prev[featureKey],
         to: nextValue,
       });
 
       if (nextValue) {
         console.log('[DEBUG] Calling loadFeatures:', {
           selectedBoundary,
-          tag,
-          value,
-          type,
+          featureTag,
+          featureValue,
+          featureType,
         });
 
-        loadFeatures(selectedBoundary, tag, value, type);
+        loadFeatures(selectedBoundary, featureTag, featureValue, featureType);
       } else {
         console.log('[DEBUG] Clearing features');
         clearFeatures();
@@ -164,7 +163,7 @@ export default function App() {
 
       return {
         ...prev,
-        [key]: nextValue,
+        [featureKey]: nextValue,
       };
     });
   };

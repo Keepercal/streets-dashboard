@@ -2,6 +2,9 @@ import osmtogeojson from "osmtogeojson";
 import { useState, useRef } from "react";
 import { fetchBoundary, fetchMapFeature } from "../services/overpass";
 
+/* Maps */
+import { BOUNDARY_MAP } from '../config/osmBoundaryMap.js';
+
 /**
  * useBoundary
  * -----------
@@ -27,18 +30,18 @@ export function useBoundary() {
         setError(null);
     };
 
-    const loadBoundary = async (boundaryValue, boundaryType, boundaryName) => {
+    const loadBoundary = async (boundaryKey, boundaryType, boundaryName) => {
         clearBoundary();
 
         console.log('[DEBUG] ENTER loadBoundary:', {
-            boundaryValue,
+            boundaryKey,
             boundaryType,
             boundaryName,
         })
 
         const currentId = ++requestId.current;
 
-        if (boundaryValue === "none") {
+        if (boundaryKey === "none") {
             return;
         }
 
@@ -46,7 +49,7 @@ export function useBoundary() {
 
         try {
             const result = await fetchBoundary(
-                boundaryValue,
+                boundaryKey,
                 boundaryType,
                 boundaryName
             );
@@ -110,6 +113,9 @@ export function useMapFeature() {
         featureValue,
         featureType
     ) => {
+        const boundary = BOUNDARY_MAP[selectedBoundary];
+        const boundaryName = boundary.name;
+
         const currentId = ++requestId.current;
 
         if (featureValue === null) {
@@ -118,7 +124,7 @@ export function useMapFeature() {
         }
 
         const cacheKey = JSON.stringify([
-            selectedBoundary,
+            boundaryName,
             featureTag,
             featureValue,
             featureType,
@@ -141,7 +147,7 @@ export function useMapFeature() {
 
         try {
             const result = await fetchMapFeature(
-                selectedBoundary,
+                boundaryName,
                 featureTag,
                 featureValue,
                 featureType

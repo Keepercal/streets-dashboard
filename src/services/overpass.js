@@ -83,21 +83,21 @@ export async function fetchBoundary(boundaryValue, boundaryType, boundaryName) {
  * Fetches OSM features inside a boundary area using tag filters.
  */
 export async function fetchMapFeature(
-    boundaryKey,
+    boundaryName,
     featureTag,
     featureValue,
     featureType
 ) {
-    if (!boundaryKey || boundaryKey === "none") return null;
+    if (!boundaryName || boundaryName === "none") return null;
 
     console.log('[DEBUG] ENTER fetchFeatures:', {
-        boundaryKey, featureTag, featureValue, featureType
+        boundaryName, featureTag, featureValue, featureType
     })
 
     const query = `
         [out:json][timeout:60];
 
-        relation["name"="${boundaryKey}"]->.rels;
+        relation["name"="${boundaryName}"]->.rels;
         .rels map_to_area -> .area;
 
         ${featureType}(area.area)["${featureTag}"="${featureValue}"];
@@ -105,9 +105,11 @@ export async function fetchMapFeature(
         out tags geom meta;
     `;
 
+    console.log(query)
+
     const res = await callOverpass(query);
 
     return handleOverpassResponse(res, () =>
-        fetchMapFeature(boundaryKey, featureTag, featureValue, featureType)
+        fetchMapFeature(boundaryName, featureTag, featureValue, featureType)
     );
 }
