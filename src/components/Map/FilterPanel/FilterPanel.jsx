@@ -35,7 +35,7 @@ function FilterPanel({ features, filters, setFilters }) {
                 <h3>
                     Filter Panel
                     <span className={`arrow ${collapsed ? "" : "open"}`}>
-                        ▸
+                        ▴
                     </span>
                 </h3>
             </div>

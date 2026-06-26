@@ -18,7 +18,7 @@ const FeatureCounter = ({ features }) => {
     let relationCount = 0;
 
     // Safely iterate through feature elements and classify by type
-    features?.features?.elements?.forEach(feature => {
+    features?.elements?.forEach(feature => {
         switch (feature.type) {
             case "node":
                 nodeCount++;

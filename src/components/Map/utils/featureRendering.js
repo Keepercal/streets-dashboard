@@ -102,7 +102,8 @@ export function stylePolygon(feature) {
             color,
             opacity: 0.15,
             weight: 2,
-            fillOpacity: 0.05,
+            fillOpacity: 0.15,
+            interactive: false,
         };
     }
 
