@@ -91,18 +91,18 @@ const Sidebar = ({
                 <h2>Select Boundary</h2>
 
                 <DropdownItem
-                    options={boundaryOptions}
-                    value={selectedBoundary}
-                    onChange={(value) => {
+                    selectedBoundary={selectedBoundary}
+                    boundaryOptions={boundaryOptions}
+                    onChange={(boundaryName) => {
+                        console.log(boundaryOptions)
                         const selected = boundaryOptions.find(
-                            opt => opt.value === value
+                            opt => opt.name === boundaryName
                         );
 
                         handleDropdown(
-                            value,
-                            value,
+                            boundaryName,
                             selected?.boundaryType,
-                            selected?.boundaryName
+                            selected?.name
                         );
                     }}
                 />

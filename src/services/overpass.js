@@ -55,8 +55,12 @@ async function handleOverpassResponse(res, retryFn) {
  * -------------
  * Fetches a boundary relation from Overpass by name.
  */
-export async function fetchBoundary(boundaryKey, boundaryType, boundaryName) {
-    if (!boundaryKey || boundaryKey === "none") return null;
+export async function fetchBoundary(boundaryValue, boundaryType, boundaryName) {
+    if (!boundaryValue || boundaryValue === "none") return null;
+
+    console.log('[DEBUG] ENTER fetchBoundary:', {
+        boundaryValue, boundaryType, boundaryName
+    })
 
     const query = `
         [out:json][timeout:60];
@@ -64,10 +68,12 @@ export async function fetchBoundary(boundaryKey, boundaryType, boundaryName) {
         out geom meta;
     `;
 
+    console.log(query)
+
     const res = await callOverpass(query);
 
     return handleOverpassResponse(res, () =>
-        fetchBoundary(boundaryKey, boundaryType, boundaryName)
+        fetchBoundary(boundaryValue, boundaryType, boundaryName)
     );
 }
 
@@ -83,6 +89,10 @@ export async function fetchMapFeature(
     featureType
 ) {
     if (!boundaryKey || boundaryKey === "none") return null;
+
+    console.log('[DEBUG] ENTER fetchFeatures:', {
+        boundaryKey, featureTag, featureValue, featureType
+    })
 
     const query = `
         [out:json][timeout:60];

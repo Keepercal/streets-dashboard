@@ -30,6 +30,12 @@ export function useBoundary() {
     const loadBoundary = async (boundaryValue, boundaryType, boundaryName) => {
         clearBoundary();
 
+        console.log('[DEBUG] ENTER loadBoundary:', {
+            boundaryValue,
+            boundaryType,
+            boundaryName,
+        })
+
         const currentId = ++requestId.current;
 
         if (boundaryValue === "none") {

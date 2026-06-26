@@ -61,11 +61,11 @@ export default function App() {
   }, [boundaryStatus, featureStatus]);
 
   const boundaryOptions = useMemo(() => ([
-    { value: 'none', label: 'None', boundaryType: 'none', name: 'None' },
+    { key: 'none', boundaryType: 'none', name: 'None', label: 'None' },
     ...Object.entries(BOUNDARY_MAP).map(([key, boundary]) => ({
-      value: key,
-      boundaryType: boundary.boundary_type,
-      boundaryName: boundary.name,
+      key: key,
+      boundaryType: boundary.boundaryType,
+      name: boundary.name,
       label: boundary.label,
     })),
   ]), []);
@@ -105,27 +105,25 @@ export default function App() {
   /*
    * Handle boundary selection
    */
-  const handleDropdown = (_key, value, boundaryType, boundaryName) => {
+  const handleDropdown = (boundaryName, boundaryType, name) => {
     console.log('[DEBUG] handleDropdown ENTER:', {
-      _key,
-      value,
-      boundaryType,
       boundaryName,
+      boundaryType,
+      name,
     });
 
     clearFeatures();
 
     console.log('[DEBUG] Calling loadBoundary:', {
-      value,
       boundaryType,
-      boundaryName,
+      name,
     });
 
-    loadBoundary(value, boundaryType, boundaryName);
+    loadBoundary(boundaryName, boundaryType, name);
 
-    console.log('[DEBUG] Updating selectedBoundary:', boundaryName);
+    console.log('[DEBUG] Updating selectedBoundary:', name);
 
-    setSelectedBoundary(boundaryName); // consider switching to `value`
+    setSelectedBoundary(name); // consider switching to `value`
     setToggles({});
   };
 
