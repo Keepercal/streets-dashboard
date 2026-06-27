@@ -5,6 +5,12 @@ export const FEATURE_MAP = {
             label: "Local Cycling Network",
             type: "relation",
         },
+        ncn: {
+            tag:"network",
+            label: "National Cycling Network",
+            type: "relation",
+        },
+
         bus: {
             tag: "route",
             label: "Bus Network",

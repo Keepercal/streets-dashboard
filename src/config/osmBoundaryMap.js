@@ -64,8 +64,16 @@ export const BOUNDARY_MAP = {
     // -----------------------
     bristol: {
         boundaryType: "administrative",
-        name: "City of Bristol",
+        name: "Bristol",
         label: "Bristol",
+        id: "5746665",
+    },
+
+    somerset: {
+        boundaryType: "administrative",
+        name: "Somerset",
+        label: "Somerset",
+        id: "72894",
     },
 
     curry_rivel: {

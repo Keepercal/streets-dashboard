@@ -30,13 +30,14 @@ export function useBoundary() {
         setError(null);
     };
 
-    const loadBoundary = async (boundaryKey, boundaryType, boundaryName) => {
+    const loadBoundary = async (boundaryKey, boundaryType, boundaryName, boundaryID) => {
         clearBoundary();
 
         console.log('[DEBUG] ENTER loadBoundary:', {
             boundaryKey,
             boundaryType,
             boundaryName,
+            boundaryID,
         })
 
         const currentId = ++requestId.current;
@@ -51,7 +52,8 @@ export function useBoundary() {
             const result = await fetchBoundary(
                 boundaryKey,
                 boundaryType,
-                boundaryName
+                boundaryName,
+                boundaryID
             );
 
             if (currentId !== requestId.current) return;
@@ -150,7 +152,7 @@ export function useMapFeature() {
                 boundaryName,
                 featureTag,
                 featureValue,
-                featureType
+                featureType,
             );
 
             if (currentId !== requestId.current) return;

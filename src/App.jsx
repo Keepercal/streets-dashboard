@@ -67,6 +67,7 @@ export default function App() {
       boundaryType: boundary.boundaryType,
       name: boundary.name,
       label: boundary.label,
+      id: boundary.id,
     })),
   ]), []);
 
@@ -102,11 +103,12 @@ export default function App() {
   /*
    * Handle boundary selection
    */
-  const handleDropdown = (boundaryKey, boundaryType, boundaryName) => {
+  const handleDropdown = (boundaryKey, boundaryType, boundaryName, boundaryID) => {
     console.log('[DEBUG] handleDropdown ENTER:', {
       boundaryKey,
       boundaryType,
       boundaryName,
+      boundaryID
     });
 
     clearFeatures();
@@ -115,9 +117,10 @@ export default function App() {
       boundaryKey,
       boundaryType,
       boundaryName,
+      boundaryID
     });
 
-    loadBoundary(boundaryKey, boundaryType, boundaryName);
+    loadBoundary(boundaryKey, boundaryType, boundaryName, boundaryID);
 
     console.log('[DEBUG] Updating selectedBoundary:', boundaryKey);
 

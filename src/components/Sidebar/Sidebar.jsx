@@ -90,11 +90,11 @@ const Sidebar = ({
 
                 <h2>Select Boundary</h2>
 
+
                 <DropdownItem
                     selectedBoundary={selectedBoundary}
                     boundaryOptions={boundaryOptions}
                     onChange={(boundaryKey) => {
-                        console.log(boundaryOptions)
                         const selected = boundaryOptions.find( // Looks up boundary in an array 
                             opt => opt.key === boundaryKey // SHOULD BE LOOKUP UP WITH KEY // opt.key === boundaryKey
                         );
@@ -103,6 +103,7 @@ const Sidebar = ({
                             boundaryKey,
                             selected?.boundaryType,
                             selected?.name,
+                            selected?.id,
                         );
                     }}
                 />

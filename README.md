@@ -6,7 +6,7 @@ There are a number of selectable options such as pedestrian crossings and cycle 
 
 **NOTE! The data shown within this application is sourced from OpenStreetMap and therefore may not be 100% accurate.**
 
-*Live prototype* 👉 https://keepercal.github.io/healthy-streets-dashboard/
+*Live prototype* 👉 https://keepercal.github.io/streets-dashboard/
 <br>*Overpass API repo* 👉 https://github.com/drolbr/Overpass-API
 <br>*Overpass Turbo* 👉 https://overpass-turbo.eu/
 
