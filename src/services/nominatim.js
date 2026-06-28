@@ -20,5 +20,7 @@ export default async function fetchBoundaries(boundaryName) {
 
     const data = await res.json();
 
-    return data;
+    const filtered = data.filter(item => item.osm_type !== "node");
+
+    return filtered;
 }

@@ -12,7 +12,6 @@ import { useState, useEffect, useMemo } from 'react';
 import Map from './components/Map/Map';
 import Sidebar from './layout/Sidebar/Sidebar';
 import Popup from './components/StatusPopup/StatusPopup.jsx';
-import BoundarySearch from './layout/BoundarySearch/BoundarySearch.jsx'
 
 /* Map related components */
 import FilterPanel from './components/Map/FilterPanel/FilterPanel.jsx';
@@ -272,6 +271,7 @@ export default function App() {
           selectedBoundary={selectedBoundary}
           toggles={toggles}
           searchBoundaries={searchBoundaries}
+          clearBoundary={clearBoundary}
           boundaryResults={boundaryResults}
           onSelectBoundary={handleSelectBoundary}
         />

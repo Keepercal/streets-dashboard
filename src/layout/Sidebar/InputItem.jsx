@@ -1,4 +1,4 @@
-function InputItem({ searchBoundaries }){
+function InputItem({ searchBoundaries, clearBoundary }){
     const handleSubmit = async(e) => {
         // Prevent browser from reloading the page
         e.preventDefault();
@@ -9,8 +9,16 @@ function InputItem({ searchBoundaries }){
 
         await searchBoundaries(boundaryName);
     }
+
+    const handleReset = () => {
+        clearBoundary();
+    }
+
     return(
-        <form method="post" onSubmit={handleSubmit}>
+        <form method="post" 
+            onSubmit={handleSubmit}
+            onReset={handleReset}
+        >
             <input 
                 className="input-item"
                 name="boundaryName"

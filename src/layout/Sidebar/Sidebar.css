@@ -17,7 +17,7 @@ h2, h3 {
     SIDEBAR LAYOUT
 ========================= */
 
-.sidebar {
+.sidebar-wrapper {
     position: fixed;
     top: 0;
     left: 0;
@@ -25,39 +25,156 @@ h2, h3 {
     width: 250px;
     height: 100vh;
 
-    display: flex;
-    flex-direction: column;
+    padding: 0 12px;
 
-    padding-left: 15px;
+    z-index: 1000;
+    box-sizing: border-box;
 
     background-color: #223d57;
     color: #ecf0f1;
-
-    overflow: hidden;
 }
 
-.sidebar-header {
+.sidebar {
+    width: 100%;
+    height: 100%;
+
     display: flex;
     flex-direction: column;
 
-    flex: 1;
-    min-height: 0;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
-.sidebar-content {
-    flex: 1;
-    min-height: 0;
+.sidebar-header {
+    margin: 20px 0px;
+}
 
-    overflow-y: auto;
+/* =========================
+    SIDEBAR SECTIONS
+========================= */
+
+.sidebar-section {
     width: 100%;
+    padding: 6px 8px;
+    margin-bottom: 10px;
 
-    padding-right: 6px;
-    margin-top: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+
+    background: rgba(255, 255, 255, 0.03);
+    box-sizing: border-box;
+
+    transition: background 0.2s ease;
+    overflow-y: auto;
 }
 
-/* spacing between groups */
-.sidebar-content > div {
-    margin-bottom: 6px;
+.sidebar-section:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* =========================
+    SECTION DROPDOWN (LEVEL 1)
+========================= */
+
+.section-content {
+    max-height: 0;
+    overflow: hidden;
+
+    opacity: 0;
+    transform: translateY(-6px);
+
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.section-content.open {
+    max-height: 800px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-header{
+    margin: 0px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* =========================
+    BOUNDARY SECTION INTERNALS
+========================= */
+
+.section-body {
+    margin-bottom: 8px;
+}
+
+.section-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    max-height: 200px;
+    overflow-y: auto;
+
+    padding-right: 4px;
+}
+
+/* =========================
+    ACCORDION GROUPS (FEATURES LEVEL 2)
+========================= */
+
+.accordion-group {
+    margin-bottom: 8px;
+}
+
+.accordion-header{
+    margin: 15px 0px 0px 0px;
+}
+
+/* =========================
+    ACCORDION CONTENT (FEATURE TOGGLES LEVEL 3)
+========================= */
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+
+    opacity: 0;
+    transform: translateY(-4px);
+
+    padding-left: 8px;
+
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.accordion-content.open {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================
+    HEADERS + ARROWS
+========================= */
+
+.group-header {
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: 0;
+}
+
+.arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.arrow.rotated {
+    transform: rotate(90deg);
 }
 
 /* =========================
@@ -65,7 +182,7 @@ h2, h3 {
 ========================= */
 
 .sidebar-title {
-    margin-bottom: 0;
+    margin: 0;
 }
 
 .version-tag {
@@ -88,44 +205,25 @@ h2, h3 {
 }
 
 /* =========================
-    GROUPS / ACCORDION
+    BOUNDARY CARDS
 ========================= */
 
-.group {
-    border-bottom: 1px solid transparent;
-}
+.boundary-card {
+    width: 100%;
+    padding: 8px;
 
-.group-header {
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+
+    background: rgba(255, 255, 255, 0.03);
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    margin: 10px 0px 10px 0px;
+
+    box-sizing: border-box;
+    transition: background 0.2s ease;
 }
 
-.group-content {
-    max-height: 0;
-    overflow: hidden;
-
-    opacity: 0;
-    transform: translateY(-6px);
-
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.group-content.open {
-    max-height: 500px;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* arrow animation */
-.arrow {
-    display: inline-block;
-    transition: transform 0.2s ease;
-}
-
-.arrow.rotated {
-    transform: rotate(90deg);
+.boundary-card:hover {
+    background: rgba(226, 159, 0, 0.1);
 }
 
 /* =========================
@@ -134,14 +232,5 @@ h2, h3 {
 
 .main-content {
     margin-left: 250px;
-    padding-left: 5px;
     height: 100vh;
-}
-
-/* =========================
-    INPUT ITEM
-========================= */
-
-.input-item{
-    width: 200px;
 }

@@ -2,20 +2,21 @@ import './Sidebar.css';
 import { useState, useEffect, useMemo } from "react";
 import DropdownItem from './DropdownItem';
 import ToggleItem from './ToggleItem';
-import InputItem from '../BoundarySearch/InputItem';
+import InputItem from './InputItem';
 
 const Sidebar = ({
     handleToggle,
     boundaryData,
-    selectedBoundary,
     toggles,
     featureOptions,
     searchBoundaries,
+    clearBoundary,
     boundaryResults,
     onSelectBoundary,
 }) => {
 
     const [boundaryOpen, setBoundaryOpen] = useState(false);
+    const [featuresOpen, setFeaturesOpen] = useState(false);
     const [openGroups, setOpenGroups] = useState({});
 
     /**
@@ -84,88 +85,104 @@ const Sidebar = ({
             [group]: !prev[group],
         }));
     };
-
     return (
-        <div className="sidebar">
-            <div className="sidebar-header">
-                <h1 className="sidebar-title">{window.APP_NAME}</h1>
-                <p className="version-tag">{window.APP_VERSION}</p>
+        <div className="sidebar-wrapper">
+            <div className="sidebar">
 
-                <div className="boundary-section">
-                    <div
-                        className="groupHeader"
+                {/* ================= HEADER ================= */}
+                <div className="sidebar-header">
+                    <h1 className="sidebar-title">{window.APP_NAME}</h1>
+                    <p className="version-tag">{window.APP_VERSION}</p>
+                </div>
+
+                {/* ================= BOUNDARY ================= */}
+                <div className="sidebar-section">
+
+                    <h3
+                        className="section-header"
                         onClick={() => setBoundaryOpen(prev => !prev)}
                     >
-                        <h2>Search Boundary</h2>
+                        Search Boundary
+                        <span className={`arrow ${boundaryOpen ? "rotated" : ""}`}>▸</span>
+                    </h3>
 
-                        <span className={`arrow ${boundaryOpen ? "rotated" : ""}`}>
-                            ▸
-                        </span>
-                    </div>
+                    <div className={`section-content ${boundaryOpen ? "open" : ""}`}>
 
-                    <div className={`group-content ${boundaryOpen ? "open" : ""}`}>
-                        <InputItem
-                            searchBoundaries={searchBoundaries}
-                        />
+                        <div className="section-body">
+                            <InputItem 
+                                searchBoundaries={searchBoundaries} 
+                                clearBoundary={clearBoundary}
+                            />
+                        </div>
 
-                        <div className="sidebar-content">
+                        <div className="section-list">
                             {boundaryResults?.map(result => (
                                 <div
                                     key={result.place_id}
                                     className="boundary-card"
                                     onClick={() => onSelectBoundary(result)}
                                 >
-                                    <div className="title">
-                                        {result.display_name}
+                                    {result.display_name}
+                                </div>
+                            ))}
+                        </div>
+
+                    </div>
+                </div>
+
+                {/* ================= FEATURES ================= */}
+                {boundaryData && (
+                    <div className="sidebar-section">
+
+                        <h3
+                            className="section-header"
+                            onClick={() => setFeaturesOpen(prev => !prev)}
+                        >
+                            Features
+                            <span className={`arrow ${featuresOpen ? "rotated" : ""}`}>▸</span>
+                        </h3>
+
+                        {/* LEVEL 1: FEATURES PANEL */}
+                        <div className={`section-content ${featuresOpen ? "open" : ""}`}>
+
+                            {Object.entries(groupedFeatures).map(([group, features]) => (
+
+                                <div key={group} className="accordion-group">
+
+                                    {/* LEVEL 2 HEADER */}
+                                    <h4
+                                        className="accordion-header"
+                                        onClick={() => toggleGroup(group)}
+                                    >
+                                        {GROUP_LABELS[group] || group}
+                                        <span className={`arrow ${openGroups[group] ? "rotated" : ""}`}>▸</span>
+                                    </h4>
+
+                                    {/* LEVEL 3 CONTENT */}
+                                    <div className={`accordion-content ${openGroups[group] ? "open" : ""}`}>
+
+                                        {features.map(({ key, label, tag, type }) => (
+                                            <ToggleItem
+                                                key={key}
+                                                label={label}
+                                                checked={toggles[key]}
+                                                onChange={() =>
+                                                    handleToggle(key, tag, key, type)
+                                                }
+                                            />
+                                        ))}
+
                                     </div>
 
-                                    <div className="meta">
-                                        {result.type} · {result.class}
-                                    </div>
                                 </div>
                             ))}
                         </div>
                     </div>
-                </div>
+                )}
 
-                <div className="sidebar-content">
-                    {boundaryData &&
-                        Object.entries(groupedFeatures).map(([group, features]) => (
-                            <div key={group}>
-                                <h3
-                                    className="group-header"
-                                    onClick={() => toggleGroup(group)}
-                                >
-                                    {GROUP_LABELS[group] || group}
-                                    <span
-                                        className={`arrow ${openGroups[group] ? "rotated" : ""
-                                            }`}
-                                    >
-                                        ▸
-                                    </span>
-                                </h3>
-
-                                <div
-                                    className={`group-content ${openGroups[group] ? "open" : ""
-                                        }`}
-                                >
-                                    {features.map(({ key, label, tag, type }) => (
-                                        <ToggleItem
-                                            key={key}
-                                            label={label}
-                                            checked={toggles[key]}
-                                            onChange={() =>
-                                                handleToggle(key, tag, key, type)
-                                            }
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                </div>
             </div>
         </div>
     );
-};
+}
 
 export default Sidebar;
