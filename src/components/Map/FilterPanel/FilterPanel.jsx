@@ -12,7 +12,7 @@
 
 import { useState } from "react";
 
-import useFilterData from "./hooks/useFilterData";
+import useFilterData from "./useFilterData";
 import FilterItem from "./FilterItem";
 import TagItem from "./TagItem";
 

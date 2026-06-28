@@ -10,8 +10,9 @@ import { useState, useEffect, useMemo } from 'react';
 
 /* High level components */
 import Map from './components/Map/Map';
-import Sidebar from './components/Sidebar/Sidebar';
+import Sidebar from './layout/Sidebar/Sidebar';
 import Popup from './components/StatusPopup/StatusPopup.jsx';
+import BoundarySearch from './layout/BoundarySearch/BoundarySearch.jsx'
 
 /* Map related components */
 import FilterPanel from './components/Map/FilterPanel/FilterPanel.jsx';
@@ -271,7 +272,7 @@ export default function App() {
       />
 
       <div className="side-bar">
-        <Sidebar
+        {/*<Sidebar
           handleDropdown={handleDropdown}
           handleToggle={handleToggle}
           boundaryOptions={boundaryOptions}
@@ -280,7 +281,8 @@ export default function App() {
           featureData={featureData}
           selectedBoundary={selectedBoundary}
           toggles={toggles}
-        />
+        />*/}
+        <BoundarySearch/>
       </div>
 
       <div className="main-content">

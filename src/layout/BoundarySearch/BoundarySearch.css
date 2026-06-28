@@ -137,3 +137,11 @@ h2, h3 {
     padding-left: 5px;
     height: 100vh;
 }
+
+/* =========================
+    INPUT ITEM
+========================= */
+
+.input-item{
+    width: 200px;
+}
