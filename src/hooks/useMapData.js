@@ -156,8 +156,7 @@ export function useMapFeature() {
         featureValue,
         featureType
     ) => {
-        const boundary = BOUNDARY_MAP[selectedBoundary];
-        const boundaryName = boundary.name;
+        const boundaryKey = selectedBoundary;
 
         const currentId = ++requestId.current;
 
@@ -167,7 +166,7 @@ export function useMapFeature() {
         }
 
         const cacheKey = JSON.stringify([
-            boundaryName,
+            boundaryKey,
             featureTag,
             featureValue,
             featureType,
@@ -190,7 +189,7 @@ export function useMapFeature() {
 
         try {
             const result = await fetchMapFeature(
-                boundaryName,
+                boundaryKey,
                 featureTag,
                 featureValue,
                 featureType,

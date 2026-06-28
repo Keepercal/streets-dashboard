@@ -14,10 +14,11 @@ function InputItem({ searchBoundaries }){
             <input 
                 className="input-item"
                 name="boundaryName"
-                placeholder="e.g. Lockleaze"
+                placeholder="e.g. Bristol"
             />
 
             <button type="submit">Search</button>
+            <button type="reset">Clear</button>
         </form>
 
     )

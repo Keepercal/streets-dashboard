@@ -86,21 +86,21 @@ export async function fetchBoundary(boundaryKey, boundaryType, boundaryName, bou
  * Fetches OSM features inside a boundary area using tag filters.
  */
 export async function fetchMapFeature(
-    boundaryName,
+    boundaryKey,
     featureTag,
     featureValue,
     featureType
 ) {
-    if (!boundaryName || boundaryName === "none") return null;
+    if (!boundaryKey || boundaryKey === "none") return null;
 
     console.log('[DEBUG] ENTER fetchFeatures:', {
-        boundaryName, featureTag, featureValue, featureType
+        boundaryKey, featureTag, featureValue, featureType
     })
 
     const query = `
         [out:json][timeout:60];
 
-        relation["name"="${boundaryName}"]->.rels;
+        relation(${boundaryKey})->.rels;
         .rels map_to_area -> .area;
 
         ${featureType}(area.area)["${featureTag}"="${featureValue}"];
@@ -113,6 +113,6 @@ export async function fetchMapFeature(
     const res = await callOverpass(query);
 
     return handleOverpassResponse(res, () =>
-        fetchMapFeature(boundaryName, featureTag, featureValue, featureType)
+        fetchMapFeature(boundaryKey, featureTag, featureValue, featureType)
     );
 }

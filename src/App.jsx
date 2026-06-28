@@ -122,35 +122,6 @@ export default function App() {
     loadBoundary(boundaryKey, boundaryType, boundaryName, boundaryID)
   }
 
-  /*
-   * Handle boundary selection
-   */
-  /*const handleDropdown = (boundaryKey, boundaryType, boundaryName, boundaryID) => {
-    console.log('[DEBUG] handleDropdown ENTER:', {
-      boundaryKey,
-      boundaryType,
-      boundaryName,
-      boundaryID
-    });
-
-    clearFeatures();
-
-    console.log('[DEBUG] Calling loadBoundary:', {
-      boundaryKey,
-      boundaryType,
-      boundaryName,
-      boundaryID
-    });
-
-    loadBoundary(boundaryKey, boundaryType, boundaryName, boundaryID);
-
-    console.log('[DEBUG] Updating selectedBoundary:', boundaryKey);
-
-    setSelectedBoundary(boundaryKey); 
-
-    setToggles({});
-  }*/
-
   /**
    * Handle feature toggle
    */
@@ -293,17 +264,13 @@ export default function App() {
       />
 
       <div className="side-bar">
-        {/*<Sidebar
-          handleDropdown={handleDropdown}
+        <Sidebar
           handleToggle={handleToggle}
-          boundaryOptions={boundaryOptions}
           featureOptions={featureOptions}
           boundaryData={boundaryData}
           featureData={featureData}
           selectedBoundary={selectedBoundary}
           toggles={toggles}
-        />*/}
-        <BoundarySearch
           searchBoundaries={searchBoundaries}
           boundaryResults={boundaryResults}
           onSelectBoundary={handleSelectBoundary}

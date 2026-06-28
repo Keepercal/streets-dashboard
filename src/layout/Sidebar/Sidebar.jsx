@@ -2,17 +2,20 @@ import './Sidebar.css';
 import { useState, useEffect, useMemo } from "react";
 import DropdownItem from './DropdownItem';
 import ToggleItem from './ToggleItem';
+import InputItem from '../BoundarySearch/InputItem';
 
 const Sidebar = ({
-    handleDropdown,
     handleToggle,
     boundaryData,
     selectedBoundary,
     toggles,
-    boundaryOptions,
-    featureOptions
+    featureOptions,
+    searchBoundaries,
+    boundaryResults,
+    onSelectBoundary,
 }) => {
 
+    const [boundaryOpen, setBoundaryOpen] = useState(false);
     const [openGroups, setOpenGroups] = useState({});
 
     /**
@@ -88,25 +91,42 @@ const Sidebar = ({
                 <h1 className="sidebar-title">{window.APP_NAME}</h1>
                 <p className="version-tag">{window.APP_VERSION}</p>
 
-                <h2>Select Boundary</h2>
+                <div className="boundary-section">
+                    <div
+                        className="groupHeader"
+                        onClick={() => setBoundaryOpen(prev => !prev)}
+                    >
+                        <h2>Search Boundary</h2>
 
+                        <span className={`arrow ${boundaryOpen ? "rotated" : ""}`}>
+                            ▸
+                        </span>
+                    </div>
 
-                <DropdownItem
-                    selectedBoundary={selectedBoundary}
-                    boundaryOptions={boundaryOptions}
-                    onChange={(boundaryKey) => {
-                        const selected = boundaryOptions.find( // Looks up boundary in an array 
-                            opt => opt.key === boundaryKey // SHOULD BE LOOKUP UP WITH KEY // opt.key === boundaryKey
-                        );
+                    <div className={`group-content ${boundaryOpen ? "open" : ""}`}>
+                        <InputItem
+                            searchBoundaries={searchBoundaries}
+                        />
 
-                        handleDropdown(
-                            boundaryKey,
-                            selected?.boundaryType,
-                            selected?.name,
-                            selected?.id,
-                        );
-                    }}
-                />
+                        <div className="sidebar-content">
+                            {boundaryResults?.map(result => (
+                                <div
+                                    key={result.place_id}
+                                    className="boundary-card"
+                                    onClick={() => onSelectBoundary(result)}
+                                >
+                                    <div className="title">
+                                        {result.display_name}
+                                    </div>
+
+                                    <div className="meta">
+                                        {result.type} · {result.class}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
 
                 <div className="sidebar-content">
                     {boundaryData &&
@@ -118,18 +138,16 @@ const Sidebar = ({
                                 >
                                     {GROUP_LABELS[group] || group}
                                     <span
-                                        className={`arrow ${
-                                            openGroups[group] ? "rotated" : ""
-                                        }`}
+                                        className={`arrow ${openGroups[group] ? "rotated" : ""
+                                            }`}
                                     >
                                         ▸
                                     </span>
                                 </h3>
 
                                 <div
-                                    className={`group-content ${
-                                        openGroups[group] ? "open" : ""
-                                    }`}
+                                    className={`group-content ${openGroups[group] ? "open" : ""
+                                        }`}
                                 >
                                     {features.map(({ key, label, tag, type }) => (
                                         <ToggleItem
