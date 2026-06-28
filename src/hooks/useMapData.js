@@ -1,9 +1,50 @@
 import osmtogeojson from "osmtogeojson";
 import { useState, useRef } from "react";
 import { fetchBoundary, fetchMapFeature } from "../services/overpass";
+import fetchBoundaries from "../services/nominatim"
 
 /* Maps */
 import { BOUNDARY_MAP } from '../config/osmBoundaryMap.js';
+
+export function useSearchBoundaries(){
+    const [boundaryResults, setBoundaryResults] = useState([])
+    const requestId = useRef(0);
+
+    const searchBoundaries = async (boundaryName) => {
+        setBoundaryResults(null)
+
+        console.log('[DEBUG] searchBoundaries ENTER:',{
+            boundaryName
+        })
+
+        const currentId = ++requestId.current;
+
+        if (boundaryName === 'none'){
+            return
+        }
+
+        try{
+            const result = await fetchBoundaries(boundaryName)
+
+            if (currentId !== requestId.current) return;
+            
+            setBoundaryResults(result)
+
+            console.log("Nominatim API return a result(s):", {
+                result
+            })
+        } catch (err){
+            if (currentId !== requestId.current) return;
+            setBoundaryResults([])
+            console.error(err)
+        }
+    };
+
+    return{
+        boundaryResults,
+        searchBoundaries
+    }
+}
 
 /**
  * useBoundary
@@ -30,13 +71,14 @@ export function useBoundary() {
         setError(null);
     };
 
-    const loadBoundary = async (boundaryKey, boundaryType, boundaryName) => {
+    const loadBoundary = async (boundaryKey, boundaryType, boundaryName, boundaryID) => {
         clearBoundary();
 
-        console.log('[DEBUG] ENTER loadBoundary:', {
+        console.log('[DEBUG] loadBoundary ENTER:', {
             boundaryKey,
             boundaryType,
             boundaryName,
+            boundaryID,
         })
 
         const currentId = ++requestId.current;
@@ -51,7 +93,8 @@ export function useBoundary() {
             const result = await fetchBoundary(
                 boundaryKey,
                 boundaryType,
-                boundaryName
+                boundaryName,
+                boundaryID
             );
 
             if (currentId !== requestId.current) return;
@@ -113,8 +156,7 @@ export function useMapFeature() {
         featureValue,
         featureType
     ) => {
-        const boundary = BOUNDARY_MAP[selectedBoundary];
-        const boundaryName = boundary.name;
+        const boundaryKey = selectedBoundary;
 
         const currentId = ++requestId.current;
 
@@ -124,7 +166,7 @@ export function useMapFeature() {
         }
 
         const cacheKey = JSON.stringify([
-            boundaryName,
+            boundaryKey,
             featureTag,
             featureValue,
             featureType,
@@ -147,10 +189,10 @@ export function useMapFeature() {
 
         try {
             const result = await fetchMapFeature(
-                boundaryName,
+                boundaryKey,
                 featureTag,
                 featureValue,
-                featureType
+                featureType,
             );
 
             if (currentId !== requestId.current) return;

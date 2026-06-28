@@ -55,16 +55,19 @@ async function handleOverpassResponse(res, retryFn) {
  * -------------
  * Fetches a boundary relation from Overpass by name.
  */
-export async function fetchBoundary(boundaryValue, boundaryType, boundaryName) {
-    if (!boundaryValue || boundaryValue === "none") return null;
+export async function fetchBoundary(boundaryKey, boundaryType, boundaryName, boundaryID) {
+    if (!boundaryKey || boundaryKey === "none") return null;
 
     console.log('[DEBUG] ENTER fetchBoundary:', {
-        boundaryValue, boundaryType, boundaryName
+        boundaryKey, boundaryType, boundaryName, boundaryID
     })
 
-    const query = `
+    let query;
+
+
+    query = `
         [out:json][timeout:60];
-        relation["name"="${boundaryName}"];
+        relation(${boundaryKey});
         out geom meta;
     `;
 
@@ -73,7 +76,7 @@ export async function fetchBoundary(boundaryValue, boundaryType, boundaryName) {
     const res = await callOverpass(query);
 
     return handleOverpassResponse(res, () =>
-        fetchBoundary(boundaryValue, boundaryType, boundaryName)
+        fetchBoundary(boundaryKey, boundaryType, boundaryName)
     );
 }
 
@@ -83,21 +86,21 @@ export async function fetchBoundary(boundaryValue, boundaryType, boundaryName) {
  * Fetches OSM features inside a boundary area using tag filters.
  */
 export async function fetchMapFeature(
-    boundaryName,
+    boundaryKey,
     featureTag,
     featureValue,
     featureType
 ) {
-    if (!boundaryName || boundaryName === "none") return null;
+    if (!boundaryKey || boundaryKey === "none") return null;
 
     console.log('[DEBUG] ENTER fetchFeatures:', {
-        boundaryName, featureTag, featureValue, featureType
+        boundaryKey, featureTag, featureValue, featureType
     })
 
     const query = `
         [out:json][timeout:60];
 
-        relation["name"="${boundaryName}"]->.rels;
+        relation(${boundaryKey})->.rels;
         .rels map_to_area -> .area;
 
         ${featureType}(area.area)["${featureTag}"="${featureValue}"];
@@ -110,6 +113,6 @@ export async function fetchMapFeature(
     const res = await callOverpass(query);
 
     return handleOverpassResponse(res, () =>
-        fetchMapFeature(boundaryName, featureTag, featureValue, featureType)
+        fetchMapFeature(boundaryKey, featureTag, featureValue, featureType)
     );
 }

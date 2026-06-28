@@ -10,7 +10,7 @@ import { useState, useEffect, useMemo } from 'react';
 
 /* High level components */
 import Map from './components/Map/Map';
-import Sidebar from './components/Sidebar/Sidebar';
+import Sidebar from './layout/Sidebar/Sidebar';
 import Popup from './components/StatusPopup/StatusPopup.jsx';
 
 /* Map related components */
@@ -19,7 +19,7 @@ import Legend from './components/Map/Legend/Legend.jsx';
 import FeatureCount from './components/Map/FeatureCounter/FeatureCounter.jsx';
 
 /* Hooks */
-import { useBoundary, useMapFeature } from './hooks/useMapData.js';
+import { useBoundary, useMapFeature, useSearchBoundaries } from './hooks/useMapData.js';
 import { evaluateFeature } from './utils/evaluateFeatures.js';
 
 /* Maps */
@@ -31,6 +31,11 @@ export default function App() {
   const [toggles, setToggles] = useState({});
   const [filters, setFilters] = useState([]);
   const [popupDismissed, setPopupDismissed] = useState(false);
+
+  const {
+    boundaryResults,
+    searchBoundaries
+  } = useSearchBoundaries();
 
   const {
     boundaryData,
@@ -60,15 +65,16 @@ export default function App() {
     }
   }, [boundaryStatus, featureStatus]);
 
-  const boundaryOptions = useMemo(() => ([
+  /*const boundaryOptions = useMemo(() => ([
     { key: 'none', boundaryType: 'none', name: 'None', label: 'None' },
     ...Object.entries(BOUNDARY_MAP).map(([key, boundary]) => ({
       key: key,
       boundaryType: boundary.boundaryType,
       name: boundary.name,
       label: boundary.label,
+      id: boundary.id,
     })),
-  ]), []);
+  ]), []);*/
 
   const featureOptions = useMemo(() => ([
     { value: 'none', label: 'None' },
@@ -99,32 +105,21 @@ export default function App() {
     };
   }, [featureGeojson, filters]);
 
-  /*
-   * Handle boundary selection
-   */
-  const handleDropdown = (boundaryKey, boundaryType, boundaryName) => {
-    console.log('[DEBUG] handleDropdown ENTER:', {
-      boundaryKey,
-      boundaryType,
-      boundaryName,
-    });
+  /**
+   * Handle input for boundary search
+  */
+  const handleSelectBoundary = (result) => {
+    console.log('[DEBUG] handleSelectBoundary ENTER:', result);
 
-    clearFeatures();
+    const boundaryKey = result.osm_id;
+    const boundaryType = result.osm_type;
+    const boundaryName = result.display_name;
+    const boundaryID = result.place_id;
 
-    console.log('[DEBUG] Calling loadBoundary:', {
-      boundaryKey,
-      boundaryType,
-      boundaryName,
-    });
+    setSelectedBoundary(boundaryKey);
 
-    loadBoundary(boundaryKey, boundaryType, boundaryName);
-
-    console.log('[DEBUG] Updating selectedBoundary:', boundaryKey);
-
-    setSelectedBoundary(boundaryKey); 
-
-    setToggles({});
-  };
+    loadBoundary(boundaryKey, boundaryType, boundaryName, boundaryID)
+  }
 
   /**
    * Handle feature toggle
@@ -269,14 +264,16 @@ export default function App() {
 
       <div className="side-bar">
         <Sidebar
-          handleDropdown={handleDropdown}
           handleToggle={handleToggle}
-          boundaryOptions={boundaryOptions}
           featureOptions={featureOptions}
           boundaryData={boundaryData}
           featureData={featureData}
           selectedBoundary={selectedBoundary}
           toggles={toggles}
+          searchBoundaries={searchBoundaries}
+          clearBoundary={clearBoundary}
+          boundaryResults={boundaryResults}
+          onSelectBoundary={handleSelectBoundary}
         />
       </div>
 
