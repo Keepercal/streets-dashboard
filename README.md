@@ -1,4 +1,4 @@
-###### v0.4.0-alpha
+###### v0.5.0-alpha
 # Streets Dashboard
 This web application is build for transport planners, engineers, or any public or private sector professionals involved with the built environment to search for particular features on streets. 
 
@@ -11,10 +11,11 @@ There are a number of selectable options such as pedestrian crossings and cycle 
 <br>*Overpass Turbo* 👉 https://overpass-turbo.eu/
 
 ## What's new?
-### v0.4.0-alpha 
+### v0.5.0-alpha 
 
 ### Added
-- You can change the basemap layer for the map, showing you OpenStreetMap layer or satellite view.
+- Dynamic Searching: Search any boundary on OpenStreetMap
+- Basemap: Change the basemap, showing you map, OpenStreetMap layer or satellite view
 
 
 
