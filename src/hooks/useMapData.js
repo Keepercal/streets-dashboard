@@ -1,9 +1,50 @@
 import osmtogeojson from "osmtogeojson";
 import { useState, useRef } from "react";
 import { fetchBoundary, fetchMapFeature } from "../services/overpass";
+import fetchBoundaries from "../services/nominatim"
 
 /* Maps */
 import { BOUNDARY_MAP } from '../config/osmBoundaryMap.js';
+
+export function useSearchBoundaries(){
+    const [boundaryResults, setBoundaryResults] = useState([])
+    const requestId = useRef(0);
+
+    const searchBoundaries = async (boundaryName) => {
+        setBoundaryResults(null)
+
+        console.log('[DEBUG] searchBoundaries ENTER:',{
+            boundaryName
+        })
+
+        const currentId = ++requestId.current;
+
+        if (boundaryName === 'none'){
+            return
+        }
+
+        try{
+            const result = await fetchBoundaries(boundaryName)
+
+            if (currentId !== requestId.current) return;
+            
+            setBoundaryResults(result)
+
+            console.log("Nominatim API return a result(s):", {
+                result
+            })
+        } catch (err){
+            if (currentId !== requestId.current) return;
+            setBoundaryResults([])
+            console.error(err)
+        }
+    };
+
+    return{
+        boundaryResults,
+        searchBoundaries
+    }
+}
 
 /**
  * useBoundary
@@ -33,7 +74,7 @@ export function useBoundary() {
     const loadBoundary = async (boundaryKey, boundaryType, boundaryName, boundaryID) => {
         clearBoundary();
 
-        console.log('[DEBUG] ENTER loadBoundary:', {
+        console.log('[DEBUG] loadBoundary ENTER:', {
             boundaryKey,
             boundaryType,
             boundaryName,

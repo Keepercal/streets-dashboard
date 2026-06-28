@@ -1,21 +1,24 @@
-async function findBoundaries(boundaryName){
+export default async function fetchBoundaries(boundaryName) {
     const url =
-    `https://nominatim.openstreetmap.org/search?` +
-    new URLSearchParams({
-        q: boundaryName,
-        format: "jsonv2",
-        limit: 10
-    });
+        `https://nominatim.openstreetmap.org/search?` +
+        new URLSearchParams({
+            q: boundaryName,
+            format: "jsonv2",
+            limit: 10
+        });
 
     const res = await fetch(url, {
         headers: {
-            "Accept": "application/json"
+            "Accept": "application/json",
+            "Referer": window.location.origin
         }
     });
+
+    if (!res.ok) {
+        throw new Error(`Nominatim HTTP error: ${res.status}`);
+    }
 
     const data = await res.json();
 
     return data;
 }
-
-export default findBoundaries;

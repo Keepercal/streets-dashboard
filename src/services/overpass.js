@@ -55,35 +55,28 @@ async function handleOverpassResponse(res, retryFn) {
  * -------------
  * Fetches a boundary relation from Overpass by name.
  */
-export async function fetchBoundary(boundaryValue, boundaryType, boundaryName, boundaryID) {
-    if (!boundaryValue || boundaryValue === "none") return null;
+export async function fetchBoundary(boundaryKey, boundaryType, boundaryName, boundaryID) {
+    if (!boundaryKey || boundaryKey === "none") return null;
 
     console.log('[DEBUG] ENTER fetchBoundary:', {
-        boundaryValue, boundaryType, boundaryName, boundaryID
+        boundaryKey, boundaryType, boundaryName, boundaryID
     })
 
     let query;
 
-    if (boundaryID === null){
-        query = `
-            [out:json][timeout:60];
-            relation["name"="${boundaryName}"];
-            out geom meta;
-        `;
-    }else{
-        query = `
-            [out:json][timeout:60];
-            relation(${boundaryID});
-            out geom meta;
-        `;
-    }
+
+    query = `
+        [out:json][timeout:60];
+        relation(${boundaryKey});
+        out geom meta;
+    `;
 
     console.log(query)
 
     const res = await callOverpass(query);
 
     return handleOverpassResponse(res, () =>
-        fetchBoundary(boundaryValue, boundaryType, boundaryName)
+        fetchBoundary(boundaryKey, boundaryType, boundaryName)
     );
 }
 

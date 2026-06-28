@@ -1,29 +1,21 @@
-import findBoundaries from "../../services/nominatim";
-
-function InputItem(){
-    function handleSubmit(e){
+function InputItem({ searchBoundaries }){
+    const handleSubmit = async(e) => {
         // Prevent browser from reloading the page
         e.preventDefault();
 
         // Read the form data
-        const form = e.target;
-        const formData = new FormData(form)
+        const formData = new FormData(e.target);
+        const boundaryName = formData.get("boundaryName");
 
-        // Turn form content into object
-        const formJson = Object.fromEntries(formData.entries());
-        const boundaryName = formJson.boundaryName
-
-        const data = findBoundaries(boundaryName)
-
-        console.log(data)
+        await searchBoundaries(boundaryName);
     }
     return(
         <form method="post" onSubmit={handleSubmit}>
             <input 
                 className="input-item"
                 name="boundaryName"
-                placeholder="e.g. Lockleaze">
-            </input>
+                placeholder="e.g. Lockleaze"
+            />
 
             <button type="submit">Search</button>
         </form>
