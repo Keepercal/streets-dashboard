@@ -40,7 +40,8 @@ const BASEMAPS = {
 };
 
 function Map({ boundary, features }) {
-    const position = [51.4538, -2.5918];
+    //const position = [54.0182, -2.5471]; // Bristol
+    const position = [54.0182, -2.5471]; // UK
 
     const [zoom, setZoom] = useState(13);
     const [basemap, setBasemap] = useState("map");

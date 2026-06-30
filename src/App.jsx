@@ -23,18 +23,18 @@ import { useBoundary, useMapFeature, useSearchBoundaries } from './hooks/useMapD
 import { evaluateFeature } from './utils/evaluateFeatures.js';
 
 /* Maps */
-import { BOUNDARY_MAP } from './config/osmBoundaryMap.js';
 import { FEATURE_MAP } from './config/osmFeatureMap.js';
 
 export default function App() {
-  const [selectedBoundary, setSelectedBoundary] = useState('none');
+  const [selectedBoundaryKey, setselectedBoundaryKey] = useState('none');
   const [toggles, setToggles] = useState({});
   const [filters, setFilters] = useState([]);
   const [popupDismissed, setPopupDismissed] = useState(false);
 
   const {
     boundaryResults,
-    searchBoundaries
+    searchBoundaries,
+    clearBoundaryResults
   } = useSearchBoundaries();
 
   const {
@@ -53,7 +53,7 @@ export default function App() {
     clearFeatures,
     status: featureStatus,
     error: featureError,
-  } = useMapFeature(selectedBoundary);
+  } = useMapFeature(selectedBoundaryKey);
 
   /*
    * Reset popup dismissal when loading starts
@@ -64,17 +64,6 @@ export default function App() {
       setPopupDismissed(false);
     }
   }, [boundaryStatus, featureStatus]);
-
-  /*const boundaryOptions = useMemo(() => ([
-    { key: 'none', boundaryType: 'none', name: 'None', label: 'None' },
-    ...Object.entries(BOUNDARY_MAP).map(([key, boundary]) => ({
-      key: key,
-      boundaryType: boundary.boundaryType,
-      name: boundary.name,
-      label: boundary.label,
-      id: boundary.id,
-    })),
-  ]), []);*/
 
   const featureOptions = useMemo(() => ([
     { value: 'none', label: 'None' },
@@ -116,7 +105,7 @@ export default function App() {
     const boundaryName = result.display_name;
     const boundaryID = result.place_id;
 
-    setSelectedBoundary(boundaryKey);
+    setselectedBoundaryKey(boundaryKey);
 
     loadBoundary(boundaryKey, boundaryType, boundaryName, boundaryID)
   }
@@ -130,7 +119,7 @@ export default function App() {
       featureTag,
       featureValue,
       featureType,
-      selectedBoundary,
+      selectedBoundaryKey,
     });
 
     setToggles(prev => {
@@ -144,13 +133,13 @@ export default function App() {
 
       if (nextValue) {
         console.log('[DEBUG] Calling loadFeatures:', {
-          selectedBoundary,
+          selectedBoundaryKey,
           featureTag,
           featureValue,
           featureType,
         });
 
-        loadFeatures(selectedBoundary, featureTag, featureValue, featureType);
+        loadFeatures(selectedBoundaryKey, featureTag, featureValue, featureType);
       } else {
         console.log('[DEBUG] Clearing features');
         clearFeatures();
@@ -248,7 +237,7 @@ export default function App() {
 
           if (popup.source === 'boundary') {
             console.log('[DEBUG] Resetting boundary state');
-            setSelectedBoundary('none');
+            setselectedBoundaryKey('none');
             clearBoundary();
             clearFeatures();
             setToggles({});
@@ -268,12 +257,14 @@ export default function App() {
           featureOptions={featureOptions}
           boundaryData={boundaryData}
           featureData={featureData}
-          selectedBoundary={selectedBoundary}
+          selectedBoundaryKey={selectedBoundaryKey}
           toggles={toggles}
           searchBoundaries={searchBoundaries}
           clearBoundary={clearBoundary}
+          clearFeatures={clearFeatures}
           boundaryResults={boundaryResults}
           onSelectBoundary={handleSelectBoundary}
+          clearBoundaryResults={clearBoundaryResults}
         />
       </div>
 

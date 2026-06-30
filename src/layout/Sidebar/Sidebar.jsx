@@ -1,6 +1,5 @@
 import './Sidebar.css';
 import { useState, useEffect, useMemo } from "react";
-import DropdownItem from './DropdownItem';
 import ToggleItem from './ToggleItem';
 import InputItem from './InputItem';
 
@@ -11,9 +10,13 @@ const Sidebar = ({
     featureOptions,
     searchBoundaries,
     clearBoundary,
+    clearFeatures,
     boundaryResults,
     onSelectBoundary,
+    clearBoundaryResults,
 }) => {
+
+    const [selectedBoundaryId, setSelectedBoundaryId] = useState(null);
 
     const [boundaryOpen, setBoundaryOpen] = useState(false);
     const [featuresOpen, setFeaturesOpen] = useState(false);
@@ -26,7 +29,7 @@ const Sidebar = ({
         networks: "Networks",
         ways: "Ways",
         crossings: "Crossings",
-        publicTransport: "Public Transport",
+        publicTransport: "Transport",
         publicServices: "Public Services",
         streetFurniture: "Street Furniture",
         poi: "Points of Interest",
@@ -91,12 +94,12 @@ const Sidebar = ({
 
                 {/* ================= HEADER ================= */}
                 <div className="sidebar-header">
-                    <h1 className="sidebar-title">{window.APP_NAME}</h1>
-                    <p className="version-tag">{window.APP_VERSION}</p>
+                    <h1 className="sidebar-title">{__APP_NAME__}</h1>
+                    <p className="version-tag">v{__APP_VERSION__}</p>
                 </div>
 
                 {/* ================= BOUNDARY ================= */}
-                <div className="sidebar-section">
+                <div className={`sidebar-section ${boundaryOpen ? "is-open" : ""}`}>
 
                     <h3
                         className="section-header"
@@ -111,7 +114,9 @@ const Sidebar = ({
                         <div className="section-body">
                             <InputItem 
                                 searchBoundaries={searchBoundaries} 
+                                clearBoundaryResults={clearBoundaryResults}
                                 clearBoundary={clearBoundary}
+                                clearFeatures={clearFeatures}
                             />
                         </div>
 
@@ -119,8 +124,13 @@ const Sidebar = ({
                             {boundaryResults?.map(result => (
                                 <div
                                     key={result.place_id}
-                                    className="boundary-card"
-                                    onClick={() => onSelectBoundary(result)}
+                                    className={`boundary-card ${
+                                        selectedBoundaryId === result.place_id ? "selected" : ""
+                                    }`}
+                                    onClick={() => {
+                                        setSelectedBoundaryId(result.place_id)
+                                        onSelectBoundary(result);
+                                    }}
                                 >
                                     {result.display_name}
                                 </div>
@@ -132,7 +142,7 @@ const Sidebar = ({
 
                 {/* ================= FEATURES ================= */}
                 {boundaryData && (
-                    <div className="sidebar-section">
+                    <div className={`sidebar-section ${featuresOpen ? "is-open" : ""}`}>
 
                         <h3
                             className="section-header"

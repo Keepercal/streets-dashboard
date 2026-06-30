@@ -19,9 +19,9 @@ export const FEATURE_MAP = {
     },
 
     ways: {
-        parking: {
-            tag: "amenity",
-            label: "Parking",
+        public_footpath: {
+            tag:"designation",
+            label:"Public Rights of Way",
             type: "way",
         },
         cycleway: {
@@ -38,7 +38,12 @@ export const FEATURE_MAP = {
             tag: "traffic_intervention",
             label: "School Streets",
             type: "way",
-        }
+        },
+        parking: {
+            tag: "amenity",
+            label: "Parking",
+            type: "way",
+        },
     },
 
     crossings: {
@@ -46,12 +51,6 @@ export const FEATURE_MAP = {
             tag: "crossing",
             label: "Unmarked Crossings",
             type: "node",
-            filter: {
-                rules: [
-                    { key: "tactile_paving", label: "Tactile Paving" },
-                    { key: "kerb", label: "Kerb" }
-                ]
-            }
         },
         zebra: {
             tag: "crossing_ref",

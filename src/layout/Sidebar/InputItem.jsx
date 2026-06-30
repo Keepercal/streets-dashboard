@@ -1,4 +1,9 @@
-function InputItem({ searchBoundaries, clearBoundary }){
+function InputItem({ 
+    searchBoundaries,
+    clearBoundaryResults,
+    clearBoundary, 
+    clearFeatures,
+}){
     const handleSubmit = async(e) => {
         // Prevent browser from reloading the page
         e.preventDefault();
@@ -11,11 +16,13 @@ function InputItem({ searchBoundaries, clearBoundary }){
     }
 
     const handleReset = () => {
+        clearBoundaryResults();
         clearBoundary();
+        clearFeatures();
     }
 
     return(
-        <form method="post" 
+        <form className="boundary-form"
             onSubmit={handleSubmit}
             onReset={handleReset}
         >
@@ -23,12 +30,14 @@ function InputItem({ searchBoundaries, clearBoundary }){
                 className="input-item"
                 name="boundaryName"
                 placeholder="e.g. Bristol"
+                autoComplete="off"
             />
-
-            <button type="submit">Search</button>
-            <button type="reset">Clear</button>
+            
+            <div className="button-row">
+                <button className="btn btn-primary" type="submit">Search</button>
+                <button className="btn btn-secondary" type="reset">Clear</button>
+            </div>
         </form>
-
     )
 }
 

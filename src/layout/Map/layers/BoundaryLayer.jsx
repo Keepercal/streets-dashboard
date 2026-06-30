@@ -18,6 +18,7 @@ export default function BoundaryLayer({ boundary }) {
         <GeoJSON
             data={boundary}
             style={style}
+            pointToLayer={() => null}
         />
     );
 }
