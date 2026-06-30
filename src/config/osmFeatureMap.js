@@ -194,7 +194,7 @@ export const FEATURE_MAP = {
         },
         cafe: {
             tag: "amenity",
-            label: "cafe",
+            label: "Cafe",
             type: "way",
         },
         fast_food: {
@@ -252,7 +252,7 @@ export const FEATURE_MAP = {
         },
         swimming_pool: {
             tag: "leisure",
-            label: "Sports Pitch",
+            label: "Swimming Pool",
             type: "way",
         },
         pitch: {
@@ -268,15 +268,108 @@ export const FEATURE_MAP = {
     },
 
     landuse: {
-        retail: {
+        residential: {
             tag: "landuse",
-            label: "Retail",
+            label: "Residential",
+            type: "way"
+        },
+        commercial: {
+            tag: "landuse",
+            label: "Commercial",
             type: "way"
         },
         industrial: {
             tag: "landuse",
             label: "Industrial",
             type: "way"
+        },
+        retail: {
+            tag: "landuse",
+            label: "Retail",
+            type: "way"
+        },
+        farmland: {
+            tag: "landuse",
+            label: "Farmland",
+            type: "way"
+        },
+        meadow: {
+            tag: "landuse",
+            label: "Meadow",
+            type: "way"
+        },
+        orchard: {
+            tag: "landuse",
+            label: "Orchard",
+            type: "way"
+        },
+        vineyard: {
+            tag: "landuse",
+            label: "Vineyard",
+            type: "way"
+        },
+        quarry: {
+            tag: "landuse",
+            label: "Quarry",
+            type: "way"
+        },
+        military: {
+            tag: "landuse",
+            label: "Military",
+            type: "way"
+        },
+    },
+
+    naturalFeatures:{
+        wood: {
+            tag: "natural",
+            label: "Woodland",
+            type: "way",
+        },
+        forest: {
+            tag: "landuse",
+            label: "Forest",
+            type: "way",
+        },
+        grassland: {
+            tag: "natural",
+            label: "Grassland",
+            type: "way",
+        },
+        beach: {
+            tag: "natural",
+            label: "Beach",
+            type: "way",
+        },
+        water: {
+            tag: "natural",
+            label: "Water",
+            type: "way",
+        },
+        river: {
+            tag: "waterway",
+            label: "River",
+            type: "way",
+        },
+        stream: {
+            tag: "waterway",
+            label: "Stream",
+            type: "way",
+        },
+        peak: {
+            tag: "natural",
+            label: "Peak",
+            type: "node",
+        },
+        cliff: {
+            tag: "natural",
+            label: "Cliff",
+            type: "way",
+        },
+        cave_entrance: {
+            tag: "natural",
+            label: "Cave",
+            type: "node",
         },
     }
 };

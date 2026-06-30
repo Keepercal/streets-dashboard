@@ -45,6 +45,7 @@ const Sidebar = ({
         fooddrink: "Food & Drink",
         leisure: "Leisure",
         landuse: "Land Use",
+        naturalFeatures: "Natural Features"
     };
 
     /**
