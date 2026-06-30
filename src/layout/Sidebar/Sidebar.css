@@ -36,7 +36,7 @@ h2, h3 {
 
 .sidebar {
     width: 100%;
-    height: 100%;
+    height: 100vh;
 
     display: flex;
     flex-direction: column;
@@ -53,7 +53,7 @@ h2, h3 {
     SIDEBAR SECTIONS
 ========================= */
 
-.sidebar-section {
+.sidebar-tab {
     width: 100%;
     padding: 6px 8px;
     margin-bottom: 10px;
@@ -66,15 +66,18 @@ h2, h3 {
 
     transition: background 0.2s ease;
     overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
 }
 
 /* hover only when CLOSED */
-.sidebar-section:not(.is-open):hover {
+.sidebar-tab:not(.is-open):hover {
     background: rgba(255, 255, 255, 0.05);
 }
 
 /* optional: visual “active/open” state */
-.sidebar-section.is-open {
+.sidebar-tab.is-open {
     background: rgba(255, 255, 255, 0.04);
     border-color: rgba(255, 255, 255, 0.25);
 }
@@ -83,7 +86,7 @@ h2, h3 {
     SECTION DROPDOWN (LEVEL 1)
 ========================= */
 
-.section-content {
+.tab-content {
     max-height: 0;
     overflow: hidden;
 
@@ -91,15 +94,19 @@ h2, h3 {
     transform: translateY(-6px);
 
     transition: opacity 0.2s ease, transform 0.2s ease;
+
+    display: flex;
+    flex-direction: column;
 }
 
-.section-content.open {
+.tab-content.open {
+    margin-top: 12px;
     max-height: 800px;
     opacity: 1;
     transform: translateY(0);
 }
 
-.section-header{
+.tab-header{
     margin: 0px;
     cursor: pointer;
     display: flex;
@@ -112,16 +119,18 @@ h2, h3 {
     BOUNDARY SECTION INTERNALS
 ========================= */
 
-.section-body {
+.tab-body {
     margin-bottom: 8px;
 }
 
-.section-list {
+.tab-list {
     display: flex;
     flex-direction: column;
     gap: 6px;
 
-    max-height: 200px;
+    flex: 1;
+    min-height: 0;
+
     overflow-y: auto;
 
     padding-right: 4px;
@@ -132,11 +141,11 @@ h2, h3 {
 ========================= */
 
 .accordion-group {
-    margin: 8px 0px;
+    margin: 4px 0px;
 }
 
 .accordion-header{
-    margin: 12px 0px 0px 0px;
+    margin: 0px;
     cursor: pointer;
 }
 
@@ -271,6 +280,16 @@ h2, h3 {
     background: #d1d5db;
 }
 
+.empty-state {
+    padding: 5px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+
+    display: flex;
+    justify-content: center
+}
+
 /* =========================
     BOUNDARY CARDS
 ========================= */
@@ -290,11 +309,15 @@ h2, h3 {
 }
 
 .boundary-card:hover {
-    background: rgba(226, 159, 0, 0.1);
+    background: rgba(226, 159, 0, 0.2);
 }
 
 .boundary-card.selected {
     background: rgba(226, 159, 0, 0.1);
+}
+
+.boundary-card.selected:hover {
+    background: rgba(226, 159, 0, 0.2);
 }
 
 /* =========================

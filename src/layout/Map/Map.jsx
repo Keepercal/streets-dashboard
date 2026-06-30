@@ -59,7 +59,8 @@ function Map({ boundary, features }) {
 
             <MapContainer
                 center={position}
-                zoom={13}
+                //zoom={13} // Bristol
+                zoom={6} // UK
                 style={{ height: "100vh", width: "100%" }}
             >
 

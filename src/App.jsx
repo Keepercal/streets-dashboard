@@ -11,7 +11,7 @@ import { useState, useEffect, useMemo } from 'react';
 /* High level components */
 import Map from './layout//Map/Map.jsx';
 import Sidebar from './layout/Sidebar/Sidebar';
-import Popup from './components/StatusPopup/StatusPopup.jsx';
+import StatusPopup from './components/StatusPopup/StatusPopup.jsx';
 
 /* Map related components */
 import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
@@ -26,15 +26,15 @@ import { evaluateFeature } from './utils/evaluateFeatures.js';
 import { FEATURE_MAP } from './config/osmFeatureMap.js';
 
 export default function App() {
-  const [selectedBoundaryKey, setselectedBoundaryKey] = useState('none');
+  const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
   const [toggles, setToggles] = useState({});
   const [filters, setFilters] = useState([]);
   const [popupDismissed, setPopupDismissed] = useState(false);
 
   const {
-    boundaryResults,
+    clearBoundaryResults,
     searchBoundaries,
-    clearBoundaryResults
+    boundaryResults,
   } = useSearchBoundaries();
 
   const {
@@ -105,9 +105,19 @@ export default function App() {
     const boundaryName = result.display_name;
     const boundaryID = result.place_id;
 
-    setselectedBoundaryKey(boundaryKey);
+    setSelectedBoundaryKey(boundaryKey);
 
     loadBoundary(boundaryKey, boundaryType, boundaryName, boundaryID)
+  }
+  /**
+   * Handle resetting boundary and whiping features
+   */
+  const handleClearBoundary = () => {
+    setSelectedBoundaryKey('none');
+    clearBoundaryResults()
+    clearBoundary();
+    clearFeatures();
+    setToggles({});
   }
 
   /**
@@ -225,7 +235,7 @@ export default function App() {
 
   return (
     <div className="App">
-      <Popup
+      <StatusPopup
         trigger={popup.trigger}
         type={popup.type}
         title={popup.title}
@@ -237,9 +247,7 @@ export default function App() {
 
           if (popup.source === 'boundary') {
             console.log('[DEBUG] Resetting boundary state');
-            setselectedBoundaryKey('none');
-            clearBoundary();
-            clearFeatures();
+            handleClearBoundary();
             setToggles({});
           }
 
@@ -253,18 +261,19 @@ export default function App() {
 
       <div className="side-bar">
         <Sidebar
-          handleToggle={handleToggle}
-          featureOptions={featureOptions}
           boundaryData={boundaryData}
           featureData={featureData}
-          selectedBoundaryKey={selectedBoundaryKey}
-          toggles={toggles}
+
           searchBoundaries={searchBoundaries}
-          clearBoundary={clearBoundary}
-          clearFeatures={clearFeatures}
+          handleSelectBoundary={handleSelectBoundary}
           boundaryResults={boundaryResults}
-          onSelectBoundary={handleSelectBoundary}
-          clearBoundaryResults={clearBoundaryResults}
+          selectedBoundaryKey={selectedBoundaryKey}
+
+          featureOptions={featureOptions}
+          toggles={toggles}
+          handleToggle={handleToggle}
+
+          handleClearBoundary={handleClearBoundary}
         />
       </div>
 
@@ -278,8 +287,6 @@ export default function App() {
         />}
 
         {featureData && <Legend />}
-
-        {featureData && <FeatureCount features={featureData} />}
       </div>
     </div>
   );

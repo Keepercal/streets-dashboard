@@ -39,11 +39,6 @@ export const FEATURE_MAP = {
             label: "School Streets",
             type: "way",
         },
-        parking: {
-            tag: "amenity",
-            label: "Parking",
-            type: "way",
-        },
     },
 
     crossings: {
@@ -84,7 +79,7 @@ export const FEATURE_MAP = {
         }
     },
 
-    publicTransport: {
+    transport: {
         station: {
             tag: "railway",
             label: "Railway Stations",
@@ -94,7 +89,12 @@ export const FEATURE_MAP = {
             tag: "highway",
             label: "Bus Stops",
             type: "node",
-        }
+        },
+        parking: {
+            tag: "amenity",
+            label: "Parking",
+            type: "way",
+        },
     },
 
     streetFurniture: {
@@ -113,11 +113,6 @@ export const FEATURE_MAP = {
             label: "Benches",
             type: "node",
         },
-        artwork: {
-            tag: "tourism",
-            label: "Artwork",
-            type: "node",
-        },
         wayfinding: {
             tag: "tourism",
             label: "Wayfinding",
@@ -126,6 +121,36 @@ export const FEATURE_MAP = {
     },
 
     publicServices: {
+        townhall: {
+            tag: "amenity",
+            label: "Town Hall",
+            type: "way",
+        },
+        courthouse: {
+            tag: "amenity",
+            label: "Court House",
+            type: "way",
+        },
+        post_office: {
+            tag: "amenity",
+            label: "Post Office",
+            type: "way",
+        },
+        parcel_locker: {
+            tag: "amenity",
+            label: "Parcel Locker",
+            type: "way",
+        },
+        community_centre: {
+            tag: "amenity",
+            label: "Community Centre",
+            type: "way",
+        },
+        prison: {
+            tag: "amenity",
+            label: "Prison",
+            type: "way",
+        },
         hospital: {
             tag: "amenity",
             label: "Hospitals",
@@ -153,23 +178,43 @@ export const FEATURE_MAP = {
             tag: "amenity",
             label: "Places of Worship",
             type: "way",
-        }
+        },
+        artwork: {
+            tag: "tourism",
+            label: "Artwork",
+            type: "node",
+        },
     },
 
-    buildings: {
+    fooddrink: {
+        restaurant: {
+            tag: "amenity",
+            label: "Restaurant",
+            type: "way",
+        },
+        cafe: {
+            tag: "amenity",
+            label: "cafe",
+            type: "way",
+        },
+        fast_food: {
+            tag: "amenity",
+            label: "Fast Food",
+            type: "way",
+        },
         pub: {
             tag: "amenity",
             label: "Pub",
             type: "way",
-        }
-    },
-
-    recreation: {
-        pitch: {
-            tag: "leisure",
-            label: "Sports Pitch",
+        },
+        bar: {
+            tag: "amenity",
+            label: "Bar",
             type: "way",
         },
+    },
+
+    leisure: {
         playground: {
             tag: "leisure",
             label: "Playground",
@@ -179,7 +224,47 @@ export const FEATURE_MAP = {
             tag: "leisure",
             label: "Park",
             type: "way",
-        }
+        },
+        garden: {
+            tag: "leisure",
+            label: "garden",
+            type: "way",
+        },
+        dog_park: {
+            tag: "leisure",
+            label: "Dog Park",
+            type: "way",
+        },
+        fitness_centre: {
+            tag: "leisure",
+            label: "Fitness Centre",
+            type: "way",
+        },
+        sports_centre: {
+            tag: "leisure",
+            label: "Sports Centre",
+            type: "way",
+        },
+        stadium: {
+            tag: "leisure",
+            label: "Stadium",
+            type: "way",
+        },
+        swimming_pool: {
+            tag: "leisure",
+            label: "Sports Pitch",
+            type: "way",
+        },
+        pitch: {
+            tag: "leisure",
+            label: "Sports Pitch",
+            type: "way",
+        },
+        track: {
+            tag: "leisure",
+            label: "Track",
+            type: "way",
+        },
     },
 
     landuse: {

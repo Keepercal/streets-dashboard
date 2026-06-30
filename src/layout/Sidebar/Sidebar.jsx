@@ -1,26 +1,35 @@
 import './Sidebar.css';
 import { useState, useEffect, useMemo } from "react";
-import ToggleItem from './ToggleItem';
-import InputItem from './InputItem';
+import ToggleItem from './components/ToggleItem';
+import InputItem from './components/InputItem';
+
+/* UI Components */
+import SidebarHeader from './components/SidebarHeader'
+import BoundaryTab from './components/BoundaryTab';
+import FeatureTab from './components/FeatureTab';
+import FeatureCounter from '../../components/FeatureCounter/FeatureCounter';
 
 const Sidebar = ({
-    handleToggle,
     boundaryData,
-    toggles,
-    featureOptions,
-    searchBoundaries,
-    clearBoundary,
-    clearFeatures,
-    boundaryResults,
-    onSelectBoundary,
-    clearBoundaryResults,
-}) => {
+    featureData,
 
-    const [selectedBoundaryId, setSelectedBoundaryId] = useState(null);
+    searchBoundaries,
+    handleSelectBoundary,
+    boundaryResults,
+    selectedBoundaryKey,
+
+    featureOptions,
+    toggles,
+    handleToggle,
+
+    handleClearBoundary,
+    clearFeatures,
+}) =>{
 
     const [boundaryOpen, setBoundaryOpen] = useState(false);
     const [featuresOpen, setFeaturesOpen] = useState(false);
     const [openGroups, setOpenGroups] = useState({});
+    const [hasSearched, setHasSearched] = useState(false);
 
     /**
      * Human-readable group labels
@@ -29,12 +38,12 @@ const Sidebar = ({
         networks: "Networks",
         ways: "Ways",
         crossings: "Crossings",
-        publicTransport: "Transport",
+        transport: "Transport",
         publicServices: "Public Services",
         streetFurniture: "Street Furniture",
         poi: "Points of Interest",
-        buildings: "Buildings",
-        recreation: "Recreation",
+        fooddrink: "Food & Drink",
+        leisure: "Leisure",
         landuse: "Land Use",
     };
 
@@ -47,11 +56,9 @@ const Sidebar = ({
                 const group = feature.group;
 
                 if (!group) return acc;
-
                 if (!acc[group]) acc[group] = [];
 
                 acc[group].push({ key, ...feature });
-
                 return acc;
             },
             {}
@@ -65,16 +72,11 @@ const Sidebar = ({
         if (!featureOptions) return;
 
         setOpenGroups((prev) => {
-            const initial = Object.values(featureOptions).reduce(
-                (acc, feature) => {
-                    if (feature?.group) {
-                        acc[feature.group] = false;
-                    }
-                    return acc;
-                },
-                {}
-            );
+            const initial = Object.values(featureOptions).reduce((acc, feature) => {
+                    if (feature?.group) acc[feature.group] = false;
 
+                    return acc;
+                }, {});
             return { ...initial, ...prev };
         });
     }, [featureOptions]);
@@ -83,113 +85,48 @@ const Sidebar = ({
      * Toggle group visibility
      */
     const toggleGroup = (group) => {
-        setOpenGroups((prev) => ({
-            ...prev,
-            [group]: !prev[group],
-        }));
+        setOpenGroups((prev) => ({ ...prev, [group]: !prev[group] }));
     };
+
     return (
         <div className="sidebar-wrapper">
             <div className="sidebar">
 
                 {/* ================= HEADER ================= */}
-                <div className="sidebar-header">
-                    <h1 className="sidebar-title">{__APP_NAME__}</h1>
-                    <p className="version-tag">v{__APP_VERSION__}</p>
-                </div>
+                <SidebarHeader/>
 
                 {/* ================= BOUNDARY ================= */}
-                <div className={`sidebar-section ${boundaryOpen ? "is-open" : ""}`}>
+                <BoundaryTab
+                    open={boundaryOpen}
+                    setOpen={setBoundaryOpen}
 
-                    <h3
-                        className="section-header"
-                        onClick={() => setBoundaryOpen(prev => !prev)}
-                    >
-                        Search Boundary
-                        <span className={`arrow ${boundaryOpen ? "rotated" : ""}`}>▸</span>
-                    </h3>
+                    searchBoundaries={searchBoundaries}
+                    handleClearBoundary={handleClearBoundary}
+                    clearFeatures={clearFeatures}
 
-                    <div className={`section-content ${boundaryOpen ? "open" : ""}`}>
+                    boundaryResults={boundaryResults}
+                    onSelectBoundary={handleSelectBoundary}
 
-                        <div className="section-body">
-                            <InputItem 
-                                searchBoundaries={searchBoundaries} 
-                                clearBoundaryResults={clearBoundaryResults}
-                                clearBoundary={clearBoundary}
-                                clearFeatures={clearFeatures}
-                            />
-                        </div>
+                    selectedBoundaryKey={selectedBoundaryKey}
 
-                        <div className="section-list">
-                            {boundaryResults?.map(result => (
-                                <div
-                                    key={result.place_id}
-                                    className={`boundary-card ${
-                                        selectedBoundaryId === result.place_id ? "selected" : ""
-                                    }`}
-                                    onClick={() => {
-                                        setSelectedBoundaryId(result.place_id)
-                                        onSelectBoundary(result);
-                                    }}
-                                >
-                                    {result.display_name}
-                                </div>
-                            ))}
-                        </div>
-
-                    </div>
-                </div>
+                    hasSearched={hasSearched}
+                    setHasSearched={setHasSearched}
+                />
 
                 {/* ================= FEATURES ================= */}
                 {boundaryData && (
-                    <div className={`sidebar-section ${featuresOpen ? "is-open" : ""}`}>
-
-                        <h3
-                            className="section-header"
-                            onClick={() => setFeaturesOpen(prev => !prev)}
-                        >
-                            Features
-                            <span className={`arrow ${featuresOpen ? "rotated" : ""}`}>▸</span>
-                        </h3>
-
-                        {/* LEVEL 1: FEATURES PANEL */}
-                        <div className={`section-content ${featuresOpen ? "open" : ""}`}>
-
-                            {Object.entries(groupedFeatures).map(([group, features]) => (
-
-                                <div key={group} className="accordion-group">
-
-                                    {/* LEVEL 2 HEADER */}
-                                    <h4
-                                        className="accordion-header"
-                                        onClick={() => toggleGroup(group)}
-                                    >
-                                        {GROUP_LABELS[group] || group}
-                                        <span className={`arrow ${openGroups[group] ? "rotated" : ""}`}>▸</span>
-                                    </h4>
-
-                                    {/* LEVEL 3 CONTENT */}
-                                    <div className={`accordion-content ${openGroups[group] ? "open" : ""}`}>
-
-                                        {features.map(({ key, label, tag, type }) => (
-                                            <ToggleItem
-                                                key={key}
-                                                label={label}
-                                                checked={toggles[key]}
-                                                onChange={() =>
-                                                    handleToggle(key, tag, key, type)
-                                                }
-                                            />
-                                        ))}
-
-                                    </div>
-
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    <FeatureTab
+                        openGroups={openGroups}
+                        featuresOpen={featuresOpen}
+                        setFeaturesOpen={setFeaturesOpen}
+                        groupedFeatures={groupedFeatures}
+                        toggleGroup={toggleGroup}
+                        GROUP_LABELS={GROUP_LABELS}
+                        toggles={toggles}
+                        handleToggle={handleToggle}
+                    />
                 )}
-
+                <FeatureCounter features={featureData} />
             </div>
         </div>
     );

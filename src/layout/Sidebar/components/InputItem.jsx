@@ -1,8 +1,7 @@
 function InputItem({ 
-    searchBoundaries,
-    clearBoundaryResults,
-    clearBoundary, 
-    clearFeatures,
+    onSearch,
+    handleClearBoundary,
+    setHasSearched
 }){
     const handleSubmit = async(e) => {
         // Prevent browser from reloading the page
@@ -12,14 +11,14 @@ function InputItem({
         const formData = new FormData(e.target);
         const boundaryName = formData.get("boundaryName");
 
-        await searchBoundaries(boundaryName);
-    }
+        await onSearch(boundaryName);
+        setHasSearched(true);
+    };
 
     const handleReset = () => {
-        clearBoundaryResults();
-        clearBoundary();
-        clearFeatures();
-    }
+        handleClearBoundary()
+        setHasSearched(false)
+    };
 
     return(
         <form className="boundary-form"
