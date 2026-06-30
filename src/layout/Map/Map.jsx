@@ -8,7 +8,7 @@ import BoundaryLayer from "./layers/BoundaryLayer";
 import FeatureLayer from "./layers/FeatureLayer";
 import FitBounds from "./controls/FitBounds";
 import ZoomTracker from "./controls/ZoomTracker";
-import BasemapSwitcher from "./BasemapSwitcher/BasemapSwitcher";
+import BasemapSwitcher from "../../components/BasemapSwitcher/BasemapSwitcher";
 
 /**
  * Map
@@ -40,7 +40,8 @@ const BASEMAPS = {
 };
 
 function Map({ boundary, features }) {
-    const position = [51.4538, -2.5918];
+    //const position = [54.0182, -2.5471]; // Bristol
+    const position = [54.0182, -2.5471]; // UK
 
     const [zoom, setZoom] = useState(13);
     const [basemap, setBasemap] = useState("map");
@@ -58,7 +59,8 @@ function Map({ boundary, features }) {
 
             <MapContainer
                 center={position}
-                zoom={13}
+                //zoom={13} // Bristol
+                zoom={6} // UK
                 style={{ height: "100vh", width: "100%" }}
             >
 

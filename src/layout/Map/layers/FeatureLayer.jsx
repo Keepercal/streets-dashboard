@@ -39,7 +39,10 @@ export default function FeatureLayer({ features, zoom }) {
     const overviewFeatures = {
         type: "FeatureCollection",
         features: features.features
-            .filter(f => f.geometry?.type !== "Point")
+            .filter(f => 
+                f.geometry?.type !== "Point" &&
+                f.geometry?.type !== "LineString"
+            )
             .map(f => {
                 const bounds = L.geoJSON(f).getBounds();
                 const centre = bounds.getCenter(); // Store the centre of the polygon

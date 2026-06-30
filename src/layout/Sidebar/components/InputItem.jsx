@@ -1,4 +1,8 @@
-function InputItem({ searchBoundaries, clearBoundary }){
+function InputItem({ 
+    onSearch,
+    handleClearBoundary,
+    setHasSearched
+}){
     const handleSubmit = async(e) => {
         // Prevent browser from reloading the page
         e.preventDefault();
@@ -7,15 +11,17 @@ function InputItem({ searchBoundaries, clearBoundary }){
         const formData = new FormData(e.target);
         const boundaryName = formData.get("boundaryName");
 
-        await searchBoundaries(boundaryName);
-    }
+        await onSearch(boundaryName);
+        setHasSearched(true);
+    };
 
     const handleReset = () => {
-        clearBoundary();
-    }
+        handleClearBoundary()
+        setHasSearched(false)
+    };
 
     return(
-        <form method="post" 
+        <form className="boundary-form"
             onSubmit={handleSubmit}
             onReset={handleReset}
         >
@@ -23,12 +29,14 @@ function InputItem({ searchBoundaries, clearBoundary }){
                 className="input-item"
                 name="boundaryName"
                 placeholder="e.g. Bristol"
+                autoComplete="off"
             />
-
-            <button type="submit">Search</button>
-            <button type="reset">Clear</button>
+            
+            <div className="button-row">
+                <button className="btn btn-primary" type="submit">Search</button>
+                <button className="btn btn-secondary" type="reset">Clear</button>
+            </div>
         </form>
-
     )
 }
 

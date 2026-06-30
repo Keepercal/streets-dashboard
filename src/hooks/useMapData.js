@@ -3,12 +3,13 @@ import { useState, useRef } from "react";
 import { fetchBoundary, fetchMapFeature } from "../services/overpass";
 import fetchBoundaries from "../services/nominatim"
 
-/* Maps */
-import { BOUNDARY_MAP } from '../config/osmBoundaryMap.js';
-
 export function useSearchBoundaries(){
     const [boundaryResults, setBoundaryResults] = useState([])
     const requestId = useRef(0);
+
+    const clearBoundaryResults = () => {
+        setBoundaryResults([]);
+    }
 
     const searchBoundaries = async (boundaryName) => {
         setBoundaryResults(null)
@@ -42,7 +43,8 @@ export function useSearchBoundaries(){
 
     return{
         boundaryResults,
-        searchBoundaries
+        searchBoundaries,
+        clearBoundaryResults
     }
 }
 
@@ -67,6 +69,7 @@ export function useBoundary() {
     const clearBoundary = () => {
         setBoundaryData(null);
         setBoundaryGeojson(null);
+
         setStatus("idle");
         setError(null);
     };
@@ -90,7 +93,7 @@ export function useBoundary() {
         setStatus("loading");
 
         try {
-            const result = await fetchBoundary(
+            const result = await fetchBoundary( // Fetch boundary from Overpass API
                 boundaryKey,
                 boundaryType,
                 boundaryName,
@@ -99,16 +102,18 @@ export function useBoundary() {
 
             if (currentId !== requestId.current) return;
 
-            const geojson = osmtogeojson(result, { meta: true });
+            const geojson = osmtogeojson(result, { meta: true }); // Convert results to geoJSON
 
             setBoundaryData(result);
             setBoundaryGeojson(geojson);
+
             setStatus("success");
         } catch (err) {
             if (currentId !== requestId.current) return;
 
             setBoundaryData(null);
             setBoundaryGeojson(null);
+
             setStatus("error");
             setError(err);
         }
@@ -137,6 +142,7 @@ export function useBoundary() {
 export function useMapFeature() {
     const [featureData, setFeatureData] = useState(null);
     const [featureGeojson, setFeatureGeojson] = useState(null);
+
     const [status, setStatus] = useState("idle");
     const [error, setError] = useState(null);
 
@@ -146,17 +152,18 @@ export function useMapFeature() {
     const clearFeatures = () => {
         setFeatureData(null);
         setFeatureGeojson(null);
+
         setError(null);
         setStatus("idle");
     };
 
     const loadFeatures = async (
-        selectedBoundary,
+        selectedBoundaryKey,
         featureTag,
         featureValue,
         featureType
     ) => {
-        const boundaryKey = selectedBoundary;
+        const boundaryKey = selectedBoundaryKey;
 
         const currentId = ++requestId.current;
 
@@ -165,14 +172,14 @@ export function useMapFeature() {
             return;
         }
 
-        const cacheKey = JSON.stringify([
+        const cacheKey = JSON.stringify([ // Store results in cache
             boundaryKey,
             featureTag,
             featureValue,
             featureType,
         ]);
 
-        if (cache.current.has(cacheKey)) {
+        if (cache.current.has(cacheKey)) { // Check cache for stored features
             const cached = cache.current.get(cacheKey);
 
             setFeatureData(cached.featureData);
@@ -184,11 +191,12 @@ export function useMapFeature() {
 
         setFeatureData(null);
         setFeatureGeojson(null);
+
         setError(null);
         setStatus("loading");
 
         try {
-            const result = await fetchMapFeature(
+            const result = await fetchMapFeature( // Fetch map feature from Overpass API
                 boundaryKey,
                 featureTag,
                 featureValue,
@@ -197,7 +205,7 @@ export function useMapFeature() {
 
             if (currentId !== requestId.current) return;
 
-            const geojson = osmtogeojson(result, { meta: true });
+            const geojson = osmtogeojson(result, { meta: true }); // Convert to geoJSON
 
             cache.current.set(cacheKey, {
                 featureData: result,
@@ -206,12 +214,14 @@ export function useMapFeature() {
 
             setFeatureData(result);
             setFeatureGeojson(geojson);
+
             setStatus("success");
         } catch (err) {
             if (currentId !== requestId.current) return;
 
             setFeatureData(null);
             setFeatureGeojson(null);
+            
             setError(err);
             setStatus("error");
         }
