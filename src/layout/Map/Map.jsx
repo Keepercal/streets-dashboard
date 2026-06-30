@@ -8,7 +8,7 @@ import BoundaryLayer from "./layers/BoundaryLayer";
 import FeatureLayer from "./layers/FeatureLayer";
 import FitBounds from "./controls/FitBounds";
 import ZoomTracker from "./controls/ZoomTracker";
-import BasemapSwitcher from "./BasemapSwitcher/BasemapSwitcher";
+import BasemapSwitcher from "../../components/BasemapSwitcher/BasemapSwitcher";
 
 /**
  * Map

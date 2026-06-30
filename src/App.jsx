@@ -9,14 +9,14 @@ import { createRoot } from 'react-dom/client';
 import { useState, useEffect, useMemo } from 'react';
 
 /* High level components */
-import Map from './components/Map/Map';
+import Map from './layout//Map/Map.jsx';
 import Sidebar from './layout/Sidebar/Sidebar';
 import Popup from './components/StatusPopup/StatusPopup.jsx';
 
 /* Map related components */
-import FilterPanel from './components/Map/FilterPanel/FilterPanel.jsx';
-import Legend from './components/Map/Legend/Legend.jsx';
-import FeatureCount from './components/Map/FeatureCounter/FeatureCounter.jsx';
+import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
+import Legend from './components/Legend/Legend.jsx';
+import FeatureCount from './components/FeatureCounter/FeatureCounter.jsx';
 
 /* Hooks */
 import { useBoundary, useMapFeature, useSearchBoundaries } from './hooks/useMapData.js';
