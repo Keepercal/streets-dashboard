@@ -13,7 +13,7 @@ const Sidebar = ({
     boundaryData,
     featureData,
 
-    searchBoundaries,
+    loadBoundaryResults,
     handleSelectBoundary,
     boundaryResults,
     selectedBoundaryKey,
@@ -101,7 +101,7 @@ const Sidebar = ({
                     open={boundaryOpen}
                     setOpen={setBoundaryOpen}
 
-                    searchBoundaries={searchBoundaries}
+                    loadBoundaryResults={loadBoundaryResults}
                     handleClearBoundary={handleClearBoundary}
                     clearFeatures={clearFeatures}
 

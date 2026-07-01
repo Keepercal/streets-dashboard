@@ -6,7 +6,7 @@ const BoundaryTab = ({
     open,
     setOpen,
 
-    searchBoundaries,
+    loadBoundaryResults,
     handleClearBoundary,
     clearFeatures,
 
@@ -32,7 +32,7 @@ const BoundaryTab = ({
 
                 <div className="tab-body">
                     <InputItem
-                        onSearch={searchBoundaries}
+                        onSearch={loadBoundaryResults}
                         setHasSearched={setHasSearched}
 
                         handleClearBoundary={handleClearBoundary}

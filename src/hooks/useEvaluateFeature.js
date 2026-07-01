@@ -6,7 +6,7 @@
  * Each filter is applied using an AND condition.
  * Returns true only if all filters pass.
  */
-export function useEvaluateFeature(feature, filters) {
+export default function useEvaluateFeature(feature, filters) {
     const tags = feature?.properties ?? {};
 
     return filters.every((filter) => {

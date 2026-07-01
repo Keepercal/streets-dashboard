@@ -19,8 +19,11 @@ import Legend from './components/Legend/Legend.jsx';
 import FeatureCount from './components/FeatureCounter/FeatureCounter.jsx';
 
 /* Hooks */
-import { useBoundary, useMapFeature, useSearchBoundaries } from './hooks/useMapData.js';
-import { evaluateFeature } from './utils/evaluateFeatures.js';
+import useBoundarySearch from './hooks/useBoundarySearch.js';
+import useBoundary from './hooks/useBoundary.js';
+import useMapFeatures from './hooks/useMapFeatures.js';
+
+import evaluateFeature from './utils/evaluateFeatures.js';
 
 /* Maps */
 import { FEATURE_MAP } from './config/osmFeatureMap.js';
@@ -29,13 +32,13 @@ export default function App() {
   const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
   const [toggles, setToggles] = useState({});
   const [filters, setFilters] = useState([]);
-  const [popupDismissed, setPopupDismissed] = useState(false);
+  const [statusPopupDismissed, setPopupDismissed] = useState(false);
 
   const {
-    clearBoundaryResults,
-    searchBoundaries,
+    loadBoundaryResults,
     boundaryResults,
-  } = useSearchBoundaries();
+    clearBoundaryResults,
+  } = useBoundarySearch();
 
   const {
     boundaryData,
@@ -53,18 +56,21 @@ export default function App() {
     clearFeatures,
     status: featureStatus,
     error: featureError,
-  } = useMapFeature(selectedBoundaryKey);
+  } = useMapFeatures(selectedBoundaryKey);
 
   /*
-   * Reset popup dismissal when loading starts
+   * Reset status popup dismissal when loading starts
    */
   useEffect(() => {
     if (boundaryStatus === 'loading' || featureStatus === 'loading') {
-      console.log('[DEBUG] Loading started → resetting popupDismissed');
+      console.log('[DEBUG] Loading started → resetting statusPopupDismissed');
       setPopupDismissed(false);
     }
   }, [boundaryStatus, featureStatus]);
 
+  /*
+   * Create feature list from feature map
+   */
   const featureOptions = useMemo(() => ([
     { value: 'none', label: 'None' },
     ...Object.entries(FEATURE_MAP).flatMap(([group, features]) =>
@@ -162,8 +168,11 @@ export default function App() {
     });
   };
 
-  const popup = useMemo(() => {
-    if (popupDismissed) {
+  /**
+   * Handle feature toggle
+   */
+  const statusPopup = useMemo(() => {
+    if (statusPopupDismissed) {
       console.log('[DEBUG] Popup dismissed → idle state');
       return {
         trigger: false,
@@ -230,28 +239,28 @@ export default function App() {
     featureStatus,
     boundaryError,
     featureError,
-    popupDismissed,
+    statusPopupDismissed,
   ]);
 
   return (
     <div className="App">
       <StatusPopup
-        trigger={popup.trigger}
-        type={popup.type}
-        title={popup.title}
-        message={popup.message}
+        trigger={statusPopup.trigger}
+        type={statusPopup.type}
+        title={statusPopup.title}
+        message={statusPopup.message}
         onClose={() => {
-          console.log('[DEBUG] Popup closed:', popup);
+          console.log('[DEBUG] Popup closed:', statusPopup);
 
           setPopupDismissed(true);
 
-          if (popup.source === 'boundary') {
+          if (statusPopup.source === 'boundary') {
             console.log('[DEBUG] Resetting boundary state');
             handleClearBoundary();
             setToggles({});
           }
 
-          if (popup.source === 'feature') {
+          if (statusPopup.source === 'feature') {
             console.log('[DEBUG] Clearing feature state');
             clearFeatures();
             setToggles({});
@@ -264,7 +273,7 @@ export default function App() {
           boundaryData={boundaryData}
           featureData={featureData}
 
-          searchBoundaries={searchBoundaries}
+          loadBoundaryResults={loadBoundaryResults}
           handleSelectBoundary={handleSelectBoundary}
           boundaryResults={boundaryResults}
           selectedBoundaryKey={selectedBoundaryKey}
@@ -274,6 +283,7 @@ export default function App() {
           handleToggle={handleToggle}
 
           handleClearBoundary={handleClearBoundary}
+          clearFeatures={clearFeatures}
         />
       </div>
 
