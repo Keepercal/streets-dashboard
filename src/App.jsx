@@ -13,6 +13,7 @@ import './App.css';
 import Map from './layout//Map/Map.jsx';
 import Sidebar from './layout/Sidebar/Sidebar';
 import StatusPopup from './components/StatusPopup/StatusPopup.jsx';
+import FeatureCounter from './components/FeatureCounter/FeatureCounter.jsx';
 
 /* Map related components */
 import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
@@ -269,33 +270,38 @@ export default function App() {
         }}
       />
 
-      <Sidebar
-        boundaryData={boundaryData}
-        featureData={featureData}
+      <div className="sidebar">
+        <Sidebar
+          boundaryData={boundaryData}
+          featureData={featureData}
 
-        loadBoundaryResults={loadBoundaryResults}
-        handleSelectBoundary={handleSelectBoundary}
-        boundaryResults={boundaryResults}
-        selectedBoundaryKey={selectedBoundaryKey}
+          loadBoundaryResults={loadBoundaryResults}
+          handleSelectBoundary={handleSelectBoundary}
+          boundaryResults={boundaryResults}
+          selectedBoundaryKey={selectedBoundaryKey}
 
-        featureOptions={featureOptions}
-        toggles={toggles}
-        handleToggle={handleToggle}
+          featureOptions={featureOptions}
+          toggles={toggles}
+          handleToggle={handleToggle}
 
-        handleClearBoundary={handleClearBoundary}
-        clearFeatures={clearFeatures}
-      />
+          handleClearBoundary={handleClearBoundary}
+          clearFeatures={clearFeatures}
+        />
 
-      <Map boundary={boundaryGeojson} features={filteredGeojson} />
+      </div>
+      
+      <div className="main-content">
+        <Map boundary={boundaryGeojson} features={filteredGeojson} />
 
-      {featureData && <FilterPanel
-        features={featureGeojson}
-        filters={filters}
-        setFilters={setFilters}
-      />}
+        {featureData && <FilterPanel
+          features={featureGeojson}
+          filters={filters}
+          setFilters={setFilters}
+        />}
 
-      {featureData && <Legend />}
+        {featureData && <Legend />}
 
+      </div>
     </div>
   );
 }

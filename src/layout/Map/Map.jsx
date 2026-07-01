@@ -49,7 +49,7 @@ function Map({ boundary, features }) {
     const activeBasemap = BASEMAPS[basemap];
 
     return (
-        <div className="map-container">
+        <>
             {/* Basemap switcher UI */}
             <BasemapSwitcher
                 basemap={basemap}
@@ -90,7 +90,7 @@ function Map({ boundary, features }) {
                 )}
 
             </MapContainer>
-        </div>
+        </>
     );
 }
 

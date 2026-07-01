@@ -100,45 +100,44 @@ const Sidebar = ({
     };
 
     return (
-        <div className="sidebar-wrapper">
-            <div className="sidebar">
+        <div className="sidebar-content">
 
-                {/* ================= HEADER ================= */}
-                <SidebarHeader/>
+            {/* ================= HEADER ================= */}
+            <SidebarHeader/>
 
-                {/* ================= BOUNDARY ================= */}
-                <BoundaryTab
-                    open={boundaryOpen}
-                    setOpen={setBoundaryOpen}
+            {/* ================= BOUNDARY ================= */}
+            <BoundaryTab
+                open={boundaryOpen}
+                setOpen={setBoundaryOpen}
 
-                    loadBoundaryResults={loadBoundaryResults}
-                    handleClearBoundary={handleClearBoundary}
-                    clearFeatures={clearFeatures}
+                loadBoundaryResults={loadBoundaryResults}
+                handleClearBoundary={handleClearBoundary}
+                clearFeatures={clearFeatures}
 
-                    boundaryResults={boundaryResults}
-                    onSelectBoundary={handleSelectBoundary}
+                boundaryResults={boundaryResults}
+                onSelectBoundary={handleSelectBoundary}
 
-                    selectedBoundaryKey={selectedBoundaryKey}
+                selectedBoundaryKey={selectedBoundaryKey}
 
-                    hasSearched={hasSearched}
-                    setHasSearched={setHasSearched}
+                hasSearched={hasSearched}
+                setHasSearched={setHasSearched}
+            />
+
+            {/* ================= FEATURES ================= */}
+            {boundaryData && (
+                <FeatureTab
+                    openGroups={openGroups}
+                    featuresOpen={featuresOpen}
+                    setFeaturesOpen={setFeaturesOpen}
+                    groupedFeatures={groupedFeatures}
+                    toggleGroup={toggleGroup}
+                    GROUP_LABELS={GROUP_LABELS}
+                    toggles={toggles}
+                    handleToggle={handleToggle}
                 />
+            )}
 
-                {/* ================= FEATURES ================= */}
-                {boundaryData && (
-                    <FeatureTab
-                        openGroups={openGroups}
-                        featuresOpen={featuresOpen}
-                        setFeaturesOpen={setFeaturesOpen}
-                        groupedFeatures={groupedFeatures}
-                        toggleGroup={toggleGroup}
-                        GROUP_LABELS={GROUP_LABELS}
-                        toggles={toggles}
-                        handleToggle={handleToggle}
-                    />
-                )}
-                <FeatureCounter features={featureData} />
-            </div>
+            <FeatureCounter features={featureData} />
         </div>
     );
 }
