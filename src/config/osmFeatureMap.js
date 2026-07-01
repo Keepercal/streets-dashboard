@@ -18,7 +18,60 @@ export const FEATURE_MAP = {
         }
     },
 
-    ways: {
+    vehicle_highways: {
+        motorway: {
+            tag:"highway",
+            label:"Motorway",
+            type: "way",
+        },
+        trunk: {
+            tag:"highway",
+            label:"Trunk",
+            type: "way",
+        },
+        primary: {
+            tag:"highway",
+            label:"Primary",
+            type: "way",
+        },
+        secondary: {
+            tag:"highway",
+            label:"Secondary",
+            type: "way",
+        },
+        tertiary: {
+            tag:"highway",
+            label:"Tertiary",
+            type: "way",
+        },
+        residential: {
+            tag:"highway",
+            label:"Residential",
+            type: "way",
+        },
+        service: {
+            tag:"highway",
+            label:"Service",
+            type: "way",
+        },
+    },
+
+    active_travel_highways: {
+        footway: {
+            tag: "highway",
+            label: "Footway",
+            type: "way",
+        },
+        shared_footway: {
+            tag: "highway",
+            label: "Shared-Use Footways",
+            type: "way",
+        },
+        path: {
+            tag:"highway",
+            label:"Path",
+            type: "way",
+        },
         public_footpath: {
             tag:"designation",
             label:"Public Rights of Way",
@@ -29,9 +82,9 @@ export const FEATURE_MAP = {
             label: "Cycle Ways",
             type: "way",
         },
-        shared_footway: {
-            tag: "highway",
-            label: "Shared-Use Footways",
+        bridleway: {
+            tag:"highway",
+            label:"Public Rights of Way",
             type: "way",
         },
         school_street: {
@@ -79,33 +132,10 @@ export const FEATURE_MAP = {
         }
     },
 
-    transport: {
-        station: {
-            tag: "railway",
-            label: "Railway Stations",
-            type: "node",
-        },
-        bus_stop: {
-            tag: "highway",
-            label: "Bus Stops",
-            type: "node",
-        },
-        parking: {
-            tag: "amenity",
-            label: "Parking",
-            type: "way",
-        },
-    },
-
     streetFurniture: {
         toilets: {
             tag: "amenity",
             label: "Toilets",
-            type: "node",
-        },
-        bicycle_parking: {
-            tag: "amenity",
-            label: "Bicycle Parking",
             type: "node",
         },
         bench: {
@@ -117,7 +147,205 @@ export const FEATURE_MAP = {
             tag: "tourism",
             label: "Wayfinding",
             type: "node",
-        }
+        },
+        waste_basket: {
+            tag: "amenity",
+            label: "Waste Bin",
+            type: "node",
+        },
+        recycling: {
+            tag: "amenity",
+            label: "Recycling",
+            type: "node",
+        },
+        drinking_water: {
+            tag: "amenity",
+            label: "Drinking Water",
+            type: "node",
+        },
+        picnic_site: {
+            tag: "amenity",
+            label: "Picnic Table",
+            type: "node",
+        },
+    },
+
+    transport: {
+        station: {
+            tag: "railway",
+            label: "Railway Station",
+            type: "node",
+        },
+        bus_station: {
+            tag: "amenity",
+            label: "Bus Station",
+            type: "node",
+        },
+        bus_stop: {
+            tag: "highway",
+            label: "Bus Stops",
+            type: "node",
+        },
+        tram_stop: {
+            tag: "highway",
+            label: "Tram Stops",
+            type: "node",
+        },      
+        airport: {
+            tag: "aeroway",
+            label: "Airport",
+            type: "way",
+        },
+        taxi: {
+            tag: "amenity",
+            label: "Taxi Rank",
+            type: "node",
+        },
+        parking: {
+            tag: "amenity",
+            label: "Parking",
+            type: "way",
+        },
+    },
+
+    driving: {
+        parking: {
+            tag: "amenity",
+            label: "Parking",
+            type: "way",
+        },     
+        fuel: {
+            tag: "amenity",
+            label: "Fuel Station",
+            type: "way",
+        },
+        charging_station: {
+            tag: "amenity",
+            label: "EV Charger",
+            type: "node",
+        },
+        car_wash: {
+            tag: "amenity",
+            label: "Car Wash",
+            type: "way",
+        },
+        car_rental: {
+            tag: "amenity",
+            label: "Car Rental",
+            type: "way",
+        },
+        car_repair: {
+            tag: "shop",
+            label: "Garage",
+            type: "way",
+        },
+    },
+
+    cycling: {
+        bicycle_parking: {
+            tag: "amenity",
+            label: "Bicycle Parking",
+            type: "way",
+        },
+        bicycle_rental: {
+            tag: "amenity",
+            label: "Bicycle Rental",
+            type: "way",
+        },
+        bicycle_shop: {
+            tag: "shop",
+            label: "Bicycle Shop",
+            type: "way",
+        },
+        bicycle_repair_station: {
+            tag: "amenity",
+            label: "Repair Station",
+            type: "way",
+        },
+    },
+
+    healthcare: {
+        hospital: {
+            tag: "amenity",
+            label: "Hospital",
+            type: "way",
+        },
+        clinic: {
+            tag: "amenity",
+            label: "Clinic",
+            type: "way",
+        },
+        doctors: {
+            tag: "amenity",
+            label: "Doctors",
+            type: "way",
+        },
+        dentist: {
+            tag: "amenity",
+            label: "Dentist",
+            type: "way",
+        },
+        Pharmacy: {
+            tag: "amenity",
+            label: "Pharmacy",
+            type: "way",
+        },
+        veterinary: {
+            tag: "amenity",
+            label: "Veterinary",
+            type: "way",
+        },
+        defibrillator: {
+            tag: "amenity",
+            label: "Defibrillator",
+            type: "way",
+        },
+    },
+
+    emergency: {
+        police: {
+            tag: "amenity",
+            label: "Police",
+            type: "way",
+        },
+        fire_station: {
+            tag: "amenity",
+            label: "Fire Station",
+            type: "way",
+        },
+        ambulance_station: {
+            tag: "amenity",
+            label: "Ambulance Station",
+            type: "way",
+        },
+        phone: {
+            tag: "emergency",
+            label: "Emergency Phone",
+            type: "way",
+        },
+    },
+
+    education: {
+        school: {
+            tag: "amenity",
+            label: "School",
+            type: "way",
+        },
+        college: {
+            tag: "amenity",
+            label: "College",
+            type: "way",
+        },      
+        univesity: {
+            tag: "amenity",
+            label: "University",
+            type: "way",
+        },  
+        library: {
+            tag: "amenity",
+            label: "Library",
+            type: "way",
+        },        
     },
 
     publicServices: {
@@ -151,11 +379,6 @@ export const FEATURE_MAP = {
             label: "Prison",
             type: "way",
         },
-        hospital: {
-            tag: "amenity",
-            label: "Hospitals",
-            type: "way",
-        },
         police: {
             tag: "amenity",
             label: "Police",
@@ -183,6 +406,74 @@ export const FEATURE_MAP = {
             tag: "tourism",
             label: "Artwork",
             type: "node",
+        },
+    },
+
+    shopping: {
+        supermarket: {
+            tag: "shop",
+            label: "Supermarket",
+            type: "way",
+        },
+        convenience: {
+            tag: "shop",
+            label: "Convenience Store",
+            type: "way",
+        },
+        bakery: {
+            tag: "shop",
+            label: "Supermarket",
+            type: "way",
+        },
+        butcher: {
+            tag: "shop",
+            label: "Butcher",
+            type: "way",
+        },
+        greengrocer: {
+            tag: "shop",
+            label: "Greengrocer",
+            type: "way",
+        },
+        clothes: {
+            tag: "shop",
+            label: "Clothing",
+            type: "way",
+        },        
+        shoes: {
+            tag: "shop",
+            label: "Shoes",
+            type: "way",
+        },
+        electronics: {
+            tag: "shop",
+            label: "Electronics",
+            type: "way",
+        },
+        doityourself: {
+            tag: "shop",
+            label: "DIY",
+            type: "way",
+        },
+        hardware: {
+            tag: "shop",
+            label: "Hardware",
+            type: "way",
+        },
+        mall: {
+            tag: "shop",
+            label: "Mall",
+            type: "way",
+        },
+        department_store: {
+            tag: "shop",
+            label: "Department Store",
+            type: "way",
+        },
+        kiosk: {
+            tag: "shop",
+            label: "Kiosk",
+            type: "way",
         },
     },
 
@@ -267,6 +558,62 @@ export const FEATURE_MAP = {
         },
     },
 
+    tourism: {
+        museum: {
+            tag: "tourism",
+            label: "Museum",
+            type: "way",
+        },   
+        attraction: {
+            tag: "tourism",
+            label: "Attraction",
+            type: "way",
+        },
+        information: {
+            tag: "tourism",
+            label: "Information",
+            type: "node",
+        },
+        viewpoint: {
+            tag: "tourism",
+            label: "Viewpoint",
+            type: "node",
+        },     
+        zoo: {
+            tag: "tourism",
+            label: "Zoo",
+            type: "way",
+        },
+        aquarium: {
+            tag: "tourism",
+            label: "Aquarium",
+            type: "way",
+        },
+    },
+
+    accommodation: {
+        hotel: {
+            tag: "tourism",
+            label: "Hotel",
+            type: "way",
+        },
+        hostel: {
+            tag: "tourism",
+            label: "Hostel",
+            type: "way",
+        },
+        camp_site: {
+            tag: "tourism",
+            label: "Camp Site",
+            type: "way",
+        },
+        caravan_site: {
+            tag: "tourism",
+            label: "Caravan Site",
+            type: "way",
+        },
+    },
+
     landuse: {
         residential: {
             tag: "landuse",
@@ -318,6 +665,40 @@ export const FEATURE_MAP = {
             label: "Military",
             type: "way"
         },
+    },
+
+    buildings: {
+        residential: {
+            tag: "building",
+            label: "Residential",
+            type: "way"
+        },
+        house: {
+            tag: "building",
+            label: "House",
+            type: "way"
+        },
+        apartments: {
+            tag: "building",
+            label: "Apartments",
+            type: "way"
+        },
+        commercial: {
+            tag: "building",
+            label: "Commercial",
+            type: "way"
+        },
+        industrial: {
+            tag: "building",
+            label: "Industrial",
+            type: "way"
+        },
+        retail: {
+            tag: "building",
+            label: "Retail",
+            type: "way"
+        },
+
     },
 
     naturalFeatures:{
