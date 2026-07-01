@@ -6,8 +6,6 @@ html,
 body,
 #root {
     height: 100%;
-    margin: 0;
-    padding: 0;
 }
 
 /* =========================
@@ -15,20 +13,16 @@ body,
 ========================= */
 
 .App {
-    display: flex;
+    display: grid;
     height: 100vh;
-    width: 100vw;
+
+    grid-template-columns: 250px 1fr;
     overflow: hidden;
 }
 
-/* =========================
-   SIDEBAR WRAPPER
-========================= */
-
-.side-bar {
-    width: 250px;
-    flex-shrink: 0;
-
+.side-bar{
+    grid-column: 1;
+    overflow: hidden;
     height: 100vh;
 }
 
@@ -37,10 +31,9 @@ body,
 ========================= */
 
 .main-content {
-    flex: 1;
-
+    grid-column: 2;
+    height: 100%;
     position: relative;
-    height: 100vh;
-
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }

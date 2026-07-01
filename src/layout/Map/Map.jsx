@@ -50,7 +50,6 @@ function Map({ boundary, features }) {
 
     return (
         <div className="map-container">
-
             {/* Basemap switcher UI */}
             <BasemapSwitcher
                 basemap={basemap}

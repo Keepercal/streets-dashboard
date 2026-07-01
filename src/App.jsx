@@ -7,6 +7,7 @@
 
 import { createRoot } from 'react-dom/client';
 import { useState, useEffect, useMemo } from 'react';
+import './App.css';
 
 /* High level components */
 import Map from './layout//Map/Map.jsx';
@@ -268,36 +269,33 @@ export default function App() {
         }}
       />
 
-      <div className="side-bar">
-        <Sidebar
-          boundaryData={boundaryData}
-          featureData={featureData}
+      <Sidebar
+        boundaryData={boundaryData}
+        featureData={featureData}
 
-          loadBoundaryResults={loadBoundaryResults}
-          handleSelectBoundary={handleSelectBoundary}
-          boundaryResults={boundaryResults}
-          selectedBoundaryKey={selectedBoundaryKey}
+        loadBoundaryResults={loadBoundaryResults}
+        handleSelectBoundary={handleSelectBoundary}
+        boundaryResults={boundaryResults}
+        selectedBoundaryKey={selectedBoundaryKey}
 
-          featureOptions={featureOptions}
-          toggles={toggles}
-          handleToggle={handleToggle}
+        featureOptions={featureOptions}
+        toggles={toggles}
+        handleToggle={handleToggle}
 
-          handleClearBoundary={handleClearBoundary}
-          clearFeatures={clearFeatures}
-        />
-      </div>
+        handleClearBoundary={handleClearBoundary}
+        clearFeatures={clearFeatures}
+      />
 
-      <div className="main-content">
-        <Map boundary={boundaryGeojson} features={filteredGeojson} />
+      <Map boundary={boundaryGeojson} features={filteredGeojson} />
 
-        {featureData && <FilterPanel
-          features={featureGeojson}
-          filters={filters}
-          setFilters={setFilters}
-        />}
+      {featureData && <FilterPanel
+        features={featureGeojson}
+        filters={filters}
+        setFilters={setFilters}
+      />}
 
-        {featureData && <Legend />}
-      </div>
+      {featureData && <Legend />}
+
     </div>
   );
 }
