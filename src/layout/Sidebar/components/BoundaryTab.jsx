@@ -1,6 +1,8 @@
 import '../Sidebar.css'
-import BoundaryOption from './BoundaryOption';
+
+/* UI Components */
 import InputItem from './InputItem'
+import BoundaryOption from './BoundaryOption';
 
 const BoundaryTab = ({
     open,
@@ -20,10 +22,7 @@ const BoundaryTab = ({
     return (
         <div className={`sidebar-tab ${open ? "is-open" : ""}`}>
 
-            <h3
-                className="tab-header"
-                onClick={() => setOpen(prev => !prev)}
-            >
+            <h3 className="tab-header" onClick={() => setOpen(prev => !prev)}>
                 Search Boundary
                 <span className={`arrow ${open ? "rotated" : ""}`}>▸</span>
             </h3>

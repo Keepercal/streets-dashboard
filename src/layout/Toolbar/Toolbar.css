@@ -1,0 +1,46 @@
+
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0 0px;
+    box-sizing: border-box;
+}
+
+.toolbar-brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 250px;
+}
+
+.toolbar-content nav {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* =========================
+    Toolbar Branding
+========================= */
+
+.toolbar-brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.brand-title{
+    margin: 0px
+}
+
+.version-tag{
+    margin: 0;
+    font-size: 0.8rem;
+    color: #aaa
+}

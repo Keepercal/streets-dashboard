@@ -143,7 +143,7 @@ export const FEATURE_MAP = {
             label: "Benches",
             type: "node",
         },
-        wayfinding: {
+        information: {
             tag: "tourism",
             label: "Wayfinding",
             type: "node",

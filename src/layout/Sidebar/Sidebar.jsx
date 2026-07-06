@@ -1,9 +1,10 @@
 import './Sidebar.css';
 import { useState, useEffect, useMemo } from "react";
-import ToggleItem from './components/ToggleItem';
-import InputItem from './components/InputItem';
 
 /* UI Components */
+import InputItem from './components/InputItem';
+import ToggleItem from './components/ToggleItem';
+
 import SidebarHeader from './components/SidebarHeader'
 import BoundaryTab from './components/BoundaryTab';
 import FeatureTab from './components/FeatureTab';
@@ -103,7 +104,7 @@ const Sidebar = ({
         <div className="sidebar-content">
 
             {/* ================= HEADER ================= */}
-            <SidebarHeader/>
+            {/*<SidebarHeader/>*/}
 
             {/* ================= BOUNDARY ================= */}
             <BoundaryTab

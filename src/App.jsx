@@ -10,7 +10,8 @@ import { useState, useEffect, useMemo } from 'react';
 import './App.css';
 
 /* High level components */
-import Map from './layout//Map/Map.jsx';
+import Map from './layout/Map/Map.jsx';
+import Toolbar from './layout/Toolbar/Toolbar'
 import Sidebar from './layout/Sidebar/Sidebar';
 import StatusPopup from './components/StatusPopup/StatusPopup.jsx';
 import FeatureCounter from './components/FeatureCounter/FeatureCounter.jsx';
@@ -270,37 +271,45 @@ export default function App() {
         }}
       />
 
-      <div className="sidebar">
-        <Sidebar
-          boundaryData={boundaryData}
-          featureData={featureData}
+      <header className="app-header">
+        <Toolbar />
+      </header>
 
-          loadBoundaryResults={loadBoundaryResults}
-          handleSelectBoundary={handleSelectBoundary}
-          boundaryResults={boundaryResults}
-          selectedBoundaryKey={selectedBoundaryKey}
+      <div className="app-body">
 
-          featureOptions={featureOptions}
-          toggles={toggles}
-          handleToggle={handleToggle}
+        <div className="sidebar">
+          <Sidebar
+            boundaryData={boundaryData}
+            featureData={featureData}
 
-          handleClearBoundary={handleClearBoundary}
-          clearFeatures={clearFeatures}
-        />
+            loadBoundaryResults={loadBoundaryResults}
+            handleSelectBoundary={handleSelectBoundary}
+            boundaryResults={boundaryResults}
+            selectedBoundaryKey={selectedBoundaryKey}
 
-      </div>
-      
-      <div className="main-content">
-        <Map boundary={boundaryGeojson} features={filteredGeojson} />
+            featureOptions={featureOptions}
+            toggles={toggles}
+            handleToggle={handleToggle}
 
-        {featureData && <FilterPanel
-          features={featureGeojson}
-          filters={filters}
-          setFilters={setFilters}
-        />}
+            handleClearBoundary={handleClearBoundary}
+            clearFeatures={clearFeatures}
+          />
 
-        {featureData && <Legend />}
+        </div>
 
+        <div className="main-content">
+
+          {featureData && <Legend />}
+
+          {featureData && <FilterPanel
+            features={featureGeojson}
+            filters={filters}
+            setFilters={setFilters}
+          />}
+
+          <Map boundary={boundaryGeojson} features={filteredGeojson} />
+
+        </div>
       </div>
     </div>
   );
