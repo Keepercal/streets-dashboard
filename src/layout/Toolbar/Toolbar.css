@@ -12,13 +12,6 @@
     box-sizing: border-box;
 }
 
-.toolbar-brand {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 250px;
-}
-
 .toolbar-content nav {
     display: flex;
     gap: 12px;
@@ -31,8 +24,17 @@
 
 .toolbar-brand {
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;   
+    width: 300px;
+    text-decoration: none;
+    color: inherit
+}
+
+.brand-text{
+    display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 .brand-title{
@@ -43,4 +45,16 @@
     margin: 0;
     font-size: 0.8rem;
     color: #aaa
+}
+
+.brand-logo{
+    width: auto;
+    height: 35px;
+    flex-shrink: 0;
+
+    transition: transform 0.3s ease;
+}
+
+.brand-logo:hover{
+    transform: rotate(180deg);
 }

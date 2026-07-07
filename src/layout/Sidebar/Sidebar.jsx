@@ -10,6 +10,15 @@ import BoundaryTab from './components/BoundaryTab';
 import FeatureTab from './components/FeatureTab';
 import FeatureCounter from '../../components/FeatureCounter/FeatureCounter';
 
+/**
+ * Sidebar.jsx
+ * ------------
+ * UI component to toggle data onto map
+ *
+ * Features:
+ * - Select a boundary
+ * - Load features from a preselect list
+ */
 const Sidebar = ({
     boundaryData,
     featureData,

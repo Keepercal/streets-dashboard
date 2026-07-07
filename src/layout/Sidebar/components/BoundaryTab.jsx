@@ -1,5 +1,6 @@
 import '../Sidebar.css'
 
+
 /* UI Components */
 import InputItem from './InputItem'
 import BoundaryOption from './BoundaryOption';
