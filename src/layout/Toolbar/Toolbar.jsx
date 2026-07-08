@@ -78,6 +78,21 @@ export default function Toolbar(){
                     />
                 ))}
             </div>
+
+            <div className="toolbar-actions">
+                <a
+                    href="https://github.com/Keepercal/streets-dashboard"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="github-link"
+                    aria-label='Open GitHub repository'
+                >
+                    <img
+                        src='./public/github-mark.svg'
+                        alt='GitHub'
+                    />
+                </a>
+            </div>
         </div>
     );
 }
