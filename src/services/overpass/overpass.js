@@ -58,12 +58,11 @@ async function handleOverpassResponse(res, retryFn) {
 export async function fetchBoundary(boundaryKey, boundaryType, boundaryName, boundaryID) {
     if (!boundaryKey || boundaryKey === "none") return null;
 
-    console.log('[DEBUG] ENTER fetchBoundary:', {
+    console.log('[DEBUG] fetchBoundary ENTER:', {
         boundaryKey, boundaryType, boundaryName, boundaryID
     })
 
     let query;
-
 
     query = `
         [out:json][timeout:60];
@@ -111,6 +110,8 @@ export async function fetchMapFeature(
     console.log(query)
 
     const res = await callOverpass(query);
+
+    console.log(res)
 
     return handleOverpassResponse(res, () =>
         fetchMapFeature(boundaryKey, featureTag, featureValue, featureType)

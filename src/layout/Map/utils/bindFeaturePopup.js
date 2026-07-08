@@ -13,6 +13,20 @@ import { timeAgo } from "../../../utils/timeAgo";
 
 export default function bindFeaturePopup(feature, layer, exclude) {
     const props = feature.properties || {};
+
+    const tags =
+        Object.keys(props.tags || {}).length > 0
+            ? props.tags
+            : props.relations?.[0]?.reltags || {};
+
+    const timestamp =
+        props.meta?.timestamp ??
+        props.timestamp;
+
+    const user =
+        props.meta?.user ??
+        props.user;
+
     const geom = feature.geometry;
 
     if (!geom) {
@@ -102,7 +116,7 @@ export default function bindFeaturePopup(feature, layer, exclude) {
     // -------------------------
     // Feature properties
     // -------------------------
-    Object.entries(props)
+    Object.entries(tags)
         .filter(([k]) => !exclude.has(k))
         .forEach(([key, value]) => {
             const row = document.createElement("div");
@@ -113,9 +127,9 @@ export default function bindFeaturePopup(feature, layer, exclude) {
     // -------------------------
     // Metadata footer
     // -------------------------
-    if (props.timestamp) {
-        const formattedDate = new Date(props.timestamp).toLocaleDateString("en-GB");
-        const timeAgoText = timeAgo(props.timestamp);
+    if (timestamp) {
+        const formattedDate = new Date(timestamp).toLocaleDateString("en-GB");
+        const timeAgoText = timeAgo(timestamp);
 
         const editedRow = document.createElement("div");
         editedRow.style.marginTop = "8px";
@@ -125,7 +139,7 @@ export default function bindFeaturePopup(feature, layer, exclude) {
         editedRow.innerHTML = `
             <strong>Last edited:</strong> ${formattedDate} (${timeAgoText})
             <br />
-            <strong>Last edited by:</strong> ${props.user || "Unknown"}
+            <strong>Last edited by:</strong> ${user || "Unknown"}
         `;
 
         container.appendChild(editedRow);

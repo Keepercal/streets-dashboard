@@ -78,8 +78,8 @@
     align-items: center;
     justify-content: center;
 
-    width: 50px;
-    height: 50px;
+    width: 42px;
+    height: 42px;
 
     border-radius: 6px;
 
@@ -92,6 +92,6 @@
 }
 
 .github-link img {
-    width: 36px;
+    width: 32px;
     height: auto;
 }

@@ -1,4 +1,4 @@
-###### v0.5.1-alpha
+###### v0.6.0-alpha
 # Streets Dashboard
 This web application is build for transport planners, engineers, or any public or private sector professionals involved with the built environment to search for particular features on streets. 
 
@@ -14,8 +14,7 @@ There are a number of selectable options such as pedestrian crossings and cycle 
 ### v0.5.0-alpha 
 
 ### Added
-- Dynamic Searching: Search any boundary on OpenStreetMap
-- Basemap: Change the basemap, showing you map, OpenStreetMap layer or satellite view
+- Export feature data into file formats for ArcGIS, QGIS, Google My Maps, etc.
 
 
 

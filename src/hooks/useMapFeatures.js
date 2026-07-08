@@ -79,6 +79,8 @@ export default function useMapFeatures() {
 
             if (currentId !== requestId.current) return;
 
+            console.log(result)
+
             const geojson = osmtogeojson(result, { meta: true }); // Convert to geoJSON
 
             cache.current.set(cacheKey, {
