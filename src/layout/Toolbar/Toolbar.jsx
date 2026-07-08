@@ -4,14 +4,14 @@ import { useState, useRef, useEffect } from 'react';
 import ToolbarBrand from './ToolbarBrand';
 import Dropdown from './Dropdown';
 
-export default function Toolbar(){
+export default function Toolbar({ onOpenPanel, canExport }) {
 
     const [openMenu, setOpenMenu] = useState(null);
     const toolbarRef = useRef(null);
 
     /* Closes dropdown menu when user clicks anywhere on screen */
     useEffect(() => {
-        function handleClickOutside(event){
+        function handleClickOutside(event) {
             if (
                 toolbarRef.current &&
                 !toolbarRef.current.contains(event.target)
@@ -38,26 +38,32 @@ export default function Toolbar(){
             id: "file",
             title: "File",
             items: [
-                //{ id: "new", label: "New"},
-                //{ id: "open", label: "Open"},
-                //{ id: "save", label: "Save"},
-                { id: "export", label: "Export"}
+                {
+                    id: "export",
+                    label: "Export",
+                    disabled: !canExport,
+                    action: () => onOpenPanel("export"),
+                },
             ],
         },
         {
             id: "help",
             title: "Help",
             items: [
-                { id: "about", label: "About"},
+                {
+                    id: "about",
+                    label: "About",
+                    action: () => onOpenPanel("about")
+                },
             ],
         },
     ];
 
     return (
         <div className="toolbar">
-            <ToolbarBrand/>
+            <ToolbarBrand />
 
-            <div 
+            <div
                 className="toolbar-content"
                 ref={toolbarRef}
             >
@@ -68,12 +74,12 @@ export default function Toolbar(){
                         items={menu.items}
                         isOpen={openMenu === menu.id}
                         onToggle={() =>
-                            setOpenMenu(
-                                openMenu === menu.id 
-                                    ? null 
-                                    : menu.id
-                            )
+                            setOpenMenu(openMenu === menu.id ? null : menu.id)
                         }
+                        onItemClick={(item) => {
+                            item.action();
+                            setOpenMenu(null);
+                        }}
                     />
                 ))}
             </div>

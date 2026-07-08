@@ -1,7 +1,6 @@
 import './Sidebar.css';
-import { useState, useEffect, useMemo } from "react";
 
-/* UI Components */
+/* UI COMPONENTS */
 import InputItem from './components/InputItem';
 import ToggleItem from './components/ToggleItem';
 
@@ -9,6 +8,13 @@ import SidebarHeader from './components/SidebarHeader'
 import BoundaryTab from './components/BoundaryTab';
 import FeatureTab from './components/FeatureTab';
 import FeatureCounter from '../../components/FeatureCounter/FeatureCounter';
+
+/* CONSTANTS */
+import GROUP_LABELS from './constants/featureGroups'
+
+/* HOOKS */
+import { useState } from "react";
+import useFeatureGroups from './hooks/useFeatureGroups';
 
 /**
  * Sidebar.jsx
@@ -36,80 +42,20 @@ const Sidebar = ({
     clearFeatures,
 }) =>{
 
-    const [openTab, setOpenTab] = useState("boundary"); // Start with boundary select open
-    const [openGroups, setOpenGroups] = useState({});
+    const [activeTab, setActiveTab] = useState("boundary"); // Start with boundary select open
     const [hasSearched, setHasSearched] = useState(false);
 
+    const {
+        groupedFeatures,
+        openGroups,
+        toggleGroup
+    } = useFeatureGroups(featureOptions);
+
     /* Toggle tab open/closed */
-    const toggleTab = (tab) => {
-        setOpenTab(prev => 
+    const handleTabChange = (tab) => {
+        setActiveTab(prev =>
             prev === tab ? null : tab
         );
-    };
-
-    /* Human-readable group labels */
-    const GROUP_LABELS = {
-        networks: "Networks",
-        vehicle_highways: "Vehicle Highways",
-        active_travel_highways: "Active Travel Highways",
-        crossings: "Crossings",
-        transport: "Transport",
-        driving: "Driving",
-        cycling: "Cycling",
-        healthcare: "Healthcare",
-        emergency: "Emergency",
-        education: "Education",
-        publicServices: "Public Services",
-        streetFurniture: "Street Furniture",
-        poi: "Points of Interest",
-        shopping: "Shopping",
-        fooddrink: "Food & Drink",
-        leisure: "Leisure",
-        tourism: "Tourism",
-        accommodation: "Accommodation",
-        landuse: "Land Use",
-        buildings: "Buildings",
-        naturalFeatures: "Natural Features"
-    };
-
-    /* Group features by category */
-    const groupedFeatures = useMemo(() => {
-        return Object.entries(featureOptions || {}).reduce(
-            (acc, [key, feature]) => {
-                const group = feature.group;
-
-                if (!group) return acc;
-                if (!acc[group]) acc[group] = [];
-
-                acc[group].push({ key, ...feature });
-                return acc;
-            },
-            {}
-        );
-    }, [featureOptions]);
-
-    /* Initialize group open/closed state */
-    useEffect(() => {
-        if (!featureOptions) return;
-
-        setOpenGroups((prev) => {
-            const initial = Object.values(featureOptions).reduce((acc, feature) => {
-                    if (feature?.group) acc[feature.group] = false;
-
-                    return acc;
-                }, {});
-            return { ...initial, ...prev };
-        });
-    }, [featureOptions]);
-
-    /**
-     * Toggle group visibility
-     */
-    const toggleGroup = (group) => {
-        setOpenGroups((prev) => ({ 
-            //...prev, // impacts whether more than one accordian can be open at the same time
-            [group]: !prev[group] 
-        }));
     };
 
     return (
@@ -120,8 +66,8 @@ const Sidebar = ({
 
             {/* ================= BOUNDARY ================= */}
             <BoundaryTab
-                open={openTab === "boundary"}
-                setOpen={() => toggleTab("boundary")}
+                open={activeTab === "boundary"}
+                setOpen={() => handleTabChange("boundary")}
 
                 loadBoundaryResults={loadBoundaryResults}
                 handleClearBoundary={handleClearBoundary}
@@ -139,8 +85,8 @@ const Sidebar = ({
             {/* ================= FEATURES ================= */}
             {boundaryData && (
                 <FeatureTab
-                    open={openTab === "features"}
-                    setOpen={() => toggleTab("features")}
+                    open={activeTab === "features"}
+                    setOpen={() => handleTabChange("features")}
                     openGroups={openGroups}
 
                     GROUP_LABELS={GROUP_LABELS}

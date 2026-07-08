@@ -13,13 +13,14 @@ import './App.css';
 import Map from './layout/Map/Map.jsx';
 import Toolbar from './layout/Toolbar/Toolbar'
 import Sidebar from './layout/Sidebar/Sidebar';
-import StatusPopup from './components/StatusPopup/StatusPopup.jsx';
-import FeatureCounter from './components/FeatureCounter/FeatureCounter.jsx';
+
+/* Popups/Panels */
+import StatusPopup from './layout/Popups/StatusPopup/StatusPopup.jsx';
+import ExportPanel from './layout/Popups/ExportPanel/ExportPanel.jsx';
 
 /* Map related components */
 import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
 import Legend from './components/Legend/Legend.jsx';
-import FeatureCount from './components/FeatureCounter/FeatureCounter.jsx';
 
 /* Hooks */
 import useBoundarySearch from './hooks/useBoundarySearch.js';
@@ -32,10 +33,16 @@ import evaluateFeature from './utils/evaluateFeatures.js';
 import { FEATURE_MAP } from './config/osmFeatureMap.js';
 
 export default function App() {
+  const PANELS = {
+    EXPORT: "export",
+    ABOUT: "about"
+  }
+
   const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
   const [toggles, setToggles] = useState({});
   const [filters, setFilters] = useState([]);
   const [statusPopupDismissed, setPopupDismissed] = useState(false);
+  const [activePanel, setActivePanel] = useState(null);
 
   const {
     loadBoundaryResults,
@@ -271,8 +278,17 @@ export default function App() {
         }}
       />
 
+      {activePanel === "export" && (
+        <ExportPanel
+          onClose={() => setActivePanel(null)}
+        />
+      )}
+
       <header className="app-header">
-        <Toolbar />
+        <Toolbar
+          onOpenPanel={setActivePanel}
+          canExport={!!featureData}
+        />
       </header>
 
       <div className="app-body">

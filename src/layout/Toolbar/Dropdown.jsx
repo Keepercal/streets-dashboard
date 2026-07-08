@@ -4,12 +4,12 @@ export default function Dropdown({
     title, 
     items, 
     isOpen, 
-    onToggle
+    onToggle,
+    onItemClick
 }){
     return(
         <div 
             className="dropdown"
-            onClick={onToggle}
         >
             <button
                 className={`dropdown-button ${isOpen ? "open" : ""}`}
@@ -24,6 +24,14 @@ export default function Dropdown({
                         <button
                             key={item.id}
                             className="dropdown-item"
+                            disabled={item.disabled}
+                            onClick={(e) => {
+                                e.stopPropagation();
+
+                                if (item.disabled) return;
+
+                                onItemClick(item);
+                            }}
                         >
                             {item.label}
                         </button>
