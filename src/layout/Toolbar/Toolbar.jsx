@@ -49,7 +49,6 @@ export default function Toolbar(){
             title: "Help",
             items: [
                 { id: "about", label: "About"},
-                { id: "github", label: "GitHub"},
             ],
         },
     ];

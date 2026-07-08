@@ -3,8 +3,9 @@
  */
 const ToggleItem = ({ label, checked, onChange }) => (
     <div className="toggle-item">
-        <label>
+        <label className="toggle-label">
             <input
+                className="toggle-checkbox"
                 type="checkbox"
                 checked={!!checked}
                 onChange={onChange}

@@ -36,14 +36,18 @@ const Sidebar = ({
     clearFeatures,
 }) =>{
 
-    const [boundaryOpen, setBoundaryOpen] = useState(false);
-    const [featuresOpen, setFeaturesOpen] = useState(false);
+    const [openTab, setOpenTab] = useState("boundary"); // Start with boundary select open
     const [openGroups, setOpenGroups] = useState({});
     const [hasSearched, setHasSearched] = useState(false);
 
-    /**
-     * Human-readable group labels
-     */
+    /* Toggle tab open/closed */
+    const toggleTab = (tab) => {
+        setOpenTab(prev => 
+            prev === tab ? null : tab
+        );
+    };
+
+    /* Human-readable group labels */
     const GROUP_LABELS = {
         networks: "Networks",
         vehicle_highways: "Vehicle Highways",
@@ -68,9 +72,7 @@ const Sidebar = ({
         naturalFeatures: "Natural Features"
     };
 
-    /**
-     * Group features by category
-     */
+    /* Group features by category */
     const groupedFeatures = useMemo(() => {
         return Object.entries(featureOptions || {}).reduce(
             (acc, [key, feature]) => {
@@ -86,9 +88,7 @@ const Sidebar = ({
         );
     }, [featureOptions]);
 
-    /**
-     * Initialize group open/closed state
-     */
+    /* Initialize group open/closed state */
     useEffect(() => {
         if (!featureOptions) return;
 
@@ -106,7 +106,10 @@ const Sidebar = ({
      * Toggle group visibility
      */
     const toggleGroup = (group) => {
-        setOpenGroups((prev) => ({ ...prev, [group]: !prev[group] }));
+        setOpenGroups((prev) => ({ 
+            //...prev, // impacts whether more than one accordian can be open at the same time
+            [group]: !prev[group] 
+        }));
     };
 
     return (
@@ -117,8 +120,8 @@ const Sidebar = ({
 
             {/* ================= BOUNDARY ================= */}
             <BoundaryTab
-                open={boundaryOpen}
-                setOpen={setBoundaryOpen}
+                open={openTab === "boundary"}
+                setOpen={() => toggleTab("boundary")}
 
                 loadBoundaryResults={loadBoundaryResults}
                 handleClearBoundary={handleClearBoundary}
@@ -136,12 +139,14 @@ const Sidebar = ({
             {/* ================= FEATURES ================= */}
             {boundaryData && (
                 <FeatureTab
+                    open={openTab === "features"}
+                    setOpen={() => toggleTab("features")}
                     openGroups={openGroups}
-                    featuresOpen={featuresOpen}
-                    setFeaturesOpen={setFeaturesOpen}
+
+                    GROUP_LABELS={GROUP_LABELS}
                     groupedFeatures={groupedFeatures}
                     toggleGroup={toggleGroup}
-                    GROUP_LABELS={GROUP_LABELS}
+
                     toggles={toggles}
                     handleToggle={handleToggle}
                 />

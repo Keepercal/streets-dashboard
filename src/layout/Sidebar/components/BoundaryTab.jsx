@@ -5,6 +5,14 @@ import '../Sidebar.css'
 import InputItem from './InputItem'
 import BoundaryOption from './BoundaryOption';
 
+/**
+ * BoundaryTab.jsx
+ * ------------
+ * UI component in sidebar which contains boundary selection
+ *
+ * Features:
+ * - Select a boundary
+ */
 const BoundaryTab = ({
     open,
     setOpen,

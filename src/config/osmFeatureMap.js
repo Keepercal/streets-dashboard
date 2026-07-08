@@ -518,7 +518,7 @@ export const FEATURE_MAP = {
         },
         garden: {
             tag: "leisure",
-            label: "garden",
+            label: "Garden",
             type: "way",
         },
         dog_park: {
