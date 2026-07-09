@@ -280,6 +280,7 @@ export default function App() {
 
       {activePanel === "export" && (
         <ExportPanel
+          featureData={featureData}
           onClose={() => setActivePanel(null)}
         />
       )}

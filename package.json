@@ -22,7 +22,7 @@
     "@fortawesome/react-fontawesome": "^3.3.1",
     "axios": "^1.15.0",
     "leaflet": "^1.9.4",
-    "osmtogeojson": "^2.2.12",
+    "osmtogeojson": "^3.0.0-beta.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-leaflet": "^5.0.0",
