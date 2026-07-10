@@ -150,6 +150,9 @@ export default function App() {
       selectedBoundaryKey,
     });
 
+    // Clear exititing UI state
+    setFilters([]);
+
     setToggles(prev => {
       const nextValue = !prev[featureKey];
 

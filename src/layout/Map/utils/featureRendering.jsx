@@ -55,7 +55,7 @@ export function createFeatureMarker(feature, latlng, displayMode) {
 
     /* Filter visual state */
     if (!match) {
-        marker.setOpacity(0.15);
+        marker.setOpacity(0.10);
         marker.setZIndexOffset(0);
         marker.off(); // disables interaction
     } else {
@@ -101,7 +101,7 @@ export function stylePolygon(feature, displayMode) {
     if (!match) {
         return {
             color,
-            opacity: 0.15,
+            opacity: 0.10,
             weight: 2,
             fillOpacity: 0.15,
             interactive: false,

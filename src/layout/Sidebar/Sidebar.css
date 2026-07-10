@@ -127,6 +127,10 @@ h3 {
     transform: translateY(0);
 }
 
+.tab-content p{
+    margin: 0px 0px 10px 0px;
+}
+
 
 .tab-body {
     margin-bottom: 8px;
@@ -178,7 +182,7 @@ h3 {
 .accordion-content.open {
     max-height: 500px;
 
-    margin: 10px 0;
+    margin: 8px 0;
 
     opacity: 1;
     transform: translateY(0);
@@ -237,7 +241,7 @@ h3 {
 }
 
 .toggle-label {
-    font-size: 15px;
+    font-size: 14px;
 }
 
 
@@ -352,4 +356,13 @@ h3 {
 
 .boundary-card.selected:hover {
     background: rgba(226, 159, 0, 0.2);
+}
+
+/* =========================
+    MISC
+========================= */
+
+.current-display-indicator{
+    margin: 5px 0px 0px 0px;
+    color: rgb(183, 183, 183);
 }

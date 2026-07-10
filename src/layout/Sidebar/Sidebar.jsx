@@ -14,7 +14,7 @@ import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndica
 import GROUP_LABELS from './constants/featureGroups'
 
 /* HOOKS */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useFeatureGroups from './hooks/useFeatureGroups';
 
 /**
@@ -49,7 +49,11 @@ const Sidebar = ({
     const [activeTab, setActiveTab] = useState("boundary"); // Start with boundary select open
     const [hasSearched, setHasSearched] = useState(false);
 
-    const boundaryName = boundaryData?.elements?.[0]?.tags?.name ?? "None";
+    useEffect(() => {
+        if (boundaryData){
+            setActiveTab("features")
+        }
+    }, [boundaryData]);
 
     const {
         groupedFeatures,

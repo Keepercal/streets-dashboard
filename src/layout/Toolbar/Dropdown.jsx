@@ -15,7 +15,7 @@ export default function Dropdown({
                 className={`dropdown-button ${isOpen ? "open" : ""}`}
                 onClick={onToggle}
             >
-                {title} ▼ 
+                {title} ⏷ 
             </button>
 
             {isOpen && (
