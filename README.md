@@ -15,6 +15,7 @@ There are a number of selectable options such as pedestrian crossings and cycle 
 
 ### Added
 - Export feature data into file formats for ArcGIS, QGIS, Google My Maps, etc.
+- Change display mode of map features, currently between default and last edited.
 
 
 

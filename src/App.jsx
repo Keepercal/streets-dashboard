@@ -44,6 +44,8 @@ export default function App() {
   const [statusPopupDismissed, setPopupDismissed] = useState(false);
   const [activePanel, setActivePanel] = useState(null);
 
+  const [displayMode, setDisplayMode] = useState("default");
+
   const {
     loadBoundaryResults,
     boundaryResults,
@@ -308,6 +310,9 @@ export default function App() {
             toggles={toggles}
             handleToggle={handleToggle}
 
+            displayMode={displayMode}
+            setDisplayMode={setDisplayMode}
+
             handleClearBoundary={handleClearBoundary}
             clearFeatures={clearFeatures}
           />
@@ -316,7 +321,7 @@ export default function App() {
 
         <div className="main-content">
 
-          {featureData && <Legend />}
+          {featureData && displayMode ==="lastEdited" && <Legend />}
 
           {featureData && <FilterPanel
             features={featureGeojson}
@@ -324,7 +329,11 @@ export default function App() {
             setFilters={setFilters}
           />}
 
-          <Map boundary={boundaryGeojson} features={filteredGeojson} />
+          <Map 
+            boundary={boundaryGeojson} 
+            features={filteredGeojson}
+            displayMode={displayMode}
+          />
 
         </div>
       </div>

@@ -1,12 +1,12 @@
 import './Sidebar.css';
 
 /* UI COMPONENTS */
-import InputItem from './components/InputItem';
-import ToggleItem from './components/ToggleItem';
-
 import SidebarHeader from './components/SidebarHeader'
+
 import BoundaryTab from './components/BoundaryTab';
 import FeatureTab from './components/FeatureTab';
+import DisplayTab from './components/DisplayTab'
+
 import FeatureCounter from '../../components/FeatureCounter/FeatureCounter';
 
 /* CONSTANTS */
@@ -38,12 +38,17 @@ const Sidebar = ({
     toggles,
     handleToggle,
 
+    displayMode,
+    setDisplayMode,
+
     handleClearBoundary,
     clearFeatures,
 }) =>{
 
     const [activeTab, setActiveTab] = useState("boundary"); // Start with boundary select open
     const [hasSearched, setHasSearched] = useState(false);
+
+    const boundaryName = boundaryData?.elements?.[0]?.tags?.name ?? "None";
 
     const {
         groupedFeatures,
@@ -62,7 +67,9 @@ const Sidebar = ({
         <div className="sidebar-content">
 
             {/* ================= HEADER ================= */}
-            {/*<SidebarHeader/>*/}
+            <div className="sidebar-header">
+                <p className="selected-boundary">Selected Boundary: {boundaryName}</p>
+            </div>
 
             {/* ================= BOUNDARY ================= */}
             <BoundaryTab
@@ -84,18 +91,28 @@ const Sidebar = ({
 
             {/* ================= FEATURES ================= */}
             {boundaryData && (
-                <FeatureTab
-                    open={activeTab === "features"}
-                    setOpen={() => handleTabChange("features")}
-                    openGroups={openGroups}
+                <>
+                    <FeatureTab
+                        open={activeTab === "features"}
+                        setOpen={() => handleTabChange("features")}
+                        openGroups={openGroups}
 
-                    GROUP_LABELS={GROUP_LABELS}
-                    groupedFeatures={groupedFeatures}
-                    toggleGroup={toggleGroup}
+                        GROUP_LABELS={GROUP_LABELS}
+                        groupedFeatures={groupedFeatures}
+                        toggleGroup={toggleGroup}
 
-                    toggles={toggles}
-                    handleToggle={handleToggle}
-                />
+                        toggles={toggles}
+                        handleToggle={handleToggle}
+                    />
+
+                    <DisplayTab
+                        open={activeTab === "display"}
+                        setOpen={() => handleTabChange("display")}
+
+                        displayMode={displayMode}
+                        setDisplayMode={setDisplayMode}
+                    />
+                </>
             )}
 
             <FeatureCounter features={featureData} />

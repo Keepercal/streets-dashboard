@@ -1,17 +1,18 @@
 import "./Legend.css";
+import createPinIcon from "../../utils/createPinIcon";
 
 const legendItems = [
     {
         label: "< 1 year",
-        icon: "./assets/pins/pinGreen.svg"
+        icon: createPinIcon("#739D55")
     },
     {
         label: "1–3 years",
-        icon: "./assets/pins/pinYellow.svg"
+        icon: createPinIcon("#E0C055")
     },
     {
         label: "3+ years",
-        icon: "./assets/pins/pinRed.svg"
+        icon: createPinIcon("#D83F29")
     }
 ];
 
@@ -28,7 +29,7 @@ function Legend() {
 
                 {legendItems.map((item) => (
                     <div key={item.label} className="legend-item">
-                        <img src={item.icon} alt={item.label} />
+                        <div className="legend-icon" dangerouslySetInnerHTML={{ __html: item.icon.options.html }}/>
                         <span>{item.label}</span>
                     </div>
                 ))}

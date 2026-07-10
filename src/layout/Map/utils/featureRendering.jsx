@@ -1,29 +1,18 @@
 import L from "leaflet";
+import createPinIcon from "../../../utils/createPinIcon";
 
-/**
- * ICONS (created once — NOT per marker render)
- */
+const defaultBlue = "#3388ff";
 
-const pinGreen = L.icon({
-    iconUrl: "./assets/pins/pinGreen.svg",
-    iconSize: [26, 26],
-    iconAnchor: [13, 26],
-    popupAnchor: [0, -26],
-});
+const green = "#739D55";
+const yellow = "#E0C055";
+const red = "#D83F29";
 
-const pinYellow = L.icon({
-    iconUrl: "./assets/pins/pinYellow.svg",
-    iconSize: [26, 26],
-    iconAnchor: [13, 26],
-    popupAnchor: [0, -26],
-});
+/* Pin Icons (created once — NOT per marker render) */
+const defaultPin = createPinIcon(defaultBlue);
 
-const pinRed = L.icon({
-    iconUrl: "./assets/pins/pinRed.svg",
-    iconSize: [26, 26],
-    iconAnchor: [13, 26],
-    popupAnchor: [0, -26],
-});
+const pinGreen = createPinIcon(green);
+const pinYellow = createPinIcon(yellow);
+const pinRed = createPinIcon(red);
 
 /**
  * Returns edit age in days
@@ -50,17 +39,21 @@ function getIconByAge(days) {
 /**
  * Create marker for point features
  */
-export function createFeatureMarker(feature, latlng) {
+export function createFeatureMarker(feature, latlng, displayMode) {
     const match = feature._matchesFilters !== false;
-    const daysSinceEdit = getDaysSinceEdit(feature.properties?.timestamp);
 
-    const icon = getIconByAge(daysSinceEdit);
+    const daysSinceEdit = getDaysSinceEdit(
+        feature.properties?.timestamp
+    );
+
+    const icon = 
+        displayMode === "lastEdited"
+            ? getIconByAge(daysSinceEdit)
+            : defaultPin
 
     const marker = L.marker(latlng, { icon });
 
-    // ---------------------------------
-    // Filter visual state
-    // ---------------------------------
+    /* Filter visual state */
     if (!match) {
         marker.setOpacity(0.15);
         marker.setZIndexOffset(0);
@@ -76,27 +69,35 @@ export function createFeatureMarker(feature, latlng) {
 /**
  * Polygon styling based on age + filter state
  */
-export function stylePolygon(feature) {
+export function stylePolygon(feature, displayMode) {
     const match = feature._matchesFilters !== false;
 
-    const daysSinceEdit = getDaysSinceEdit(feature.properties?.timestamp);
+    
 
     const YEAR = 365;
     const THREE_YEARS = 3 * YEAR;
 
-    let color = "#D83F29"; // default red
+    let color = defaultBlue; // default red
 
-    if (daysSinceEdit != null) {
-        if (daysSinceEdit <= YEAR) {
-            color = "#739D55"; // green
-        } else if (daysSinceEdit <= THREE_YEARS) {
-            color = "#E0C055"; // yellow
+    /* DEFAULT VIEW */
+    if (displayMode === "lastEdited"){
+
+        const daysSinceEdit = getDaysSinceEdit(
+            feature.properties?.timestamp
+        );
+
+        if (daysSinceEdit == null){
+            color = red;
+        } else if (daysSinceEdit <= YEAR){
+            color = green
+        } else if (daysSinceEdit <= THREE_YEARS){
+            color = yellow;
+        } else{
+            color = red;
         }
     }
 
-    // ---------------------------------
-    // Filtered styling (dimmed state)
-    // ---------------------------------
+    /* Filtered styling (dimmed state) */
     if (!match) {
         return {
             color,

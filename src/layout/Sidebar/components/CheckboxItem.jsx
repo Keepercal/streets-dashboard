@@ -1,7 +1,7 @@
 /**
  * Toggle checkbox item
  */
-const ToggleItem = ({ label, checked, onChange }) => (
+const CheckboxItem = ({ label, checked, onChange }) => (
     <div className="toggle-item">
         <label className="toggle-label">
             <input
@@ -15,4 +15,4 @@ const ToggleItem = ({ label, checked, onChange }) => (
     </div>
 );
 
-export default ToggleItem;
+export default CheckboxItem;

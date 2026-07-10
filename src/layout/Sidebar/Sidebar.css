@@ -35,10 +35,10 @@ h3 {
     color: #ecf0f1;
 }
 
-.sidebar-header {
-    margin: 20px 0;
+.sidebar-header{
+    position: flex;
+    align-items: center;
 }
-
 
 /* =========================
     SIDEBAR SECTIONS

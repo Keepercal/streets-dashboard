@@ -1,5 +1,5 @@
 import '../Sidebar.css'
-import ToggleItem from './ToggleItem';
+import CheckboxItem from './CheckboxItem';
 
 /**
  * FeatureTab.jsx
@@ -50,7 +50,7 @@ const FeatureTab = ({
                     <div className={`accordion-content ${openGroups[group] ? "open" : ""}`}>
 
                         {features.map(({ key, label, tag, type }) => (
-                            <ToggleItem
+                            <CheckboxItem
                                 key={key}
                                 label={label}
                                 checked={toggles[key]}

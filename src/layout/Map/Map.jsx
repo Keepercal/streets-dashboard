@@ -10,6 +10,8 @@ import FitBounds from "./controls/FitBounds";
 import ZoomTracker from "./controls/ZoomTracker";
 import BasemapSwitcher from "../../components/BasemapSwitcher/BasemapSwitcher";
 
+import BASEMAPS from './config/basemaps'
+
 /**
  * Map
  * ---
@@ -20,26 +22,7 @@ import BasemapSwitcher from "../../components/BasemapSwitcher/BasemapSwitcher";
  * - Zoom tracking
  */
 
-const BASEMAPS = {
-    map: {
-        name: "Map",
-        url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
-    },
-    openstreetmap: {
-        name: "OpenStreetMap",
-        url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    },
-    satellite: {
-        name: "Satellite",
-        url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        attribution: "&copy; Esri",
-    },
-};
-
-function Map({ boundary, features }) {
+function Map({ boundary, features, displayMode }) {
     //const position = [54.0182, -2.5471]; // Bristol
     const position = [54.0182, -2.5471]; // UK
 
@@ -78,6 +61,7 @@ function Map({ boundary, features }) {
                     <FeatureLayer
                         features={features}
                         zoom={zoom}
+                        displayMode={displayMode}
                     />
                 )}
 
