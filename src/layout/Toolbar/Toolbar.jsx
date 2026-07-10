@@ -98,7 +98,7 @@ export default function Toolbar({ onOpenPanel, canExport, boundaryName }) {
                     aria-label='Open GitHub repository'
                 >
                     <img
-                        src='./public/github-mark.svg'
+                        src='./github-mark.svg'
                         alt='GitHub'
                     />
                 </a>
