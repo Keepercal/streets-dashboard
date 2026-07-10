@@ -27,7 +27,7 @@ function Map({ boundary, features, displayMode }) {
     const position = [54.0182, -2.5471]; // UK
 
     const [zoom, setZoom] = useState(13);
-    const [basemap, setBasemap] = useState("map");
+    const [basemap, setBasemap] = useState("carto");
 
     const activeBasemap = BASEMAPS[basemap];
 

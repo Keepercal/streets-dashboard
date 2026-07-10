@@ -86,30 +86,30 @@ const Sidebar = ({
             />
 
             {/* ================= FEATURES ================= */}
-            {boundaryData && (
-                <>
-                    <FeatureTab
-                        open={activeTab === "features"}
-                        setOpen={() => handleTabChange("features")}
-                        openGroups={openGroups}
+            <FeatureTab
+                open={activeTab === "features"}
+                setOpen={() => handleTabChange("features")}
+                openGroups={openGroups}
 
-                        GROUP_LABELS={GROUP_LABELS}
-                        groupedFeatures={groupedFeatures}
-                        toggleGroup={toggleGroup}
+                GROUP_LABELS={GROUP_LABELS}
+                groupedFeatures={groupedFeatures}
+                toggleGroup={toggleGroup}
 
-                        toggles={toggles}
-                        handleToggle={handleToggle}
-                    />
+                toggles={toggles}
+                handleToggle={handleToggle}
 
-                    <DisplayTab
-                        open={activeTab === "display"}
-                        setOpen={() => handleTabChange("display")}
+                disabled={!boundaryData}
+            />
 
-                        displayMode={displayMode}
-                        setDisplayMode={setDisplayMode}
-                    />
-                </>
-            )}
+            <DisplayTab
+                open={activeTab === "display"}
+                setOpen={() => handleTabChange("display")}
+
+                displayMode={displayMode}
+                setDisplayMode={setDisplayMode}
+
+                disabled={!featureData}
+            />
 
             <FeatureCounter features={featureData} />
         </div>

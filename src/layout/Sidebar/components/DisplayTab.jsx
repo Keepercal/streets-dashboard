@@ -12,14 +12,20 @@ import RadioItem from './RadioItem';
 const DisplayTab = ({
     open,
     setOpen,
+    disabled,
+
     displayMode,
     setDisplayMode
 }) => (
-    <div className={`sidebar-tab ${open ? "is-open" : ""}`}>
+    <div className={`sidebar-tab ${open ? "is-open" : ""} ${disabled ? "disabled" : ""}`}>
 
         <h3
             className="tab-header"
-            onClick={() => setOpen(prev => !prev)}
+            onClick={() => {
+                if (!disabled) {
+                    setOpen(prev => !prev);
+                }
+            }}
         >
             Display
             <span className={`arrow ${open ? "rotated" : ""}`}>▸</span>

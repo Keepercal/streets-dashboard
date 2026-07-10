@@ -12,6 +12,7 @@ import CheckboxItem from './CheckboxItem';
 const FeatureTab = ({
     open,
     setOpen,
+    disabled,
 
     openGroups,
     groupedFeatures,
@@ -20,11 +21,15 @@ const FeatureTab = ({
     toggles,
     handleToggle
 }) => (
-    <div className={`sidebar-tab ${open ? "is-open" : ""}`}>
+    <div className={`sidebar-tab ${open ? "is-open" : ""} ${disabled ? "disabled" : ""}`}>
 
         <h3
             className="tab-header"
-            onClick={() => setOpen(prev => !prev)}
+            onClick={() => {
+                if (!disabled){
+                    setOpen(prev => !prev)
+                }
+            }}
         >
             Load Features
             <span className={`arrow ${open ? "rotated" : ""}`}>▸</span>

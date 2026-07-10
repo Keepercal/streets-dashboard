@@ -11,7 +11,7 @@ There are a number of selectable options such as pedestrian crossings and cycle 
 <br>*Overpass Turbo* 👉 https://overpass-turbo.eu/
 
 ## What's new?
-### v0.5.0-alpha 
+### v0.6.0-alpha 
 
 ### Added
 - Export feature data into file formats for ArcGIS, QGIS, Google My Maps, etc.

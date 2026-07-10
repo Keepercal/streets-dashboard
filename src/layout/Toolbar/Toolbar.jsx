@@ -54,6 +54,7 @@ export default function Toolbar({ onOpenPanel, canExport, boundaryName }) {
                 {
                     id: "about",
                     label: "About",
+                    disabled: true,
                     action: () => onOpenPanel("about")
                 },
             ],

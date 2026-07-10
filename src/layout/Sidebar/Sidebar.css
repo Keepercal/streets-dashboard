@@ -63,6 +63,14 @@ h3 {
     transition: background 0.2s ease;
 }
 
+.sidebar-tab.disabled {
+    opacity: 0.45;
+}
+
+.sidebar-tab.disabled .tab-header {
+    cursor: not-allowed;
+}
+
 /* Closed hover state */
 .sidebar-tab:not(.is-open):hover {
     background: rgba(255, 255, 255, 0.05);
