@@ -1,3 +1,5 @@
+import './ExportPanel.css';
+
 import { convertOSM, type ExportFormat } from '../../../services/exportFormats';
 import { downloadFile } from "../../../utils/downloadFile";
 
@@ -16,6 +18,14 @@ export default function ExportButton({
 }: ExportButtonProps) {
 
     function handleExport() {
+
+        const now = new Date();
+
+        const timestamp = [
+            String(now.getHours()).padStart(2, "0"),
+            String(now.getMinutes()).padStart(2, "0"),
+            String(now.getSeconds()).padStart(2, "0"),
+        ].join("-");
 
         const convertedData = convertOSM(
             featureData,
@@ -49,14 +59,14 @@ export default function ExportButton({
 
         downloadFile(
             convertedData,
-            `${filename}.${fileSettings[format].extension}`,
+            `${filename}-${timestamp}.${fileSettings[format].extension}`,
             fileSettings[format].mime
         );
     }
 
 
     return (
-        <button onClick={handleExport}>
+        <button className="export-btn" onClick={handleExport}>
             Export {format.toUpperCase()}
         </button>
     );

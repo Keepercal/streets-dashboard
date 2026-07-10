@@ -14,22 +14,21 @@ export default function ExportPopup({ onClose, featureData }) {
             title="Export"
             onClose={onClose}
         >
-            <p>
-                Choose export options:
-            </p>
 
-            <ExportButton
-                featureData={featureData}
-                format="geojson"
-            />
-            <ExportButton
-                featureData={featureData}
-                format="kml"
-            />
-            <ExportButton
-                featureData={featureData}
-                format="gpx"
-            />
+            <div className="export-panel-btns">
+                <ExportButton
+                    featureData={featureData}
+                    format="geojson"
+                />
+                <ExportButton
+                    featureData={featureData}
+                    format="kml"
+                />
+                <ExportButton
+                    featureData={featureData}
+                    format="gpx"
+                />
+            </div>
         </Popup>
     );
 }

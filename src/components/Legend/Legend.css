@@ -20,6 +20,8 @@
 
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
+
+    z-index: 3000;
 }
 
 /* =========================
