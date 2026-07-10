@@ -69,6 +69,10 @@
     transform: rotate(180deg);
 }
 
+.toolbar-actions{
+    gap: 12px;
+}
+
 /* =========================
     GUTHUB LINK
 ========================= */

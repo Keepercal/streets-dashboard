@@ -8,6 +8,7 @@ import FeatureTab from './components/FeatureTab';
 import DisplayTab from './components/DisplayTab'
 
 import FeatureCounter from '../../components/FeatureCounter/FeatureCounter';
+import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
 /* CONSTANTS */
 import GROUP_LABELS from './constants/featureGroups'
@@ -65,11 +66,6 @@ const Sidebar = ({
 
     return (
         <div className="sidebar-content">
-
-            {/* ================= HEADER ================= */}
-            <div className="sidebar-header">
-                <p className="selected-boundary">Selected Boundary: {boundaryName}</p>
-            </div>
 
             {/* ================= BOUNDARY ================= */}
             <BoundaryTab

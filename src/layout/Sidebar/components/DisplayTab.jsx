@@ -6,7 +6,8 @@ import RadioItem from './RadioItem';
  * ------------
  * Change how content is shown on the map
  *
- *  - Days since last edit
+ * - Default
+ * - Days since last edit
  */
 const DisplayTab = ({
     open,

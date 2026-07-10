@@ -291,6 +291,7 @@ export default function App() {
         <Toolbar
           onOpenPanel={setActivePanel}
           canExport={!!featureData}
+          boundaryName={boundaryData?.elements?.[0]?.tags?.name ?? "None"}
         />
       </header>
 

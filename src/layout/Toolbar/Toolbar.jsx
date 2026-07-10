@@ -3,8 +3,9 @@ import { useState, useRef, useEffect } from 'react';
 
 import ToolbarBrand from './ToolbarBrand';
 import Dropdown from './Dropdown';
+import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
-export default function Toolbar({ onOpenPanel, canExport }) {
+export default function Toolbar({ onOpenPanel, canExport, boundaryName }) {
 
     const [openMenu, setOpenMenu] = useState(null);
     const toolbarRef = useRef(null);
@@ -85,6 +86,9 @@ export default function Toolbar({ onOpenPanel, canExport }) {
             </div>
 
             <div className="toolbar-actions">
+                <BoundaryIndicator
+                    boundaryName={boundaryName}
+                />
                 <a
                     href="https://github.com/Keepercal/streets-dashboard"
                     target="_blank"
