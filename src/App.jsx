@@ -7,35 +7,50 @@
 
 import { createRoot } from 'react-dom/client';
 import { useState, useEffect, useMemo } from 'react';
+import './App.css';
 
 /* High level components */
-import Map from './layout//Map/Map.jsx';
+import Map from './layout/Map/Map.jsx';
+import Toolbar from './layout/Toolbar/Toolbar'
 import Sidebar from './layout/Sidebar/Sidebar';
-import StatusPopup from './components/StatusPopup/StatusPopup.jsx';
+
+/* Popups/Panels */
+import StatusPopup from './layout/Popups/StatusPopup/StatusPopup.jsx';
+import ExportPanel from './layout/Popups/ExportPanel/ExportPanel.jsx';
 
 /* Map related components */
 import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
 import Legend from './components/Legend/Legend.jsx';
-import FeatureCount from './components/FeatureCounter/FeatureCounter.jsx';
 
 /* Hooks */
-import { useBoundary, useMapFeature, useSearchBoundaries } from './hooks/useMapData.js';
-import { evaluateFeature } from './utils/evaluateFeatures.js';
+import useBoundarySearch from './hooks/useBoundarySearch.js';
+import useBoundary from './hooks/useBoundary.js';
+import useMapFeatures from './hooks/useMapFeatures.js';
+
+import evaluateFeature from './utils/evaluateFeatures.js';
 
 /* Maps */
 import { FEATURE_MAP } from './config/osmFeatureMap.js';
 
 export default function App() {
+  const PANELS = {
+    EXPORT: "export",
+    ABOUT: "about"
+  }
+
   const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
   const [toggles, setToggles] = useState({});
   const [filters, setFilters] = useState([]);
-  const [popupDismissed, setPopupDismissed] = useState(false);
+  const [statusPopupDismissed, setPopupDismissed] = useState(false);
+  const [activePanel, setActivePanel] = useState(null);
+
+  const [displayMode, setDisplayMode] = useState("default");
 
   const {
-    clearBoundaryResults,
-    searchBoundaries,
+    loadBoundaryResults,
     boundaryResults,
-  } = useSearchBoundaries();
+    clearBoundaryResults,
+  } = useBoundarySearch();
 
   const {
     boundaryData,
@@ -53,18 +68,21 @@ export default function App() {
     clearFeatures,
     status: featureStatus,
     error: featureError,
-  } = useMapFeature(selectedBoundaryKey);
+  } = useMapFeatures(selectedBoundaryKey);
 
   /*
-   * Reset popup dismissal when loading starts
+   * Reset status popup dismissal when loading starts
    */
   useEffect(() => {
     if (boundaryStatus === 'loading' || featureStatus === 'loading') {
-      console.log('[DEBUG] Loading started → resetting popupDismissed');
+      console.log('[DEBUG] Loading started → resetting statusPopupDismissed');
       setPopupDismissed(false);
     }
   }, [boundaryStatus, featureStatus]);
 
+  /*
+   * Create feature list from feature map
+   */
   const featureOptions = useMemo(() => ([
     { value: 'none', label: 'None' },
     ...Object.entries(FEATURE_MAP).flatMap(([group, features]) =>
@@ -132,6 +150,9 @@ export default function App() {
       selectedBoundaryKey,
     });
 
+    // Clear exititing UI state
+    setFilters([]);
+
     setToggles(prev => {
       const nextValue = !prev[featureKey];
 
@@ -162,8 +183,11 @@ export default function App() {
     });
   };
 
-  const popup = useMemo(() => {
-    if (popupDismissed) {
+  /**
+   * Handle feature toggle
+   */
+  const statusPopup = useMemo(() => {
+    if (statusPopupDismissed) {
       console.log('[DEBUG] Popup dismissed → idle state');
       return {
         trigger: false,
@@ -230,28 +254,28 @@ export default function App() {
     featureStatus,
     boundaryError,
     featureError,
-    popupDismissed,
+    statusPopupDismissed,
   ]);
 
   return (
     <div className="App">
       <StatusPopup
-        trigger={popup.trigger}
-        type={popup.type}
-        title={popup.title}
-        message={popup.message}
+        trigger={statusPopup.trigger}
+        type={statusPopup.type}
+        title={statusPopup.title}
+        message={statusPopup.message}
         onClose={() => {
-          console.log('[DEBUG] Popup closed:', popup);
+          console.log('[DEBUG] Popup closed:', statusPopup);
 
           setPopupDismissed(true);
 
-          if (popup.source === 'boundary') {
+          if (statusPopup.source === 'boundary') {
             console.log('[DEBUG] Resetting boundary state');
             handleClearBoundary();
             setToggles({});
           }
 
-          if (popup.source === 'feature') {
+          if (statusPopup.source === 'feature') {
             console.log('[DEBUG] Clearing feature state');
             clearFeatures();
             setToggles({});
@@ -259,34 +283,63 @@ export default function App() {
         }}
       />
 
-      <div className="side-bar">
-        <Sidebar
-          boundaryData={boundaryData}
+      {activePanel === "export" && (
+        <ExportPanel
           featureData={featureData}
-
-          searchBoundaries={searchBoundaries}
-          handleSelectBoundary={handleSelectBoundary}
-          boundaryResults={boundaryResults}
-          selectedBoundaryKey={selectedBoundaryKey}
-
-          featureOptions={featureOptions}
-          toggles={toggles}
-          handleToggle={handleToggle}
-
-          handleClearBoundary={handleClearBoundary}
+          onClose={() => setActivePanel(null)}
         />
-      </div>
+      )}
 
-      <div className="main-content">
-        <Map boundary={boundaryGeojson} features={filteredGeojson} />
+      <header className="app-header">
+        <Toolbar
+          onOpenPanel={setActivePanel}
+          canExport={!!featureData}
+          boundaryName={boundaryData?.elements?.[0]?.tags?.name ?? "None"}
+        />
+      </header>
 
-        {featureData && <FilterPanel
-          features={featureGeojson}
-          filters={filters}
-          setFilters={setFilters}
-        />}
+      <div className="app-body">
 
-        {featureData && <Legend />}
+        <div className="sidebar">
+          <Sidebar
+            boundaryData={boundaryData}
+            featureData={featureData}
+
+            loadBoundaryResults={loadBoundaryResults}
+            handleSelectBoundary={handleSelectBoundary}
+            boundaryResults={boundaryResults}
+            selectedBoundaryKey={selectedBoundaryKey}
+
+            featureOptions={featureOptions}
+            toggles={toggles}
+            handleToggle={handleToggle}
+
+            displayMode={displayMode}
+            setDisplayMode={setDisplayMode}
+
+            handleClearBoundary={handleClearBoundary}
+            clearFeatures={clearFeatures}
+          />
+
+        </div>
+
+        <div className="main-content">
+
+          {featureData && displayMode ==="lastEdited" && <Legend />}
+
+          {featureData && <FilterPanel
+            features={featureGeojson}
+            filters={filters}
+            setFilters={setFilters}
+          />}
+
+          <Map 
+            boundary={boundaryGeojson} 
+            features={filteredGeojson}
+            displayMode={displayMode}
+          />
+
+        </div>
       </div>
     </div>
   );

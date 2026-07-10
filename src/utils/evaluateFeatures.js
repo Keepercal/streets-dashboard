@@ -6,7 +6,7 @@
  * Each filter is applied using AND logic.
  * Returns true only if all filters pass.
  */
-export function evaluateFeature(feature, filters) {
+export default function evaluateFeature(feature, filters) {
     const tags = feature?.properties ?? {};
 
     return filters.every((filter) => {

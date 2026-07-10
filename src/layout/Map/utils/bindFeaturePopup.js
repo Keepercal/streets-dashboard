@@ -12,7 +12,9 @@ import { timeAgo } from "../../../utils/timeAgo";
  */
 
 export default function bindFeaturePopup(feature, layer, exclude) {
+
     const props = feature.properties || {};
+
     const geom = feature.geometry;
 
     if (!geom) {
@@ -99,9 +101,7 @@ export default function bindFeaturePopup(feature, layer, exclude) {
         <h3>Tags</h3>
     `;
 
-    // -------------------------
-    // Feature properties
-    // -------------------------
+    /* Loop through tags and insert them into popup */
     Object.entries(props)
         .filter(([k]) => !exclude.has(k))
         .forEach(([key, value]) => {

@@ -1,19 +1,36 @@
 import './Sidebar.css';
-import { useState, useEffect, useMemo } from "react";
-import ToggleItem from './components/ToggleItem';
-import InputItem from './components/InputItem';
 
-/* UI Components */
+/* UI COMPONENTS */
 import SidebarHeader from './components/SidebarHeader'
+
 import BoundaryTab from './components/BoundaryTab';
 import FeatureTab from './components/FeatureTab';
-import FeatureCounter from '../../components/FeatureCounter/FeatureCounter';
+import DisplayTab from './components/DisplayTab'
 
+import FeatureCounter from '../../components/FeatureCounter/FeatureCounter';
+import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
+
+/* CONSTANTS */
+import GROUP_LABELS from './constants/featureGroups'
+
+/* HOOKS */
+import { useState, useEffect } from "react";
+import useFeatureGroups from './hooks/useFeatureGroups';
+
+/**
+ * Sidebar.jsx
+ * ------------
+ * UI component to toggle data onto map
+ *
+ * Features:
+ * - Select a boundary
+ * - Load features from a preselect list
+ */
 const Sidebar = ({
     boundaryData,
     featureData,
 
-    searchBoundaries,
+    loadBoundaryResults,
     handleSelectBoundary,
     boundaryResults,
     selectedBoundaryKey,
@@ -22,113 +39,83 @@ const Sidebar = ({
     toggles,
     handleToggle,
 
+    displayMode,
+    setDisplayMode,
+
     handleClearBoundary,
     clearFeatures,
 }) =>{
 
-    const [boundaryOpen, setBoundaryOpen] = useState(false);
-    const [featuresOpen, setFeaturesOpen] = useState(false);
-    const [openGroups, setOpenGroups] = useState({});
+    const [activeTab, setActiveTab] = useState("boundary"); // Start with boundary select open
     const [hasSearched, setHasSearched] = useState(false);
 
-    /**
-     * Human-readable group labels
-     */
-    const GROUP_LABELS = {
-        networks: "Networks",
-        ways: "Ways",
-        crossings: "Crossings",
-        transport: "Transport",
-        publicServices: "Public Services",
-        streetFurniture: "Street Furniture",
-        poi: "Points of Interest",
-        fooddrink: "Food & Drink",
-        leisure: "Leisure",
-        landuse: "Land Use",
-        naturalFeatures: "Natural Features"
-    };
-
-    /**
-     * Group features by category
-     */
-    const groupedFeatures = useMemo(() => {
-        return Object.entries(featureOptions || {}).reduce(
-            (acc, [key, feature]) => {
-                const group = feature.group;
-
-                if (!group) return acc;
-                if (!acc[group]) acc[group] = [];
-
-                acc[group].push({ key, ...feature });
-                return acc;
-            },
-            {}
-        );
-    }, [featureOptions]);
-
-    /**
-     * Initialize group open/closed state
-     */
     useEffect(() => {
-        if (!featureOptions) return;
+        if (boundaryData){
+            setActiveTab("features")
+        }
+    }, [boundaryData]);
 
-        setOpenGroups((prev) => {
-            const initial = Object.values(featureOptions).reduce((acc, feature) => {
-                    if (feature?.group) acc[feature.group] = false;
+    const {
+        groupedFeatures,
+        openGroups,
+        toggleGroup
+    } = useFeatureGroups(featureOptions);
 
-                    return acc;
-                }, {});
-            return { ...initial, ...prev };
-        });
-    }, [featureOptions]);
-
-    /**
-     * Toggle group visibility
-     */
-    const toggleGroup = (group) => {
-        setOpenGroups((prev) => ({ ...prev, [group]: !prev[group] }));
+    /* Toggle tab open/closed */
+    const handleTabChange = (tab) => {
+        setActiveTab(prev =>
+            prev === tab ? null : tab
+        );
     };
 
     return (
-        <div className="sidebar-wrapper">
-            <div className="sidebar">
+        <div className="sidebar-content">
 
-                {/* ================= HEADER ================= */}
-                <SidebarHeader/>
+            {/* ================= BOUNDARY ================= */}
+            <BoundaryTab
+                open={activeTab === "boundary"}
+                setOpen={() => handleTabChange("boundary")}
 
-                {/* ================= BOUNDARY ================= */}
-                <BoundaryTab
-                    open={boundaryOpen}
-                    setOpen={setBoundaryOpen}
+                loadBoundaryResults={loadBoundaryResults}
+                handleClearBoundary={handleClearBoundary}
+                clearFeatures={clearFeatures}
 
-                    searchBoundaries={searchBoundaries}
-                    handleClearBoundary={handleClearBoundary}
-                    clearFeatures={clearFeatures}
+                boundaryResults={boundaryResults}
+                onSelectBoundary={handleSelectBoundary}
 
-                    boundaryResults={boundaryResults}
-                    onSelectBoundary={handleSelectBoundary}
+                selectedBoundaryKey={selectedBoundaryKey}
 
-                    selectedBoundaryKey={selectedBoundaryKey}
+                hasSearched={hasSearched}
+                setHasSearched={setHasSearched}
+            />
 
-                    hasSearched={hasSearched}
-                    setHasSearched={setHasSearched}
-                />
+            {/* ================= FEATURES ================= */}
+            <FeatureTab
+                open={activeTab === "features"}
+                setOpen={() => handleTabChange("features")}
+                openGroups={openGroups}
 
-                {/* ================= FEATURES ================= */}
-                {boundaryData && (
-                    <FeatureTab
-                        openGroups={openGroups}
-                        featuresOpen={featuresOpen}
-                        setFeaturesOpen={setFeaturesOpen}
-                        groupedFeatures={groupedFeatures}
-                        toggleGroup={toggleGroup}
-                        GROUP_LABELS={GROUP_LABELS}
-                        toggles={toggles}
-                        handleToggle={handleToggle}
-                    />
-                )}
-                <FeatureCounter features={featureData} />
-            </div>
+                GROUP_LABELS={GROUP_LABELS}
+                groupedFeatures={groupedFeatures}
+                toggleGroup={toggleGroup}
+
+                toggles={toggles}
+                handleToggle={handleToggle}
+
+                disabled={!boundaryData}
+            />
+
+            <DisplayTab
+                open={activeTab === "display"}
+                setOpen={() => handleTabChange("display")}
+
+                displayMode={displayMode}
+                setDisplayMode={setDisplayMode}
+
+                disabled={!featureData}
+            />
+
+            <FeatureCounter features={featureData} />
         </div>
     );
 }

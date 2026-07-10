@@ -1,0 +1,101 @@
+.toolbar {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0 0px;
+    box-sizing: border-box;
+
+    
+}
+
+.toolbar-content {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    width: fit-content;
+
+    margin-left: 40px;
+}
+
+.toolbar-actions{
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+}
+
+/* =========================
+    Toolbar Branding
+========================= */
+
+.toolbar-brand {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;   
+    width: fit-content;
+    text-decoration: none;
+    color: inherit
+}
+
+.brand-text{
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-title{
+    margin: 0px
+}
+
+.version-tag{
+    margin: 0;
+    font-size: 0.8rem;
+    color: #aaa
+}
+
+.brand-logo{
+    width: auto;
+    height: 35px;
+    flex-shrink: 0;
+
+    transition: transform 0.3s ease;
+}
+
+.brand-logo:hover{
+    transform: rotate(180deg);
+}
+
+.toolbar-actions{
+    gap: 12px;
+}
+
+/* =========================
+    GUTHUB LINK
+========================= */
+
+.github-link{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 6px;
+
+    transition: 
+        background-color 0.2s ease;
+}
+
+.github-link:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.github-link img {
+    width: 32px;
+    height: auto;
+}

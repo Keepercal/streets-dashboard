@@ -1,28 +1,42 @@
 import '../Sidebar.css'
-import ToggleItem from './ToggleItem';
+import CheckboxItem from './CheckboxItem';
 
+/**
+ * FeatureTab.jsx
+ * ------------
+ * UI component in sidebar which contains feature options
+ *
+ * Features:
+ * - Load features from a preselect list
+ */
 const FeatureTab = ({
+    open,
+    setOpen,
+    disabled,
+
     openGroups,
-    setFeaturesOpen,
-    featuresOpen,
     groupedFeatures,
     toggleGroup,
     GROUP_LABELS,
     toggles,
     handleToggle
 }) => (
-    <div className={`sidebar-tab ${featuresOpen ? "is-open" : ""}`}>
+    <div className={`sidebar-tab ${open ? "is-open" : ""} ${disabled ? "disabled" : ""}`}>
 
         <h3
             className="tab-header"
-            onClick={() => setFeaturesOpen(prev => !prev)}
+            onClick={() => {
+                if (!disabled){
+                    setOpen(prev => !prev)
+                }
+            }}
         >
-            Features
-            <span className={`arrow ${featuresOpen ? "rotated" : ""}`}>▸</span>
+            Load Features
+            <span className={`arrow ${open ? "rotated" : ""}`}>▸</span>
         </h3>
 
         {/* LEVEL 1: FEATURES PANEL */}
-        <div className={`tab-content ${featuresOpen ? "open" : ""}`}>
+        <div className={`tab-content ${open ? "open" : ""}`}>
 
             {Object.entries(groupedFeatures).map(([group, features]) => (
 
@@ -41,7 +55,7 @@ const FeatureTab = ({
                     <div className={`accordion-content ${openGroups[group] ? "open" : ""}`}>
 
                         {features.map(({ key, label, tag, type }) => (
-                            <ToggleItem
+                            <CheckboxItem
                                 key={key}
                                 label={label}
                                 checked={toggles[key]}

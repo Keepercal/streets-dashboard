@@ -28,7 +28,7 @@ const EXCLUDE_KEYS = new Set([
  * - Applies dynamic styling based on filter state (_matchesFilters)
  * - Binds popup content to each feature
  */
-export default function FeatureLayer({ features, zoom }) {
+export default function FeatureLayer({ features, zoom, displayMode }) {
     if (!features?.features) return null;
 
     /**
@@ -72,20 +72,26 @@ export default function FeatureLayer({ features, zoom }) {
         <>
             <GeoJSON
                 data={features}
-                key={`features-${filterKey}`} // Forces re-render when filter match state changes on features
+                key={`features-${filterKey}-${displayMode}`} // Forces re-render when filter match state changes on features
                 
-                style={(feature) => stylePolygon(feature)} // Styles polygons based on the time ago they were edited
+                style={(feature) => stylePolygon(feature, displayMode)} // Styles polygons based on the time ago they were edited
                 
-                pointToLayer={createFeatureMarker} // Converts each GeoJSON point into a Leaflet marker
+                pointToLayer={(feature, latlng) =>
+                    createFeatureMarker(feature, latlng, displayMode)
+                } // Converts each GeoJSON point into a Leaflet marker
+
                 onEachFeature={handleEachFeature}
             />
 
             {zoom < 15 && (
                 <GeoJSON // Show marker on polygon if user zooms out
                     data={overviewFeatures}
-                    key={`overview-${filterKey}`}
+                    key={`overview-${filterKey}-${displayMode}`}
 
-                    pointToLayer={createFeatureMarker} // Converts each GeoJSON point into a Leaflet marker
+                    pointToLayer={(feature, latlng) =>
+                        createFeatureMarker(feature, latlng, displayMode)
+                    } // Converts each GeoJSON point into a Leaflet marker
+
                     onEachFeature={handleEachFeature}
                 />
             )}

@@ -1,12 +1,24 @@
 import '../Sidebar.css'
-import BoundaryOption from './BoundaryOption';
-import InputItem from './InputItem'
 
+
+/* UI Components */
+import InputItem from './InputItem'
+import BoundaryOption from './BoundaryOption';
+
+/**
+ * BoundaryTab.jsx
+ * ------------
+ * UI component in sidebar which contains boundary selection
+ *
+ * Features:
+ * - Select a boundary
+
+ */
 const BoundaryTab = ({
     open,
     setOpen,
 
-    searchBoundaries,
+    loadBoundaryResults,
     handleClearBoundary,
     clearFeatures,
 
@@ -20,10 +32,7 @@ const BoundaryTab = ({
     return (
         <div className={`sidebar-tab ${open ? "is-open" : ""}`}>
 
-            <h3
-                className="tab-header"
-                onClick={() => setOpen(prev => !prev)}
-            >
+            <h3 className="tab-header" onClick={() => setOpen(prev => !prev)}>
                 Search Boundary
                 <span className={`arrow ${open ? "rotated" : ""}`}>▸</span>
             </h3>
@@ -32,7 +41,7 @@ const BoundaryTab = ({
 
                 <div className="tab-body">
                     <InputItem
-                        onSearch={searchBoundaries}
+                        onSearch={loadBoundaryResults}
                         setHasSearched={setHasSearched}
 
                         handleClearBoundary={handleClearBoundary}

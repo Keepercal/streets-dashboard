@@ -9,9 +9,9 @@ import "./BasemapSwitcher.css";
 
 const basemaps = [
     {
-        id: "map",
-        label: "Map",
-        preview: "/streets-dashboard/images/map.jpeg"
+        id: "carto",
+        label: "CARTO",
+        preview: "/streets-dashboard/images/carto.jpeg"
     },
     {
         id: "openstreetmap",
