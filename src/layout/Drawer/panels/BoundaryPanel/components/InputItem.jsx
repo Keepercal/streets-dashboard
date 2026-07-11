@@ -1,7 +1,8 @@
 function InputItem({ 
     onSearch,
     handleClearBoundary,
-    setHasSearched
+    setHasSearched,
+    clearFeatures
 }){
     const handleSubmit = async(e) => {
         // Prevent browser from reloading the page
@@ -17,6 +18,7 @@ function InputItem({
 
     const handleReset = () => {
         handleClearBoundary()
+        clearFeatures();
         setHasSearched(false)
     };
 

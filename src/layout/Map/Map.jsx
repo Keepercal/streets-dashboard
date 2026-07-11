@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, ZoomControl } from "react-leaflet";
 import { useState } from "react";
 import "leaflet/dist/leaflet.css";
 import "./Map.css";
@@ -34,17 +34,20 @@ function Map({ boundary, features, displayMode }) {
     return (
         <>
             {/* Basemap switcher UI */}
-            <BasemapSwitcher
+            {/*<BasemapSwitcher
                 basemap={basemap}
                 setBasemap={setBasemap}
-            />
+            />*/}
 
             <MapContainer
                 center={position}
                 //zoom={13} // Bristol
                 zoom={6} // UK
+                zoomControl={false}
                 style={{ height: "100vh", width: "100%" }}
             >
+
+                <ZoomControl position="topright"/>
 
                 {/* Track zoom level */}
                 <ZoomTracker onZoom={setZoom} />

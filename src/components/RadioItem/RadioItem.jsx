@@ -1,3 +1,5 @@
+import './RadioItem.css'
+
 /**
  * Radio item
  */

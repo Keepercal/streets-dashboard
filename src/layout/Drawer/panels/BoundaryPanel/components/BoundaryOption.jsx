@@ -1,3 +1,5 @@
+import '../BoundaryPanel.css'
+
 const BoundaryOption = ({
     boundaryResults,
     selectedBoundaryKey,

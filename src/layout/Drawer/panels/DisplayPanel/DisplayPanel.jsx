@@ -1,5 +1,5 @@
-import '../Sidebar.css'
-import RadioItem from './RadioItem';
+import './DisplayPanel.css'
+import RadioItem from '../../../../components/RadioItem/RadioItem.jsx';
 
 const displayModeLabels = {
     default: "Default",
@@ -9,44 +9,33 @@ const displayModeLabels = {
 /**
  * Display.jsx
  * ------------
- * Change how content is shown on the map
+ * Change how map layers are presented
  *
  * - Default
  * - Days since last edit
  */
-const DisplayTab = ({
-    open,
-    setOpen,
-    disabled,
-
+const DisplayPanel = ({
     displayMode,
     setDisplayMode
 }) => {
     return(
-        <div className={`sidebar-tab ${open ? "is-open" : ""} ${disabled ? "disabled" : ""}`}>
-
-            <h3
-                className="tab-header"
-                onClick={() => {
-                    if (!disabled) {
-                        setOpen(prev => !prev);
-                    }
-                }}
-            >
-                Display
-                <span className={`arrow ${open ? "rotated" : ""}`}>▸</span>
-            </h3>
+        <div className="panel-body">
 
             <p className="current-display-indicator">Current: {displayModeLabels[displayMode]}</p>
 
-            <div className={`tab-content ${open ? "open" : ""}`}>
-                <p>Style map content:</p>
+
+            <div className="panel-content">
+                <h3>
+                    Style map content:
+                </h3>
+
                 <RadioItem
                     label="Default"
                     value="default"
                     selected={displayMode}
                     onChange={setDisplayMode}
                 />
+                
                 <RadioItem
                     label="By Last Edit"
                     value="lastEdited"
@@ -57,4 +46,4 @@ const DisplayTab = ({
         </div>
     )}
 
-export default DisplayTab;
+export default DisplayPanel;

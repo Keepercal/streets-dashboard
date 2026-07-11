@@ -35,7 +35,7 @@ export default function StatusPopup({
 
             {type === "loading" && (
                 <div className="popup-loader">
-                    <BarLoader />
+                    <BarLoader width="100%"/>
                 </div>
             )}
 

@@ -1,15 +1,27 @@
 /* =========================
-   GLOBAL RESET
+    GLOBAL RESET
 ========================= */
 
 html,
 body,
 #root {
     height: 100%;
+    font-family: "Google Sans Flex", sans-serif;
+}
+
+:root{
+    --header-height: 60px;
+    --header-bg: #1f2d3d;
+
+    --sidebar-width: 160px;
+    --sidebar-bg: #223d57;
+
+    --drawer-width: 360px;
+    --drawer-bg: #526D82;
 }
 
 /* =========================
-   ROOT LAYOUT
+    ROOT LAYOUT
 ========================= */
 
 .App {
@@ -20,13 +32,13 @@ body,
 }
 
 /* =========================
-   APP UI PARAMETERS
+    APP UI PARAMETERS
 ========================= */
 
 .app-header{
-    height: 60px;
+    height: var(--header-height);
     flex-shrink: 0px;
-    background: #1f2d3d;
+    background: var(--header-bg);
     color: white;
 
     display: flex;
@@ -40,8 +52,10 @@ body,
 .app-body{
     flex: 1;
     display: grid;
-    grid-template-columns: 250px 1fr;
+    grid-template-columns: var(--sidebar-width) 1fr;
     overflow: hidden;
+
+    position: relative;
 }
 
 /* =========================
@@ -57,7 +71,7 @@ body,
     z-index: 1000;
     box-sizing: border-box;
 
-    background-color: #223d57;
+    background-color: var(--sidebar-bg);
     color: #ecf0f1;
 }
 
