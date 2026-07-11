@@ -6,6 +6,7 @@ import React from "react";
 
 import bindFeaturePopup from '../utils/bindFeaturePopup'
 import { createFeatureMarker, stylePolygon } from '../utils/featureRendering'
+import getLayerColour from "../../../utils/layerColours";
 
 // Fields not displayed in the popup
 const EXCLUDE_KEYS = new Set([
@@ -39,6 +40,8 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
             {Object.entries(featureLayers).map(([featureKey, layer]) => {
                 
                 const features = layer.geojson;
+
+                const layerColour = getLayerColour(featureKey)
 
                 if (!features?.features) return null;
 
@@ -94,7 +97,12 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                             key={`${featureKey}-${filterKey}-${displayMode}`}
 
                             style={(feature) =>
-                                stylePolygon(feature, displayMode/*, featureKey*/)
+                                stylePolygon(
+                                    feature, 
+                                    displayMode,
+                                    /*, featureKey,*/
+                                    layerColour,
+                                )
                             }
 
                             pointToLayer={(feature, latlng) =>
@@ -102,7 +110,8 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                                     feature,
                                     latlng,
                                     displayMode,
-                                    //featureKey
+                                    //featureKey,
+                                    layerColour
                                 )
                             }
 
@@ -120,7 +129,8 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                                         feature,
                                         latlng,
                                         displayMode,
-                                        //featureKey
+                                        //featureKey,
+                                        layerColour
                                     )
                                 }
 

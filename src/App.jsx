@@ -30,7 +30,7 @@ import useMapFeatures from './hooks/useMapFeatures.js';
 
 import evaluateFeature from './utils/evaluateFeatures.js';
 
-/* Maps */
+/* Misc imports */
 import { FEATURE_MAP } from './config/osmFeatureMap.js';
 
 export default function App() {

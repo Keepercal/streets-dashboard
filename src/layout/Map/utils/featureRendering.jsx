@@ -14,6 +14,18 @@ const pinGreen = createPinIcon(green);
 const pinYellow = createPinIcon(yellow);
 const pinRed = createPinIcon(red);
 
+const pinCache = new Map();
+
+function getPin(colour){
+    const pinColour = colour ?? defaultBlue;
+
+    if (!pinCache.has(pinColour)){
+        pinCache.set(pinColour, createPinIcon(pinColour));
+    }
+
+    return pinCache.get(pinColour);
+}
+
 /**
  * Returns edit age in days
  */
@@ -39,7 +51,7 @@ function getIconByAge(days) {
 /**
  * Create marker for point features
  */
-export function createFeatureMarker(feature, latlng, displayMode) {
+export function createFeatureMarker(feature, latlng, displayMode, colour) {
     const match = feature._matchesFilters !== false;
 
     const daysSinceEdit = getDaysSinceEdit(
@@ -49,7 +61,7 @@ export function createFeatureMarker(feature, latlng, displayMode) {
     const icon = 
         displayMode === "lastEdited"
             ? getIconByAge(daysSinceEdit)
-            : defaultPin
+            : getPin(colour)
 
     const marker = L.marker(latlng, { icon });
 
@@ -69,15 +81,13 @@ export function createFeatureMarker(feature, latlng, displayMode) {
 /**
  * Polygon styling based on age + filter state
  */
-export function stylePolygon(feature, displayMode) {
+export function stylePolygon(feature, displayMode, colour) {
     const match = feature._matchesFilters !== false;
-
-    
 
     const YEAR = 365;
     const THREE_YEARS = 3 * YEAR;
 
-    let color = defaultBlue; // default red
+    colour = colour ?? defaultBlue; // default blue
 
     /* DEFAULT VIEW */
     if (displayMode === "lastEdited"){
@@ -87,20 +97,20 @@ export function stylePolygon(feature, displayMode) {
         );
 
         if (daysSinceEdit == null){
-            color = red;
+            colour = red;
         } else if (daysSinceEdit <= YEAR){
-            color = green
+            colour = green
         } else if (daysSinceEdit <= THREE_YEARS){
-            color = yellow;
+            colour = yellow;
         } else{
-            color = red;
+            colour = red;
         }
     }
 
     /* Filtered styling (dimmed state) */
     if (!match) {
         return {
-            color,
+            color: colour,
             opacity: 0.10,
             weight: 2,
             fillOpacity: 0.15,
@@ -109,7 +119,7 @@ export function stylePolygon(feature, displayMode) {
     }
 
     return {
-        color,
+        color: colour,
         opacity: 1,
         weight: 3,
         fillOpacity: 0.2,
