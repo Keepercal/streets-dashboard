@@ -1,3 +1,4 @@
+import './DisplayPanel.css'
 import RadioItem from '../../../../components/RadioItem/RadioItem.jsx';
 
 const displayModeLabels = {
@@ -8,30 +9,33 @@ const displayModeLabels = {
 /**
  * Display.jsx
  * ------------
- * Change how content is shown on the map
+ * Change how map layers are presented
  *
  * - Default
  * - Days since last edit
  */
 const DisplayPanel = ({
-    disabled,
-
     displayMode,
     setDisplayMode
 }) => {
     return(
-        <div className={`panel-content ${open ? "is-open" : ""} ${disabled ? "disabled" : ""}`}>
+        <div className="panel-body">
 
             <p className="current-display-indicator">Current: {displayModeLabels[displayMode]}</p>
 
-            <div className={`tab-content ${open ? "open" : ""}`}>
-                <p>Style map content:</p>
+
+            <div className="panel-content">
+                <h3>
+                    Style map content:
+                </h3>
+
                 <RadioItem
                     label="Default"
                     value="default"
                     selected={displayMode}
                     onChange={setDisplayMode}
                 />
+                
                 <RadioItem
                     label="By Last Edit"
                     value="lastEdited"

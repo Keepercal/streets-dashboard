@@ -1,3 +1,5 @@
+import './BoundaryPanel.css'
+
 import { useState } from 'react';
 
 /* UI Components */
@@ -26,10 +28,7 @@ const BoundaryPanel = ({
 
     return (
         <>
-            <div className="panel-header">
-                <h3>Select Boundary</h3>
-            </div>
-            <div className="boundary-panel-body">
+            <div className="panel-body">
                 <InputItem
                     onSearch={loadBoundaryResults}
                     setHasSearched={setHasSearched}
@@ -37,9 +36,7 @@ const BoundaryPanel = ({
                     handleClearBoundary={handleClearBoundary}
                     clearFeatures={clearFeatures}
                 />
-            </div>
 
-            <div className="boundary-panel-list">
                 {hasSearched ? (
                     <BoundaryOption
                         boundaryResults={boundaryResults}

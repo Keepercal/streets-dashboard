@@ -1,10 +1,16 @@
+/* =========================
+    DRAWER
+========================= */
+
 .drawer {
     position: absolute;
     left: var(--sidebar-wdith);
     top: 0;
     bottom: 0;
 
+    height: 100%;
     width: var(--drawer-width);
+    overflow: hidden;
 
     background: var(--drawer-bg);
 
@@ -16,7 +22,7 @@
     box-shadow:
         4px 0 4px rgba(0,0,0,0.25);
 
-    padding: 20px;
+    padding: 16px;
 }
 
 .drawer.open {
@@ -24,34 +30,55 @@
 }
 
 /* =========================
-    BOUNDARY CARDS
+    DRAWER HEADER AND CLOSE BUTTON
 ========================= */
 
-.boundary-card {
-    width: 100%;
+.drawer-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-    padding: 8px;
 
-    box-sizing: border-box;
+    color: white;
+}
 
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: 6px;
+.drawer-header h2{
+    margin: 0px;
+}
 
-    background: rgba(255, 255, 255, 0.03);
+.drawer-close {
+    border: none;
+    background: transparent;
+
+    color: white;
+    font-size: 28px;
 
     cursor: pointer;
 
-    transition: background 0.2s ease;
+    line-height: 1;
 }
 
-.boundary-card:hover {
-    background: rgba(226, 159, 0, 0.2);
+.drawer-close:hover {
+    opacity: 0.75;
 }
 
-.boundary-card.selected {
-    background: rgba(226, 159, 0, 0.1);
-}
+.drawer-content {
+    height: 100%;
+    overflow: hidden;
 
-.boundary-card.selected:hover {
-    background: rgba(226, 159, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0px;
+
+    color: #ecf0f1;
+}
+/* =========================
+    PANEL BODY STYLING
+========================= */
+
+.panel-body{
+    flex: 1;
+    overflow-y: auto;
+
+    color: white;
 }

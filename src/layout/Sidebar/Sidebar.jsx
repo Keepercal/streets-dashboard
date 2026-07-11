@@ -1,7 +1,6 @@
 import './Sidebar.css';
 
 /* UI COMPONENTS */
-import SidebarHeader from './components/SidebarHeader'
 import SidebarButton from './components/SidebarButton'
 
 import FeatureCounter from '../../components/FeatureCounter/FeatureCounter';
@@ -9,6 +8,9 @@ import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndica
 
 /* CONSTANTS */
 import GROUP_LABELS from '../Drawer/panels/LayersPanel/constants/featureGroups'
+
+/* API imports */
+import { Map, Layers, Monitor } from "lucide-react";
 
 /**
  * Sidebar.jsx
@@ -41,12 +43,14 @@ const Sidebar = ({
 
             <SidebarButton
                 label="Boundary"
+                icon={<Map />}
                 active={activeDrawer === "boundary"}
                 onClick={() => openDrawer("boundary")}
             />
 
             <SidebarButton
                 label="Layers"
+                icon={<Layers />}
                 disabled={!hasBoundary}
                 active={activeDrawer === "layers"}
                 onClick={() =>{openDrawer("layers")}
@@ -55,10 +59,13 @@ const Sidebar = ({
 
             <SidebarButton
                 label="Display"
+                icon={<Monitor />}
                 disabled={!hasFeatures}
                 active={activeDrawer === "display"}
                 onClick={() => openDrawer("display")}
             />
+
+            <FeatureCounter/>
         </div>
     );
 }

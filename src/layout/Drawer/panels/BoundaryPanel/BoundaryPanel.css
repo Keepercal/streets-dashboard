@@ -1,0 +1,112 @@
+/* =========================
+    FORMS / INPUTS
+========================= */
+
+.boundary-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.button-row {
+    display: flex;
+    gap: 8px;
+}
+
+.input-item {
+    width: 90%;
+
+    padding: 4px 5px;
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    font-size: 14px;
+}
+
+/* =========================
+    BOUNDARY CARDS
+========================= */
+
+.boundary-card {
+    width: 100%;
+
+    padding: 8px;
+    margin: 8px 0px;
+
+    box-sizing: border-box;
+
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+
+    background: rgba(255, 255, 255, 0.03);
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+
+    color: white;
+}
+
+.boundary-card:hover {
+    background: rgba(226, 159, 0, 0.2);
+}
+
+.boundary-card.selected {
+    background: rgba(226, 159, 0, 0.1);
+}
+
+.boundary-card.selected:hover {
+    background: rgba(226, 159, 0, 0.2);
+}
+
+/* =========================
+    BUTTONS
+========================= */
+
+.btn {
+    padding: 5px 10px;
+
+    border: none;
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition: background 0.2s ease;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1f55ea;
+}
+
+.btn-secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.btn-secondary:hover {
+    background: #d1d5db;
+}
+
+/* =========================
+    EMPTY STATES
+========================= */
+
+.empty-state {
+    display: flex;
+    justify-content: center;
+
+    padding: 30px;
+
+    color: rgba(255, 255, 255, 0.75);
+
+    font-size: 18px;
+    font-style: italic;
+}

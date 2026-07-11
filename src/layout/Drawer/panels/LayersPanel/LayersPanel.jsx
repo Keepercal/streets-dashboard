@@ -1,7 +1,8 @@
+import './LayersPanel.css'
+
 import CheckboxItem from '../../../../components/CheckboxItem/CheckboxItem.jsx';
 
 /* HOOKS */
-import { useState, useEffect } from "react";
 import useFeatureGroups from './hooks/useFeatureGroups';
 
 /* CONSTANTS */
@@ -16,8 +17,6 @@ import GROUP_LABELS from './constants/featureGroups'
  * - Load features from a preselect list
  */
 const LayersPanel = ({
-    disabled,
-
     featureOptions,
 
     toggles = {},
@@ -30,11 +29,9 @@ const LayersPanel = ({
         toggleGroup
     } = useFeatureGroups(featureOptions);
 
-    return(
-        <div className={`sidebar-tab ${open ? "is-open" : ""} ${disabled ? "disabled" : ""}`}>
-
-            {/* LEVEL 1: FEATURES PANEL */}
-            <div className={`tab-content ${open ? "open" : ""}`}>
+    return (
+        <>
+            <div className="panel-body">
 
                 {Object.entries(groupedFeatures).map(([group, features]) => (
 
@@ -58,7 +55,7 @@ const LayersPanel = ({
                                     label={label}
                                     checked={!!toggles[key]}
                                     onChange={() =>
-                                        handleToggle(key, tag, key, type)
+                                        handleToggle?.(key, tag, key, type)
                                     }
                                 />
                             ))}
@@ -68,7 +65,8 @@ const LayersPanel = ({
                     </div>
                 ))}
             </div>
-        </div>
-)}
+        </>
+    )
+}
 
 export default LayersPanel;

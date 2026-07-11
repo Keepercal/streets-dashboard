@@ -8,16 +8,13 @@ function Drawer({
     activeDrawer,
     setActiveDrawer,
 
-    boundaryData,
-    featureData,
     selectedBoundaryKey,
-
     loadBoundaryResults,
     handleSelectBoundary,
     boundaryResults,
 
     featureOptions,
-    toggle,
+    toggles,
     handleToggle,
 
     displayMode,
@@ -26,9 +23,30 @@ function Drawer({
     handleClearBoundary,
     clearFeatures,
 }) {
+    const DRAWER_TITLES = {
+        boundary: "Search for Boundary",
+        layers: "Load Layers",
+        display: "Display"
+    }
+
     return (
         <div className={`drawer ${activeDrawer ? "open" : ""}`}>
-            <div className={`drawer-content ${open ? "open" : ""}`}>
+
+            <div className="drawer-header">
+                <h2>
+                    {DRAWER_TITLES[activeDrawer]}
+                </h2>
+
+                <button
+                    className="drawer-close"
+                    onClick={() => setActiveDrawer(null)}
+                    aria-label="Close drawer"
+                >
+                    ×
+                </button>
+            </div>
+
+            <div className="drawer-content">
                 {activeDrawer === "boundary" &&
                     <BoundaryPanel
                         loadBoundaryResults={loadBoundaryResults}
@@ -45,11 +63,15 @@ function Drawer({
                     <LayersPanel
                         featureOptions={featureOptions}
                         handleToggle={handleToggle}
+                        toggles={toggles}
                     />
                 }
 
                 {activeDrawer === "display" &&
-                    <DisplayPanel {...props} />
+                    <DisplayPanel
+                        displayMode={displayMode}
+                        setDisplayMode={setDisplayMode}
+                    />
                 }
             </div>
         </div>
