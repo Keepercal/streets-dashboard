@@ -1,4 +1,3 @@
-import osmtogeojson from "osmtogeojson";
 import tokml from "tokml";
 import GeoJsonToGpx from "@dwayneparton/geojson-to-gpx";
 
@@ -8,12 +7,10 @@ export type ExportFormat =
     | "gpx";
 
 
-export function convertOSM(
-    osmData: any,
+export function convertGeoJSON(
+    geojson: any,
     format: ExportFormat
 ): string {
-
-    const geojson = osmtogeojson(osmData);
 
     switch (format) {
         case "geojson":

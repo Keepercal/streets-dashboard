@@ -10,7 +10,7 @@
  * - Delegate data extraction to useFilterData hook
  */
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import useFilterData from "./useFilterData";
 import FilterItem from "./FilterItem";
@@ -18,10 +18,23 @@ import TagItem from "./TagItem";
 
 import "./FilterPanel.css";
 
-function FilterPanel({ features, filters, setFilters }) {
+function FilterPanel({ featureLayers, filters, setFilters }) {
+    
     const [collapsed, setCollapsed] = useState(true);
 
-    const { tags, getValues } = useFilterData(features, filters);
+    const combinedFeatures = useMemo(() => {
+
+        return{
+            type: "FeatureCollection",
+            features: Object.values(featureLayers ?? {})
+                .flatMap(layer => layer.geojson?.features ?? [])
+        };
+    }, [featureLayers]);
+
+    const { tags, getValues } = useFilterData(
+        combinedFeatures, 
+        filters
+    );
 
     const toggleCollapsed = () => {
         setCollapsed(prev => !prev);

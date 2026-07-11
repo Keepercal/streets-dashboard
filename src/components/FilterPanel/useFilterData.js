@@ -37,7 +37,9 @@ export default function useFilterData(features, filters) {
         });
 
         // Determine which tags are already used by active filters
-        const activeKeys = new Set(filters.map(f => f.key));
+        const activeKeys = new Set(
+            filters?.map(f => f.key) ?? []
+        );
 
         // Available (unused) tags sorted alphabetically
         const tags = [...tagSet]

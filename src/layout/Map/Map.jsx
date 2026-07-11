@@ -22,7 +22,7 @@ import BASEMAPS from './config/basemaps'
  * - Zoom tracking
  */
 
-function Map({ boundary, features, displayMode }) {
+function Map({ boundary, featureLayers, displayMode }) {
     //const position = [54.0182, -2.5471]; // Bristol
     const position = [54.0182, -2.5471]; // UK
 
@@ -60,13 +60,11 @@ function Map({ boundary, features, displayMode }) {
                 />
 
                 {/* Feature overlays */}
-                {features && (
-                    <FeatureLayer
-                        features={features}
-                        zoom={zoom}
-                        displayMode={displayMode}
-                    />
-                )}
+                <FeatureLayer
+                    featureLayers={featureLayers}
+                    zoom={zoom}
+                    displayMode={displayMode}
+                />
 
                 {/* Boundary + auto-fit */}
                 {boundary && (

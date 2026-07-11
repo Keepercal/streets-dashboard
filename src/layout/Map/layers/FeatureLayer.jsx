@@ -2,6 +2,7 @@
 // Feature position is derived from Overpass feature's metadata
 import { GeoJSON } from 'react-leaflet'
 import L from "leaflet";
+import React from "react";
 
 import bindFeaturePopup from '../utils/bindFeaturePopup'
 import { createFeatureMarker, stylePolygon } from '../utils/featureRendering'
@@ -28,73 +29,107 @@ const EXCLUDE_KEYS = new Set([
  * - Applies dynamic styling based on filter state (_matchesFilters)
  * - Binds popup content to each feature
  */
-export default function FeatureLayer({ features, zoom, displayMode }) {
-    if (!features?.features) return null;
-
-    /**
-     * Overview mode:
-     * Converts polygon features into centroid points
-     * so they can be displayed at low zoom levels.
-     */
-    const overviewFeatures = {
-        type: "FeatureCollection",
-        features: features.features
-            .filter(f => 
-                f.geometry?.type !== "Point" &&
-                f.geometry?.type !== "LineString"
-            )
-            .map(f => {
-                const bounds = L.geoJSON(f).getBounds();
-                const centre = bounds.getCenter(); // Store the centre of the polygon
-
-                return {
-                    ...f,
-                    geometry: {
-                        type: "Point",
-                        coordinates: [centre.lng, centre.lat]
-                    }
-                };
-            })
+export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
+    if (!featureLayers || Object.keys(featureLayers).length === 0){
+        return null;
     };
-
-    /**
-     * Attach popup content to each feature layer
-     */
-    const handleEachFeature = (feature, layer) => {
-        bindFeaturePopup(feature, layer, EXCLUDE_KEYS);
-    };
-
-    const filterKey = JSON.stringify(
-        features.features.map(f => f._matchesFilters)
-    );
-
+    
     return (
         <>
-            <GeoJSON
-                data={features}
-                key={`features-${filterKey}-${displayMode}`} // Forces re-render when filter match state changes on features
+            {Object.entries(featureLayers).map(([featureKey, layer]) => {
                 
-                style={(feature) => stylePolygon(feature, displayMode)} // Styles polygons based on the time ago they were edited
-                
-                pointToLayer={(feature, latlng) =>
-                    createFeatureMarker(feature, latlng, displayMode)
-                } // Converts each GeoJSON point into a Leaflet marker
+                const features = layer.geojson;
 
-                onEachFeature={handleEachFeature}
-            />
+                if (!features?.features) return null;
 
-            {zoom < 15 && (
-                <GeoJSON // Show marker on polygon if user zooms out
-                    data={overviewFeatures}
-                    key={`overview-${filterKey}-${displayMode}`}
+                /*const featuresWithLayer = {
+                    ...features,
+                    features: features.features.map(feature => ({
+                        ...feature,
+                        properties: {
+                            ...feature.properties,
+                            _layer: featureKey
+                        }
+                    }))
+                };*/
 
-                    pointToLayer={(feature, latlng) =>
-                        createFeatureMarker(feature, latlng, displayMode)
-                    } // Converts each GeoJSON point into a Leaflet marker
+                const overviewFeatures = {
+                    type: "FeatureCollection",
+                    features: features.features
+                        .filter(f =>
+                            f.geometry?.type !== "Point" &&
+                            f.geometry?.type !== "LineString"
+                        )
+                        .map(f =>{
+                            const bounds = L.geoJSON(f).getBounds();
+                            const centre = bounds.getCenter();
 
-                    onEachFeature={handleEachFeature}
-                />
-            )}
+                            return {
+                                ...f,
+                                geometry: {
+                                    type: "Point",
+                                    coordinates: [
+                                        centre.lng,
+                                        centre.lat
+                                    ]
+                                }
+                            };
+                        })
+                };
+
+                const handleEachFeature = (feature, layer) => {
+                    bindFeaturePopup(feature, layer, EXCLUDE_KEYS);
+                };
+
+                const filterKey = JSON.stringify(
+                    features.features.map(f => f._matchesFilters)
+                );
+
+                return (
+                    <React.Fragment key={featureKey}>
+
+                        <GeoJSON
+                            data={features}
+
+                            key={`${featureKey}-${filterKey}-${displayMode}`}
+
+                            style={(feature) =>
+                                stylePolygon(feature, displayMode/*, featureKey*/)
+                            }
+
+                            pointToLayer={(feature, latlng) =>
+                                createFeatureMarker(
+                                    feature,
+                                    latlng,
+                                    displayMode,
+                                    //featureKey
+                                )
+                            }
+
+                            onEachFeature={handleEachFeature}
+                        />
+
+                        {zoom < 15 && (
+                            <GeoJSON
+                                data={overviewFeatures}
+
+                                key={`${featureKey}-overview-${filterKey}-${displayMode}`}
+
+                                pointToLayer={(feature, latlng) =>
+                                    createFeatureMarker(
+                                        feature,
+                                        latlng,
+                                        displayMode,
+                                        //featureKey
+                                    )
+                                }
+
+                                onEachFeature={handleEachFeature}
+                            />
+                        )}
+                    </React.Fragment>
+                )
+            })}
         </>
     );
 }

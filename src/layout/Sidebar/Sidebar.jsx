@@ -23,7 +23,7 @@ import { Map, Layers, Monitor } from "lucide-react";
  */
 const Sidebar = ({
     boundaryData,
-    featureData,
+    featureLayers,
 
     activeDrawer,
     setActiveDrawer
@@ -36,7 +36,7 @@ const Sidebar = ({
     };
 
     const hasBoundary = !!boundaryData;
-    const hasFeatures = !!featureData;
+    const hasFeatures =  featureLayers && Object.keys(featureLayers).length > 0;
 
     return (
         <div className="sidebar-content">
@@ -66,7 +66,7 @@ const Sidebar = ({
             />
 
             <FeatureCounter
-                features={featureData}
+                features={featureLayers}
             />
         </div>
     );

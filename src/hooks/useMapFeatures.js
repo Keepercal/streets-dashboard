@@ -14,8 +14,7 @@ import { fetchMapFeature } from "../services/overpass/overpass";
  * - GeoJSON conversion
  */
 export default function useMapFeatures() {
-    const [featureData, setFeatureData] = useState(null);
-    const [featureGeojson, setFeatureGeojson] = useState(null);
+    const [featureLayers, setFeatureLayers] = useState({});
 
     const [status, setStatus] = useState("idle");
     const [error, setError] = useState(null);
@@ -23,15 +22,30 @@ export default function useMapFeatures() {
     const requestId = useRef(0);
     const cache = useRef(new Map());
 
+    const [failedFeatureKey, setFailedFeatureKey] = useState(null);
+
     const clearFeatures = () => {
-        setFeatureData(null);
-        setFeatureGeojson(null);
+        setFeatureLayers({});
 
         setError(null);
         setStatus("idle");
     };
 
+    const removeFeature = (featureKey) => {
+        setFeatureLayers(prev => {
+            const next = { ...prev };
+
+            delete next[featureKey];
+
+            return next;
+        });
+
+        setError(null);
+        setStatus("idle");
+    }
+
     const loadFeatures = async (
+        featureKey,
         selectedBoundaryKey,
         featureTag,
         featureValue,
@@ -56,15 +70,25 @@ export default function useMapFeatures() {
         if (cache.current.has(cacheKey)) { // Check cache for stored features
             const cached = cache.current.get(cacheKey);
 
-            setFeatureData(cached.featureData);
-            setFeatureGeojson(cached.featureGeojson);
+            // Cache load
+            setFeatureLayers(prev => ({
+                ...prev,
+                [featureKey]: {
+                    data: cached.data,
+                    geojson: cached.geojson
+                }
+            }))
+
             setStatus("success");
 
             return;
         }
 
-        setFeatureData(null);
-        setFeatureGeojson(null);
+        setFeatureLayers(prev =>{
+                const next = {...prev};
+                delete next[featureKey];
+                return next;
+        });
 
         setError(null);
         setStatus("loading");
@@ -84,19 +108,29 @@ export default function useMapFeatures() {
             const geojson = osmtogeojson(result, { meta: true }); // Convert to geoJSON
 
             cache.current.set(cacheKey, {
-                featureData: result,
-                featureGeojson: geojson,
+                data: result,
+                geojson,
             });
 
-            setFeatureData(result);
-            setFeatureGeojson(geojson);
+            setFeatureLayers(prev => ({
+                ...prev,
+                [featureKey]: {
+                    data: result,
+                    geojson
+                }
+            }))
 
             setStatus("success");
         } catch (err) {
             if (currentId !== requestId.current) return;
 
-            setFeatureData(null);
-            setFeatureGeojson(null);
+            setFeatureLayers(prev =>{ // on err
+                const next = {...prev};
+                delete next[featureKey];
+                return next;
+            })
+
+            setFailedFeatureKey(featureKey)
             
             setError(err);
             setStatus("error");
@@ -104,10 +138,11 @@ export default function useMapFeatures() {
     };
 
     return {
-        featureData,
-        featureGeojson,
+        featureLayers,
         loadFeatures,
         clearFeatures,
+        removeFeature,
+        failedFeatureKey,
         status,
         error,
     };

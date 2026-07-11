@@ -8,7 +8,22 @@ import ExportButton from './ExportButton'
  * ----------------
  * Panel for exporting loaded features to various formats:
  */
-export default function ExportPopup({ onClose, featureData }) {
+export default function ExportPanel({ onClose, featureLayers }) {
+
+    const combinedFeatures = {
+        type: "FeatureCollection",
+        features: Object.entries(featureLayers)
+            .flatMap(([layerKey, layer]) =>
+                layer.geojson.features.map(feature => ({
+                    ...feature,
+                    properties: {
+                        ...feature.properties,
+                        _layer: layerKey
+                    }
+                }))
+            )
+    }
+
     return (
         <Popup
             title="Export"
@@ -17,15 +32,15 @@ export default function ExportPopup({ onClose, featureData }) {
 
             <div className="export-panel-btns">
                 <ExportButton
-                    featureData={featureData}
+                    featureData={combinedFeatures}
                     format="geojson"
                 />
                 <ExportButton
-                    featureData={featureData}
+                    featureData={combinedFeatures}
                     format="kml"
                 />
                 <ExportButton
-                    featureData={featureData}
+                    featureData={combinedFeatures}
                     format="gpx"
                 />
             </div>

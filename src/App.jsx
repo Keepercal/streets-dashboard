@@ -65,14 +65,18 @@ export default function App() {
     error: boundaryError,
   } = useBoundary();
 
+  /* Hook in feature data */
   const {
-    featureData,
-    featureGeojson,
+    featureLayers,
     loadFeatures,
     clearFeatures,
+    removeFeature,
+    failedFeatureKey,
     status: featureStatus,
     error: featureError,
-  } = useMapFeatures(selectedBoundaryKey);
+  } = useMapFeatures();
+
+  const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if user has loaded any features
 
   /*
    * Reset status popup dismissal when loading starts
@@ -83,6 +87,20 @@ export default function App() {
       setPopupDismissed(false);
     }
   }, [boundaryStatus, featureStatus]);
+
+  /*
+ * Uncheck feature toggle when loading fails
+ */
+  useEffect(() => {
+    if (featureStatus === "error" && failedFeatureKey) {
+      console.log('[DEBUG] Removing failed feature toggle:', failedFeatureKey);
+
+      setToggles(prev => ({
+        ...prev,
+        [failedFeatureKey]: false,
+      }));
+    }
+  }, [featureStatus, failedFeatureKey]);
 
   /*
    * Create feature list from feature map
@@ -103,17 +121,27 @@ export default function App() {
   /*
    * Handle feature filtering
    */
-  const filteredGeojson = useMemo(() => {
-    if (!featureGeojson) return null;
+  const filteredLayers = useMemo(() => {
+    const result = {};
 
-    return {
-      ...featureGeojson,
-      features: featureGeojson.features.map(feature => ({
-        ...feature,
-        _matchesFilters: evaluateFeature(feature, filters),
-      })),
-    };
-  }, [featureGeojson, filters]);
+    Object.entries(featureLayers).forEach(([key, layer]) => {
+      if (!layer.geojson?.features) return;
+
+      result[key] = {
+        ...layer,
+        geojson: {
+          ...layer.geojson,
+          features: layer.geojson.features.map(feature => ({
+            ...feature,
+            _matchesFilters: evaluateFeature(feature, filters)
+          })),
+        },
+      };
+    });
+
+    return result
+
+  }, [featureLayers, filters]);
 
   /**
    * Handle input for boundary search
@@ -173,10 +201,17 @@ export default function App() {
           featureType,
         });
 
-        loadFeatures(selectedBoundaryKey, featureTag, featureValue, featureType);
+        loadFeatures(
+          featureKey,
+          selectedBoundaryKey,
+          featureTag,
+          featureValue,
+          featureType
+        );
+
       } else {
-        console.log('[DEBUG] Clearing features');
-        clearFeatures();
+        console.log('[DEBUG] Clearing feature', featureKey);
+        removeFeature(featureKey);
       }
 
       return {
@@ -240,6 +275,7 @@ export default function App() {
         trigger: true,
         type: 'error',
         source: 'feature',
+        featureKey: failedFeatureKey,
         title: 'Error',
         message: featureError?.message,
       };
@@ -257,6 +293,7 @@ export default function App() {
     featureStatus,
     boundaryError,
     featureError,
+    failedFeatureKey,
     statusPopupDismissed,
   ]);
 
@@ -279,16 +316,24 @@ export default function App() {
           }
 
           if (statusPopup.source === 'feature') {
-            console.log('[DEBUG] Clearing feature state');
-            clearFeatures();
-            setToggles({});
+            const failedKey = status.featureKey;
+            console.log('[DEBUG] Removing failed feature');
+
+            if (failedKey) {
+              removeFeature(failedKey);
+
+              setToggles(prev => ({
+                ...prev,
+                [failedKey]: false,
+              }));
+            }
           }
         }}
       />
 
       {activeModal === "export" && (
         <ExportPanel
-          featureData={featureData}
+          featureLayers={featureLayers}
           onClose={() => setActiveModal(null)}
         />
       )}
@@ -296,7 +341,7 @@ export default function App() {
       <header className="app-header">
         <Toolbar
           onOpenPanel={setActiveModal}
-          canExport={!!featureData}
+          canExport={hasFeatures}
           boundaryName={boundaryData?.elements?.[0]?.tags?.name ?? "None"}
         />
       </header>
@@ -306,7 +351,7 @@ export default function App() {
         <div className="sidebar">
           <Sidebar
             boundaryData={boundaryData}
-            featureData={featureData}
+            featureLayers={featureLayers}
 
             activeDrawer={activeDrawer}
             setActiveDrawer={setActiveDrawer}
@@ -318,8 +363,7 @@ export default function App() {
           activeDrawer={activeDrawer}
           setActiveDrawer={setActiveDrawer}
 
-          boundaryData={boundaryData}
-          featureData={featureData}
+          featureLayers={featureLayers}
           selectedBoundaryKey={selectedBoundaryKey}
 
           loadBoundaryResults={loadBoundaryResults}
@@ -339,17 +383,17 @@ export default function App() {
 
         <div className="main-content">
 
-          {featureData && displayMode ==="lastEdited" && <Legend />}
+          {hasFeatures && displayMode === "lastEdited" && <Legend />}
 
-          {featureData && <FilterPanel
-            features={featureGeojson}
+          {hasFeatures && <FilterPanel
+            featureLayers={featureLayers}
             filters={filters}
             setFilters={setFilters}
           />}
 
-          <Map 
-            boundary={boundaryGeojson} 
-            features={filteredGeojson}
+          <Map
+            boundary={boundaryGeojson}
+            featureLayers={filteredLayers}
             displayMode={displayMode}
           />
 

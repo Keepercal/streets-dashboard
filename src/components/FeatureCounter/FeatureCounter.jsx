@@ -1,53 +1,59 @@
 import "./FeatureCounter.css";
 
 /**
- * FeatureCount
+ * FeatureCounter
  * ------------
- * Displays a summary count of GeoJSON feature types:
- * - nodes
- * - ways
- * - relations
- *
- * This component expects a GeoJSON-like structure where:
- * features.features.elements contains an array of elements with a `type` field.
+ * Displays a summary count across all loaded feature layers.
  */
-const FeatureCounter = ({ features }) => {
-    // Counters for OSM-style feature types
+const FeatureCounter = ({ featureLayers }) => {
+
     let nodeCount = 0;
     let wayCount = 0;
     let relationCount = 0;
 
-    // Safely iterate through feature elements and classify by type
-    features?.elements?.forEach(feature => {
-        switch (feature.type) {
-            case "node":
-                nodeCount++;
-                break;
-            case "way":
-                wayCount++;
-                break;
-            case "relation":
-                relationCount++;
-                break;
-            default:
-                break;
-        }
+    Object.values(featureLayers || {}).forEach(layer => {
+
+        layer.data?.elements?.forEach(feature => {
+
+            switch (feature.type) {
+                case "node":
+                    nodeCount++;
+                    break;
+
+                case "way":
+                    wayCount++;
+                    break;
+
+                case "relation":
+                    relationCount++;
+                    break;
+
+                default:
+                    break;
+            }
+
+        });
+
     });
 
     return (
         <div className="feature-count">
             <div className="feature-count-content">
+
                 <div className="feature-count-item">
                     <p>
                         Nodes {nodeCount}
                     </p>
+
                     <p>
                         Ways {wayCount}
                     </p>
+
                     <p>
                         Relations {relationCount}
                     </p>
                 </div>
+
             </div>
         </div>
     );
