@@ -13,6 +13,7 @@ import './App.css';
 import Map from './layout/Map/Map.jsx';
 import Toolbar from './layout/Toolbar/Toolbar'
 import Sidebar from './layout/Sidebar/Sidebar';
+import Drawer from './layout/Drawer/Drawer'
 
 /* Popups/Panels */
 import StatusPopup from './layout/Popups/StatusPopup/StatusPopup.jsx';
@@ -38,12 +39,15 @@ export default function App() {
     ABOUT: "about"
   }
 
+  /* DATA STATES */
   const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
   const [toggles, setToggles] = useState({});
   const [filters, setFilters] = useState([]);
-  const [statusPopupDismissed, setPopupDismissed] = useState(false);
-  const [activePanel, setActivePanel] = useState(null);
 
+  /* UI STATES */
+  const [activeDrawer, setActiveDrawer] = useState(null)
+  const [statusPopupDismissed, setPopupDismissed] = useState(false);
+  const [activeModal, setActiveModal] = useState(null);
   const [displayMode, setDisplayMode] = useState("default");
 
   const {
@@ -84,7 +88,6 @@ export default function App() {
    * Create feature list from feature map
    */
   const featureOptions = useMemo(() => ([
-    { value: 'none', label: 'None' },
     ...Object.entries(FEATURE_MAP).flatMap(([group, features]) =>
       Object.entries(features).map(([key, feature]) => ({
         value: key,
@@ -283,16 +286,16 @@ export default function App() {
         }}
       />
 
-      {activePanel === "export" && (
+      {activeModal === "export" && (
         <ExportPanel
           featureData={featureData}
-          onClose={() => setActivePanel(null)}
+          onClose={() => setActiveModal(null)}
         />
       )}
 
       <header className="app-header">
         <Toolbar
-          onOpenPanel={setActivePanel}
+          onOpenPanel={setActiveModal}
           canExport={!!featureData}
           boundaryName={boundaryData?.elements?.[0]?.tags?.name ?? "None"}
         />
@@ -305,23 +308,34 @@ export default function App() {
             boundaryData={boundaryData}
             featureData={featureData}
 
-            loadBoundaryResults={loadBoundaryResults}
-            handleSelectBoundary={handleSelectBoundary}
-            boundaryResults={boundaryResults}
-            selectedBoundaryKey={selectedBoundaryKey}
-
-            featureOptions={featureOptions}
-            toggles={toggles}
-            handleToggle={handleToggle}
-
-            displayMode={displayMode}
-            setDisplayMode={setDisplayMode}
-
-            handleClearBoundary={handleClearBoundary}
-            clearFeatures={clearFeatures}
+            activeDrawer={activeDrawer}
+            setActiveDrawer={setActiveDrawer}
           />
 
         </div>
+
+        <Drawer
+          activeDrawer={activeDrawer}
+          setActiveDrawer={setActiveDrawer}
+
+          boundaryData={boundaryData}
+          featureData={featureData}
+          selectedBoundaryKey={selectedBoundaryKey}
+
+          loadBoundaryResults={loadBoundaryResults}
+          handleSelectBoundary={handleSelectBoundary}
+          boundaryResults={boundaryResults}
+
+          featureOptions={featureOptions}
+          toggles={toggles}
+          handleToggle={handleToggle}
+
+          displayMode={displayMode}
+          setDisplayMode={setDisplayMode}
+
+          handleClearBoundary={handleClearBoundary}
+          clearFeatures={clearFeatures}
+        />
 
         <div className="main-content">
 

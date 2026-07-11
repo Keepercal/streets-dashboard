@@ -1,4 +1,4 @@
-###### v0.6.0-alpha
+###### v0.7.0-alpha
 # Streets Dashboard
 This web application is build for transport planners, engineers, or any public or private sector professionals involved with the built environment to search for particular features on streets. 
 
@@ -11,11 +11,12 @@ There are a number of selectable options such as pedestrian crossings and cycle 
 <br>*Overpass Turbo* 👉 https://overpass-turbo.eu/
 
 ## What's new?
-### v0.6.0-alpha 
+### v0.7.0-alpha 
 
 ### Added
 - Export feature data into file formats for ArcGIS, QGIS, Google My Maps, etc.
 - Change display mode of map features, currently between default and last edited.
+- UI functionality seperates into a sliding drawer
 
 
 

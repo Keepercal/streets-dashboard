@@ -1,5 +1,4 @@
-import '../Sidebar.css'
-import RadioItem from './RadioItem';
+import RadioItem from '../../../../components/RadioItem/RadioItem.jsx';
 
 const displayModeLabels = {
     default: "Default",
@@ -14,28 +13,14 @@ const displayModeLabels = {
  * - Default
  * - Days since last edit
  */
-const DisplayTab = ({
-    open,
-    setOpen,
+const DisplayPanel = ({
     disabled,
 
     displayMode,
     setDisplayMode
 }) => {
     return(
-        <div className={`sidebar-tab ${open ? "is-open" : ""} ${disabled ? "disabled" : ""}`}>
-
-            <h3
-                className="tab-header"
-                onClick={() => {
-                    if (!disabled) {
-                        setOpen(prev => !prev);
-                    }
-                }}
-            >
-                Display
-                <span className={`arrow ${open ? "rotated" : ""}`}>▸</span>
-            </h3>
+        <div className={`panel-content ${open ? "is-open" : ""} ${disabled ? "disabled" : ""}`}>
 
             <p className="current-display-indicator">Current: {displayModeLabels[displayMode]}</p>
 
@@ -57,4 +42,4 @@ const DisplayTab = ({
         </div>
     )}
 
-export default DisplayTab;
+export default DisplayPanel;

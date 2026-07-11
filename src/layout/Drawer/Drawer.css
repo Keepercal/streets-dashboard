@@ -1,0 +1,57 @@
+.drawer {
+    position: absolute;
+    left: var(--sidebar-wdith);
+    top: 0;
+    bottom: 0;
+
+    width: var(--drawer-width);
+
+    background: var(--drawer-bg);
+
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+
+    z-index:500;
+
+    box-shadow:
+        4px 0 4px rgba(0,0,0,0.25);
+
+    padding: 20px;
+}
+
+.drawer.open {
+    transform:translateX(0);
+}
+
+/* =========================
+    BOUNDARY CARDS
+========================= */
+
+.boundary-card {
+    width: 100%;
+
+    padding: 8px;
+
+    box-sizing: border-box;
+
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+
+    background: rgba(255, 255, 255, 0.03);
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.boundary-card:hover {
+    background: rgba(226, 159, 0, 0.2);
+}
+
+.boundary-card.selected {
+    background: rgba(226, 159, 0, 0.1);
+}
+
+.boundary-card.selected:hover {
+    background: rgba(226, 159, 0, 0.2);
+}
