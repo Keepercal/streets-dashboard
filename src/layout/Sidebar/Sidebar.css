@@ -20,58 +20,62 @@
 ========================= */
 
 .sidebar-button {
-    width: 100%;
-    padding: 6px 8px;
-    margin-bottom: 10px;
-
     display: flex;
     align-items: center;
-    flex-direction: column;
-    gap: 5px;
+    gap: 10px;
 
-    box-sizing: border-box;
-    overflow-y: auto;
+    width: 100%;
 
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    padding: 12px;
+
+    border: none;
     border-radius: 6px;
-    
-    background: rgba(255, 255, 255, 0.03);
 
-    transition: background 0.2s ease;
+    background: transparent;
+
+    color: #ecf0f1;
+
     cursor: pointer;
+
+    font-size: 14px;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
 }
+
+
+.sidebar-button:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+
+/* Drawer currently open */
+.sidebar-button.active {
+
+    background: rgba(226,159,0,0.15);
+
+    color: #ffffff;
+
+    border-right: 3px solid #e29f00;
+}
+
+
+/* Optional icon emphasis */
+.sidebar-button.active svg {
+    color: #e29f00;
+}
+
 
 .sidebar-button.disabled {
-    opacity: 0.45;
-    cursor: not-allowed
+
+    opacity: 0.35;
+
+    cursor: not-allowed;
 }
 
-/* Closed hover state */
-.sidebar-button:not(.is-open):hover {
-    background: rgba(255, 255, 255, 0.05);
-}
 
-/* Open state */
-.sidebar-button.is-open {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.25);
-}
+.sidebar-button.disabled:hover {
 
-.sidebar-button-label{
-    color: white;
-    font-family: "Google Sans Flex", sans-serif;
-    font-weight: 450;
-    font-size: 16px;
+    background: transparent;
 }
-
-.sidebar-button-icon{
-    display: flex;
-    align-items: center;
-}
-
-.sidebar-button-icon svg {
-    color: white;
-    width: 18px;
-    height: 18px;
-}
-

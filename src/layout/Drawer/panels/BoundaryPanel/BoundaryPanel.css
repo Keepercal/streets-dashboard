@@ -1,112 +1,225 @@
 /* =========================
-    FORMS / INPUTS
+    PANEL BODY
+========================= */
+
+.panel-body {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+
+
+    box-sizing: border-box;
+}
+
+
+/* =========================
+    SEARCH FORM
 ========================= */
 
 .boundary-form {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+
+    gap: 10px;
+
+    flex-shrink: 0;
 }
 
-.button-row {
-    display: flex;
-    gap: 8px;
-}
 
 .input-item {
-    width: 90%;
-
-    padding: 4px 5px;
-
-    border: 1px solid #ccc;
-    border-radius: 6px;
-
-    font-size: 14px;
-}
-
-/* =========================
-    BOUNDARY CARDS
-========================= */
-
-.boundary-card {
     width: 100%;
 
-    padding: 8px;
-    margin: 8px 0px;
+    padding: 8px 10px;
 
     box-sizing: border-box;
 
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255,255,255,0.25);
     border-radius: 6px;
 
-    background: rgba(255, 255, 255, 0.03);
-
-    cursor: pointer;
-
-    transition: background 0.2s ease;
+    background: rgba(255,255,255,0.08);
 
     color: white;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
 }
 
-.boundary-card:hover {
-    background: rgba(226, 159, 0, 0.2);
+
+.input-item::placeholder {
+    color: rgba(255,255,255,0.55);
 }
 
-.boundary-card.selected {
-    background: rgba(226, 159, 0, 0.1);
+
+.input-item:focus {
+    background: rgba(255,255,255,0.12);
 }
 
-.boundary-card.selected:hover {
-    background: rgba(226, 159, 0, 0.2);
-}
 
 /* =========================
     BUTTONS
 ========================= */
 
+.button-row {
+    display: flex;
+
+    gap: 8px;
+}
+
+
 .btn {
-    padding: 5px 10px;
+    flex: 1;
+
+    padding: 7px 12px;
 
     border: none;
+
     border-radius: 6px;
 
     cursor: pointer;
 
     font-size: 14px;
 
-    transition: background 0.2s ease;
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
 }
+
+
+.btn:active {
+    transform: scale(0.98);
+}
+
 
 .btn-primary {
     background: #2563eb;
+
     color: white;
 }
 
+
 .btn-primary:hover {
-    background: #1f55ea;
+    background: #1d4ed8;
 }
+
 
 .btn-secondary {
-    background: #e5e7eb;
-    color: #111827;
+    background: rgba(255,255,255,0.15);
+
+    color: white;
 }
+
 
 .btn-secondary:hover {
-    background: #d1d5db;
+    background: rgba(255,255,255,0.25);
 }
 
+
 /* =========================
-    EMPTY STATES
+    RESULTS
+========================= */
+
+.boundary-card {
+    width: 100%;
+
+    padding: 10px;
+
+    margin-top: 10px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(255,255,255,0.15);
+
+    border-radius: 6px;
+
+    background: rgba(255,255,255,0.04);
+
+    color: #ecf0f1;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+
+    cursor: pointer;
+
+    overflow-wrap: anywhere;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.boundary-card:hover {
+    background: rgba(226,159,0,0.12);
+
+    border-color: rgba(226,159,0,0.35);
+}
+
+
+.boundary-card.selected {
+    background: rgba(226,159,0,0.18);
+
+    border-color: rgba(226,159,0,0.55);
+}
+
+
+/* =========================
+    EMPTY STATE
 ========================= */
 
 .empty-state {
+
     display: flex;
+
     justify-content: center;
+    align-items: center;
+
+    flex: 1;
 
     padding: 30px;
 
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255,255,255,0.65);
 
-    font-size: 18px;
+    font-size: 15px;
+
     font-style: italic;
+}
+
+
+/* =========================
+    SCROLLBAR
+========================= */
+
+.panel-body {
+    overflow-y: auto;
+}
+
+
+.panel-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+
+.panel-body::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.15);
+}
+
+
+.panel-body::-webkit-scrollbar-thumb {
+
+    background: rgba(255,255,255,0.25);
+
+    border-radius: 4px;
+}
+
+
+.panel-body::-webkit-scrollbar-thumb:hover {
+
+    background: rgba(255,255,255,0.4);
 }

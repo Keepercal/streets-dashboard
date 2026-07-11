@@ -38,12 +38,14 @@ const BoundaryPanel = ({
                 />
 
                 {hasSearched ? (
-                    <BoundaryOption
-                        boundaryResults={boundaryResults}
-                        onSelectBoundary={onSelectBoundary}
-                        selectedBoundaryKey={selectedBoundaryKey}
-                        clearFeatures={clearFeatures}
-                    />
+                    <div className="boundary-results">
+                        <BoundaryOption
+                            boundaryResults={boundaryResults}
+                            onSelectBoundary={onSelectBoundary}
+                            selectedBoundaryKey={selectedBoundaryKey}
+                            clearFeatures={clearFeatures}
+                        />
+                    </div>
                 ) : null}
             </div>
         </>

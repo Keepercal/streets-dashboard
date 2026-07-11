@@ -65,7 +65,9 @@ const Sidebar = ({
                 onClick={() => openDrawer("display")}
             />
 
-            <FeatureCounter/>
+            <FeatureCounter
+                features={featureData}
+            />
         </div>
     );
 }

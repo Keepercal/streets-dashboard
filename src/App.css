@@ -13,7 +13,7 @@ body,
     --header-height: 60px;
     --header-bg: #1f2d3d;
 
-    --sidebar-wdith: 150px;
+    --sidebar-width: 160px;
     --sidebar-bg: #223d57;
 
     --drawer-width: 360px;
@@ -52,7 +52,7 @@ body,
 .app-body{
     flex: 1;
     display: grid;
-    grid-template-columns: var(--sidebar-wdith) 1fr;
+    grid-template-columns: var(--sidebar-width) 1fr;
     overflow: hidden;
 
     position: relative;
