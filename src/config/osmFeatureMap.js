@@ -336,7 +336,7 @@ export const FEATURE_MAP = {
             label: "College",
             type: "way",
         },      
-        univesity: {
+        university: {
             tag: "amenity",
             label: "University",
             type: "way",

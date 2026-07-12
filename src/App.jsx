@@ -45,10 +45,11 @@ export default function App() {
   const [filters, setFilters] = useState([]);
 
   /* UI STATES */
-  const [activeDrawer, setActiveDrawer] = useState(null)
+  const [activeDrawer, setActiveDrawer] = useState(null) // which drawer is open
+  const [activeLayer, setActiveLayer] = useState(null) // which layer the user is inspecting
   const [statusPopupDismissed, setPopupDismissed] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
-  const [displayMode, setDisplayMode] = useState("default");
+  const [displayMode, setDisplayMode] = useState("default"); // or by last edit
 
   const {
     loadBoundaryResults,
@@ -71,6 +72,8 @@ export default function App() {
     loadFeatures,
     clearFeatures,
     removeFeature,
+    toggleFeatureVisibility,
+    updateLayer,
     failedFeatureKey,
     status: featureStatus,
     error: featureError,
@@ -167,6 +170,16 @@ export default function App() {
     clearBoundary();
     clearFeatures();
     setToggles({});
+  }
+
+  /* Handle removing features */
+  const handleRemoveFeature = (featureKey) => {
+    removeFeature(featureKey);
+
+    setToggles(prev => ({
+      ...prev,
+      [featureKey]: false
+    }))
   }
 
   /**
@@ -316,7 +329,7 @@ export default function App() {
           }
 
           if (statusPopup.source === 'feature') {
-            const failedKey = status.featureKey;
+            const failedKey = statusPopup.featureKey;
             console.log('[DEBUG] Removing failed feature');
 
             if (failedKey) {
@@ -364,6 +377,11 @@ export default function App() {
           setActiveDrawer={setActiveDrawer}
 
           featureLayers={featureLayers}
+          activeLayer={activeLayer}
+          setActiveLayer={setActiveLayer}
+          updateLayer={updateLayer}
+          toggleFeatureVisibility={toggleFeatureVisibility}
+
           selectedBoundaryKey={selectedBoundaryKey}
 
           loadBoundaryResults={loadBoundaryResults}
@@ -378,6 +396,7 @@ export default function App() {
           setDisplayMode={setDisplayMode}
 
           handleClearBoundary={handleClearBoundary}
+          removeFeature={handleRemoveFeature}
           clearFeatures={clearFeatures}
         />
 

@@ -20,7 +20,7 @@ export default function bindFeaturePopup(feature, layer, exclude) {
     // -------------------------
     const [featureType, osmID] = (feature.id || "").split("/");
 
-    const featureName = 
+    const featureName =
         props.name ??
         props.brand ??
         props.operator ??
@@ -87,6 +87,8 @@ export default function bindFeaturePopup(feature, layer, exclude) {
     const container = document.createElement("div");
 
     container.innerHTML = `
+        ${featureName ? `<h2>${featureName}</h2>` : ""}
+
         <h2>
             <a
                 href="https://www.openstreetmap.org/${featureType}/${osmID}"
@@ -96,18 +98,6 @@ export default function bindFeaturePopup(feature, layer, exclude) {
                 ${featureType}: ${osmID}
             </a>
         </h2>
-
-        <h3>
-            <a
-                href="https://www.google.com/maps?q=${lat},${lon}"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                View in Google Maps
-            </a>
-        </h3>
-
-        ${featureName ? `<h3>${featureName}<h3>` : ""}
 
         <h3>Tags</h3>
     `;
@@ -140,7 +130,22 @@ export default function bindFeaturePopup(feature, layer, exclude) {
         `;
 
         container.appendChild(editedRow);
+
     }
+
+    const googleLink = document.createElement('h3')
+
+        googleLink.innerHTML = `
+            <a
+                href="https://www.google.com/maps?q=${lat},${lon}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                View in Google Maps
+            </a>
+        `;
+
+        container.appendChild(googleLink)
 
     layer.bindPopup(container);
 }

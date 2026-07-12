@@ -19,11 +19,13 @@ export default function useMapFeatures() {
     const [status, setStatus] = useState("idle");
     const [error, setError] = useState(null);
 
+    /* Cacheing */
     const requestId = useRef(0);
     const cache = useRef(new Map());
 
-    const [failedFeatureKey, setFailedFeatureKey] = useState(null);
+    const [failedFeatureKey, setFailedFeatureKey] = useState(null); // cleanup 
 
+    /* Remove all features off map */
     const clearFeatures = () => {
         setFeatureLayers({});
 
@@ -31,6 +33,7 @@ export default function useMapFeatures() {
         setStatus("idle");
     };
 
+    /* Remove a single feature */
     const removeFeature = (featureKey) => {
         setFeatureLayers(prev => {
             const next = { ...prev };
@@ -44,6 +47,33 @@ export default function useMapFeatures() {
         setStatus("idle");
     }
 
+    /* Show or hide features on the map */
+    const toggleFeatureVisibility = (featureKey) => {
+        setFeatureLayers(prev => ({
+            ...prev,
+            [featureKey]: {
+                ...prev[featureKey],
+                visible: !prev[featureKey].visible
+            }
+        }))
+    }
+
+    /* Generate a colour for feature data, colour will be consistent across projects */
+    function getLayerColour(key) {
+        let hash = 0;
+
+        for (let i = 0; i < key.length; i++) {
+            hash = key.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        const colour = (hash & 0x00FFFFFF)
+            .toString(16)
+            .padStart(6, "0");
+
+        return `#${colour}`;
+    }
+
+    /* Loads features by calling Overpass API */
     const loadFeatures = async (
         featureKey,
         selectedBoundaryKey,
@@ -51,7 +81,8 @@ export default function useMapFeatures() {
         featureValue,
         featureType
     ) => {
-        const boundaryKey = selectedBoundaryKey;
+        const boundaryKey = selectedBoundaryKey; // current boundary
+        const colour = getLayerColour(featureKey);
 
         const currentId = ++requestId.current;
 
@@ -60,14 +91,14 @@ export default function useMapFeatures() {
             return;
         }
 
-        const cacheKey = JSON.stringify([ // Store results in cache
+        const cacheKey = JSON.stringify([ // store results in cache
             boundaryKey,
             featureTag,
             featureValue,
             featureType,
         ]);
 
-        if (cache.current.has(cacheKey)) { // Check cache for stored features
+        if (cache.current.has(cacheKey)) { // check cache for stored features
             const cached = cache.current.get(cacheKey);
 
             // Cache load
@@ -75,7 +106,10 @@ export default function useMapFeatures() {
                 ...prev,
                 [featureKey]: {
                     data: cached.data,
-                    geojson: cached.geojson
+                    geojson: cached.geojson,
+                    label: cached.label,
+                    colour: cached.colour,
+                    visible: cached.visible
                 }
             }))
 
@@ -84,10 +118,10 @@ export default function useMapFeatures() {
             return;
         }
 
-        setFeatureLayers(prev =>{
-                const next = {...prev};
-                delete next[featureKey];
-                return next;
+        setFeatureLayers(prev => {
+            const next = { ...prev };
+            delete next[featureKey];
+            return next;
         });
 
         setError(null);
@@ -110,13 +144,19 @@ export default function useMapFeatures() {
             cache.current.set(cacheKey, {
                 data: result,
                 geojson,
+                label: featureKey,
+                colour,
+                visible: true,
             });
 
             setFeatureLayers(prev => ({
                 ...prev,
                 [featureKey]: {
                     data: result,
-                    geojson
+                    geojson,
+                    label: featureKey,
+                    colour,
+                    visible: true,
                 }
             }))
 
@@ -124,17 +164,28 @@ export default function useMapFeatures() {
         } catch (err) {
             if (currentId !== requestId.current) return;
 
-            setFeatureLayers(prev =>{ // on err
-                const next = {...prev};
+            setFeatureLayers(prev => { // on err
+                const next = { ...prev };
                 delete next[featureKey];
                 return next;
             })
 
-            setFailedFeatureKey(featureKey)
-            
+            setFailedFeatureKey(featureKey) // pass back the feature that failed to load
+
             setError(err);
             setStatus("error");
         }
+    };
+
+    /* Layer inspection and updating */
+    const updateLayer = (featureKey, changes) => {
+        setFeatureLayers(prev => ({
+            ...prev,
+            [featureKey]: {
+                ...prev[featureKey],
+                ...changes
+            }
+        }));
     };
 
     return {
@@ -142,6 +193,8 @@ export default function useMapFeatures() {
         loadFeatures,
         clearFeatures,
         removeFeature,
+        toggleFeatureVisibility,
+        updateLayer,
         failedFeatureKey,
         status,
         error,

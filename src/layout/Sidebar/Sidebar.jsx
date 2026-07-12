@@ -7,10 +7,10 @@ import FeatureCounter from '../../components/FeatureCounter/FeatureCounter';
 import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
 /* CONSTANTS */
-import GROUP_LABELS from '../Drawer/panels/LayersPanel/constants/featureGroups'
+import GROUP_LABELS from '../Drawer/panels/AddLayersPanel/constants/featureGroups'
 
 /* API imports */
-import { Map, Layers, Monitor } from "lucide-react";
+import { Map, LayersPlus, Layers, Monitor } from "lucide-react";
 
 /**
  * Sidebar.jsx
@@ -49,11 +49,20 @@ const Sidebar = ({
             />
 
             <SidebarButton
-                label="Layers"
+                label="Add Layers"
+                icon={<LayersPlus />}
+                disabled={!hasBoundary}
+                active={activeDrawer === "addLayers"}
+                onClick={() =>{openDrawer("addLayers")}
+                } 
+            />
+
+            <SidebarButton
+                label="Manage Layers"
                 icon={<Layers />}
                 disabled={!hasBoundary}
-                active={activeDrawer === "layers"}
-                onClick={() =>{openDrawer("layers")}
+                active={activeDrawer === "manageLayers"}
+                onClick={() =>{openDrawer("manageLayers")}
                 } 
             />
 

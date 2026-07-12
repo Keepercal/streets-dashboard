@@ -1,22 +1,22 @@
-import './LayersPanel.css'
+import './AddLayersPanel.css'
 
 import CheckboxItem from '../../../../components/CheckboxItem/CheckboxItem.jsx';
 
 /* HOOKS */
-import useFeatureGroups from './hooks/useFeatureGroups';
+import useFeatureGroups from './hooks/useFeatureGroups.js';
 
 /* CONSTANTS */
-import GROUP_LABELS from './constants/featureGroups'
+import GROUP_LABELS from './constants/featureGroups.js'
 
 /**
- * LayersPanel.jsx
+ * AddLayersPanel.jsx
  * ------------
  * UI component in sidebar which contains feature options
  *
  * Features:
  * - Load features from a preselect list
  */
-const LayersPanel = ({
+const AddLayersPanel = ({
     featureOptions,
 
     toggles = {},
@@ -69,4 +69,4 @@ const LayersPanel = ({
     )
 }
 
-export default LayersPanel;
+export default AddLayersPanel;
