@@ -76,9 +76,11 @@
     PANEL BODY STYLING
 ========================= */
 
-.panel-body{
+.panel-body {
     flex: 1;
+    height: 100%;
     overflow-y: auto;
 
+    box-sizing: border-box;
     color: white;
 }

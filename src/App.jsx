@@ -182,12 +182,19 @@ export default function App() {
     }))
   }
 
-  /**
-   * Handle feature toggle
-   */
-  const handleToggle = (featureKey, featureTag, featureValue, featureType) => {
+  /* Handle renaming features */
+  const renameLayer = (featureKey, newLabel) => {
+    console.log('[DEBUG] renameLayer ENTER:', featureKey, newLabel);
+    updateLayer(featureKey, {
+      displayName: newLabel
+    });
+  };
+
+  /* Handle feature toggle */
+  const handleToggle = (featureKey, featureLabel, featureTag, featureValue, featureType) => {
     console.log('[DEBUG] handleToggle ENTER:', {
       featureKey,
+      featureLabel,
       featureTag,
       featureValue,
       featureType,
@@ -208,10 +215,12 @@ export default function App() {
 
       if (nextValue) {
         console.log('[DEBUG] Calling loadFeatures:', {
+          featureKey,
           selectedBoundaryKey,
           featureTag,
           featureValue,
           featureType,
+          featureLabel,
         });
 
         loadFeatures(
@@ -219,7 +228,8 @@ export default function App() {
           selectedBoundaryKey,
           featureTag,
           featureValue,
-          featureType
+          featureType,
+          featureLabel
         );
 
       } else {
@@ -234,9 +244,7 @@ export default function App() {
     });
   };
 
-  /**
-   * Handle feature toggle
-   */
+  /* Handle status popup */
   const statusPopup = useMemo(() => {
     if (statusPopupDismissed) {
       console.log('[DEBUG] Popup dismissed → idle state');
@@ -381,6 +389,7 @@ export default function App() {
           setActiveLayer={setActiveLayer}
           updateLayer={updateLayer}
           toggleFeatureVisibility={toggleFeatureVisibility}
+          renameLayer={renameLayer}
 
           selectedBoundaryKey={selectedBoundaryKey}
 

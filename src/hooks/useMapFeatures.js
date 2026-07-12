@@ -27,6 +27,7 @@ export default function useMapFeatures() {
 
     /* Remove all features off map */
     const clearFeatures = () => {
+        console.log('[DEBUG] clearing all map features');
         setFeatureLayers({});
 
         setError(null);
@@ -35,6 +36,7 @@ export default function useMapFeatures() {
 
     /* Remove a single feature */
     const removeFeature = (featureKey) => {
+        console.log('[DEBUG] removing feature:', featureKey);
         setFeatureLayers(prev => {
             const next = { ...prev };
 
@@ -49,13 +51,20 @@ export default function useMapFeatures() {
 
     /* Show or hide features on the map */
     const toggleFeatureVisibility = (featureKey) => {
-        setFeatureLayers(prev => ({
-            ...prev,
-            [featureKey]: {
-                ...prev[featureKey],
-                visible: !prev[featureKey].visible
+        console.log('[DEBUG] toggleFeatureVisibility ENTER:', featureKey);
+        setFeatureLayers(prev => {
+            const layer = prev[featureKey];
+
+            if (!layer) return prev;
+
+            return{
+                ...prev,
+                [featureKey]: {
+                    ...prev[featureKey],
+                    visible: !prev[featureKey].visible
+                }
             }
-        }))
+        })
     }
 
     /* Generate a colour for feature data, colour will be consistent across projects */
@@ -79,7 +88,8 @@ export default function useMapFeatures() {
         selectedBoundaryKey,
         featureTag,
         featureValue,
-        featureType
+        featureType,
+        featureLabel,
     ) => {
         const boundaryKey = selectedBoundaryKey; // current boundary
         const colour = getLayerColour(featureKey);
@@ -96,6 +106,7 @@ export default function useMapFeatures() {
             featureTag,
             featureValue,
             featureType,
+            featureLabel,
         ]);
 
         if (cache.current.has(cacheKey)) { // check cache for stored features
@@ -133,6 +144,7 @@ export default function useMapFeatures() {
                 featureTag,
                 featureValue,
                 featureType,
+                featureLabel,
             );
 
             if (currentId !== requestId.current) return;
@@ -144,7 +156,7 @@ export default function useMapFeatures() {
             cache.current.set(cacheKey, {
                 data: result,
                 geojson,
-                label: featureKey,
+                label: featureLabel,
                 colour,
                 visible: true,
             });
@@ -154,7 +166,7 @@ export default function useMapFeatures() {
                 [featureKey]: {
                     data: result,
                     geojson,
-                    label: featureKey,
+                    label: featureLabel,
                     colour,
                     visible: true,
                 }

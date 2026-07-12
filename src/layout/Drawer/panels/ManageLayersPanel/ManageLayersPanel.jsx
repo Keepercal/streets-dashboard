@@ -1,59 +1,37 @@
 import "./ManageLayersPanel.css"
+import LayerItem from './LayerItem'
+import { Ghost } from "lucide-react"
 
 export default function ManageLayersPanel({
     featureLayers,
     toggleFeatureVisibility,
     updateLayer,
     removeFeature,
+    renameLayer
 }) {
 
+    const hasLayers = Object.keys(featureLayers).length > 0
+
     return (
-        <div>
+        <div className="panel-body">
 
-            {Object.entries(featureLayers).map(
-                ([key, layer]) => (
-
-                <div 
-                    key={key}
-                    className="layer-item"
-                >
-
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={layer.visible}
-                            onChange={() =>
-                                toggleFeatureVisibility(key)
-                            }
-                        />
-
-                        {layer.label ?? key}
-                    </label>
-
-                    <input
-                        type="color"
-                        value={layer.colour ?? "#3388ff"}
-                        onChange={(event) =>
-                            updateLayer(
-                                key,
-                                {
-                                    colour: event.target.value
-                                }
-                            )
-                        }
-                    />
-
-                    <button
-                        onClick={() => removeFeature(key)}
-                    >
-                        Delete
-
-                    </button>
-
-
+            {!hasLayers ? (
+                <div className="empty-state">
+                    <Ghost size={180}/>
+                    <p>
+                        No feature layers loaded
+                    </p>
                 </div>
+            ) : (
+                <LayerItem
+                    featureLayers={featureLayers}
+                    toggleFeatureVisibility={toggleFeatureVisibility}
+                    updateLayer={updateLayer}
+                    removeFeature={removeFeature}
+                    renameLayer={renameLayer}
+                />
+            )}
 
-            ))}
 
         </div>
     );

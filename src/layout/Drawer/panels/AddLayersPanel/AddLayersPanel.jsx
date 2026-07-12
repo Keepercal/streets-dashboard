@@ -49,13 +49,13 @@ const AddLayersPanel = ({
                         {/* LEVEL 3 CONTENT */}
                         <div className={`accordion-content ${openGroups[group] ? "open" : ""}`}>
 
-                            {features?.map(({ key, label, tag, type }) => (
+                            {features?.map(({ key, tag, type, label }) => (
                                 <CheckboxItem
                                     key={key}
                                     label={label}
                                     checked={!!toggles[key]}
                                     onChange={() =>
-                                        handleToggle?.(key, tag, key, type)
+                                        handleToggle?.(key, label, tag, key, type)
                                     }
                                 />
                             ))}

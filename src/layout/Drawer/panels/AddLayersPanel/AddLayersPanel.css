@@ -1,18 +1,4 @@
 /* =========================
-    LAYERS PANEL
-========================= */
-
-.panel-body {
-    padding-right: 24px;
-
-    height: 100%;
-    overflow-y: auto;
-
-    box-sizing: border-box;
-}
-
-
-/* =========================
     ACCORDION GROUPS
 ========================= */
 

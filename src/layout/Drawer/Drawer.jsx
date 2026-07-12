@@ -14,6 +14,7 @@ function Drawer({
     setActiveLayer,
     updateLayer,
     toggleFeatureVisibility,
+    renameLayer,
 
     selectedBoundaryKey,
     loadBoundaryResults,
@@ -83,6 +84,7 @@ function Drawer({
                         toggleFeatureVisibility={toggleFeatureVisibility}
                         updateLayer={updateLayer}
                         removeFeature={removeFeature}
+                        renameLayer={renameLayer}
                     />
                 }
 
