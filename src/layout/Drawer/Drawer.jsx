@@ -1,12 +1,19 @@
 import "./Drawer.css"
 
 import BoundaryPanel from './panels/BoundaryPanel/BoundaryPanel'
-import LayersPanel from './panels/LayersPanel/LayersPanel'
+import AddLayersPanel from './panels/AddLayersPanel/AddLayersPanel'
+import ManageLayersPanel from './panels/ManageLayersPanel/ManageLayersPanel'
 import DisplayPanel from './panels/DisplayPanel/DisplayPanel'
 
 function Drawer({
     activeDrawer,
     setActiveDrawer,
+
+    featureLayers,
+    handleAddLayer,
+    updateLayer,
+    toggleLayerVisibility,
+    renameLayer,
 
     selectedBoundaryKey,
     loadBoundaryResults,
@@ -14,18 +21,19 @@ function Drawer({
     boundaryResults,
 
     featureOptions,
-    toggles,
-    handleToggle,
 
     displayMode,
     setDisplayMode,
 
     handleClearBoundary,
+    removeLayer,
     clearFeatures,
+    cachedFeatures
 }) {
     const DRAWER_TITLES = {
         boundary: "Search for Boundary",
-        layers: "Load Layers",
+        addLayers: "Add Layers",
+        manageLayers: "Manage Layers",
         display: "Display"
     }
 
@@ -59,11 +67,22 @@ function Drawer({
                     />
                 }
 
-                {activeDrawer === "layers" &&
-                    <LayersPanel
+                {activeDrawer === "addLayers" &&
+                    <AddLayersPanel
                         featureOptions={featureOptions}
-                        handleToggle={handleToggle}
-                        toggles={toggles}
+                        handleAddLayer={handleAddLayer}
+                        cachedFeatures={cachedFeatures}
+                    />
+                }
+
+
+                {activeDrawer === "manageLayers" &&
+                    <ManageLayersPanel
+                        featureLayers={featureLayers}
+                        toggleLayerVisibility={toggleLayerVisibility}
+                        updateLayer={updateLayer}
+                        removeLayer={removeLayer}
+                        renameLayer={renameLayer}
                     />
                 }
 

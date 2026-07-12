@@ -19,23 +19,28 @@ export default function useMapFeatures() {
     const [status, setStatus] = useState("idle");
     const [error, setError] = useState(null);
 
+    /* Cacheing */
     const requestId = useRef(0);
     const cache = useRef(new Map());
 
-    const [failedFeatureKey, setFailedFeatureKey] = useState(null);
+    const [failedFeatureKey, setFailedFeatureKey] = useState(null); // cleanup 
 
+    /* Remove all features off map */
     const clearFeatures = () => {
+        console.log('[DEBUG] clearing all map features');
         setFeatureLayers({});
 
         setError(null);
         setStatus("idle");
     };
 
-    const removeFeature = (featureKey) => {
+    /* Remove a single feature */
+    const removeLayer = (layerID) => {
+        console.log('[DEBUG] removing feature:', layerID);
         setFeatureLayers(prev => {
             const next = { ...prev };
 
-            delete next[featureKey];
+            delete next[layerID];
 
             return next;
         });
@@ -44,14 +49,67 @@ export default function useMapFeatures() {
         setStatus("idle");
     }
 
+    /* Show or hide features on the map */
+    const toggleLayerVisibility = (layerID) => {
+        console.log('[DEBUG] toggleLayerVisibility ENTER:', layerID);
+        setFeatureLayers(prev => {
+            const layer = prev[layerID];
+
+            if (!layer) return prev;
+
+            return{
+                ...prev,
+                [layerID]: {
+                    ...prev[layerID],
+                    visible: !prev[layerID].visible
+                }
+            }
+        })
+    }
+
+    /* Generate a colour for feature data, colour will be consistent across projects */
+    function getLayerColour(key) {
+        let hash = 0;
+
+        for (let i = 0; i < key.length; i++) {
+            hash = key.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        const colour = (hash & 0x00FFFFFF)
+            .toString(16)
+            .padStart(6, "0");
+
+        return `#${colour}`;
+    }
+
+    /* Create label for each layer with an indicator for if it's a duplicate */
+    const createLayerLabel = (layers, featureKey, featureLabel) => {
+            const count = Object.values(layers)
+                .filter(layer => layer.sourceKey === featureKey)
+                .length;
+
+            return count === 0
+                ? featureLabel
+                : `${featureLabel} (${count + 1})`;
+        }
+
+    const getCachedFeatures = () => {
+        return Array.from(cache.current.values())
+            .map(layer => layer.sourceKey)
+    }
+
+    /* Loads features by calling Overpass API */
     const loadFeatures = async (
         featureKey,
         selectedBoundaryKey,
         featureTag,
         featureValue,
-        featureType
+        featureType,
+        featureLabel,
     ) => {
-        const boundaryKey = selectedBoundaryKey;
+        const boundaryKey = selectedBoundaryKey; // current boundary
+        const layerID = crypto.randomUUID();
+        const colour = getLayerColour(featureKey);
 
         const currentId = ++requestId.current;
 
@@ -60,34 +118,48 @@ export default function useMapFeatures() {
             return;
         }
 
-        const cacheKey = JSON.stringify([ // Store results in cache
+        const cacheKey = JSON.stringify([ // store results in cache
             boundaryKey,
             featureTag,
             featureValue,
             featureType,
+            featureLabel,
         ]);
 
-        if (cache.current.has(cacheKey)) { // Check cache for stored features
+        if (cache.current.has(cacheKey)) { // check cache for stored features
             const cached = cache.current.get(cacheKey);
 
-            // Cache load
-            setFeatureLayers(prev => ({
-                ...prev,
-                [featureKey]: {
-                    data: cached.data,
-                    geojson: cached.geojson
-                }
-            }))
+            // Load features from cache
+            setFeatureLayers(prev => {
+                const label = createLayerLabel(
+                    prev,
+                    cached.sourceKey,
+                    featureLabel
+                );
+                
+                return {
+                    ...prev,
+                    [layerID]: {
+                        sourceKey: cached.sourceKey,
+                        label,
+                        data: cached.data,
+                        geojson: cached.geojson,
+                        colour: cached.colour,
+                        visible: cached.visible,
+                        filters: cached.filters,
+                    }
+                };
+            });
 
             setStatus("success");
 
             return;
         }
 
-        setFeatureLayers(prev =>{
-                const next = {...prev};
-                delete next[featureKey];
-                return next;
+        setFeatureLayers(prev => {
+            const next = { ...prev };
+            delete next[featureKey];
+            return next;
         });
 
         setError(null);
@@ -99,6 +171,7 @@ export default function useMapFeatures() {
                 featureTag,
                 featureValue,
                 featureType,
+                featureLabel,
             );
 
             if (currentId !== requestId.current) return;
@@ -108,41 +181,67 @@ export default function useMapFeatures() {
             const geojson = osmtogeojson(result, { meta: true }); // Convert to geoJSON
 
             cache.current.set(cacheKey, {
+                sourceKey: featureKey,
                 data: result,
                 geojson,
+                label: featureLabel,
+                colour,
+                visible: true,
+                filters: []
             });
 
-            setFeatureLayers(prev => ({
-                ...prev,
-                [featureKey]: {
-                    data: result,
-                    geojson
-                }
-            }))
+            setFeatureLayers(prev => {
+                const label = createLayerLabel(
+                    prev,
+                    featureKey,
+                    featureLabel
+                );
+                
+                return {
+                    ...prev,
+                    [layerID]: {
+                        sourceKey: featureKey,
+                        label,
+                        data: result,
+                        geojson,
+                        colour,
+                        visible: true,
+                        filters: []
+                    }
+                };
+            });
 
             setStatus("success");
         } catch (err) {
             if (currentId !== requestId.current) return;
 
-            setFeatureLayers(prev =>{ // on err
-                const next = {...prev};
-                delete next[featureKey];
-                return next;
-            })
+            setFailedFeatureKey(featureKey) // pass back the feature that failed to load
 
-            setFailedFeatureKey(featureKey)
-            
             setError(err);
             setStatus("error");
         }
+    };
+
+    /* Layer inspection and updating */
+    const updateLayer = (layerID, changes) => {
+        setFeatureLayers(prev => ({
+            ...prev,
+            [layerID]: {
+                ...prev[layerID],
+                ...changes
+            }
+        }));
     };
 
     return {
         featureLayers,
         loadFeatures,
         clearFeatures,
-        removeFeature,
+        removeLayer,
+        toggleLayerVisibility,
+        updateLayer,
         failedFeatureKey,
+        getCachedFeatures,
         status,
         error,
     };

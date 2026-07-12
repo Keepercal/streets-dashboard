@@ -1,26 +1,24 @@
-import './LayersPanel.css'
-
-import CheckboxItem from '../../../../components/CheckboxItem/CheckboxItem.jsx';
+import './AddLayersPanel.css'
+import FeatureItem from './FeatureItem'
 
 /* HOOKS */
-import useFeatureGroups from './hooks/useFeatureGroups';
+import useFeatureGroups from './hooks/useFeatureGroups.js';
 
 /* CONSTANTS */
-import GROUP_LABELS from './constants/featureGroups'
+import GROUP_LABELS from './constants/featureGroups.js'
 
 /**
- * LayersPanel.jsx
+ * AddLayersPanel.jsx
  * ------------
  * UI component in sidebar which contains feature options
  *
  * Features:
  * - Load features from a preselect list
  */
-const LayersPanel = ({
+const AddLayersPanel = ({
     featureOptions,
-
-    toggles = {},
-    handleToggle
+    handleAddLayer,
+    cachedFeatures
 }) => {
 
     const {
@@ -43,22 +41,19 @@ const LayersPanel = ({
                             onClick={() => toggleGroup(group)}
                         >
                             {GROUP_LABELS[group] || group}
-                            <span className={`arrow ${openGroups[group] ? "rotated" : ""}`}>▸</span>
+                            <span className={`arrow ${openGroups[group] ? "rotated" : ""}`}>
+                                ▸
+                            </span>
                         </h4>
 
                         {/* LEVEL 3 CONTENT */}
                         <div className={`accordion-content ${openGroups[group] ? "open" : ""}`}>
 
-                            {features?.map(({ key, label, tag, type }) => (
-                                <CheckboxItem
-                                    key={key}
-                                    label={label}
-                                    checked={!!toggles[key]}
-                                    onChange={() =>
-                                        handleToggle?.(key, tag, key, type)
-                                    }
-                                />
-                            ))}
+                            <FeatureItem
+                                features={features}
+                                handleAddLayer={handleAddLayer}
+                                cachedFeatures={cachedFeatures}
+                            />
 
                         </div>
 
@@ -69,4 +64,4 @@ const LayersPanel = ({
     )
 }
 
-export default LayersPanel;
+export default AddLayersPanel;

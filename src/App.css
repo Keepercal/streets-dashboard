@@ -10,6 +10,8 @@ body,
 }
 
 :root{
+    --default-font: font-family: "Google Sans Flex", sans-serif;
+    
     --header-height: 60px;
     --header-bg: #1f2d3d;
 

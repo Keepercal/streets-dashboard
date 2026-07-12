@@ -37,11 +37,11 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
     
     return (
         <>
-            {Object.entries(featureLayers).map(([featureKey, layer]) => {
+            {Object.entries(featureLayers)
+            .filter(([featureKey, layer]) => layer.visible)
+            .map(([featureKey, layer]) => {
                 
                 const features = layer.geojson;
-
-                const layerColour = getLayerColour(featureKey)
 
                 if (!features?.features) return null;
 
@@ -94,14 +94,14 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                         <GeoJSON
                             data={features}
 
-                            key={`${featureKey}-${filterKey}-${displayMode}`}
+                            key={`${featureKey}-${filterKey}-${displayMode}-${layer.colour}`}
 
                             style={(feature) =>
                                 stylePolygon(
                                     feature, 
                                     displayMode,
                                     /*, featureKey,*/
-                                    layerColour,
+                                    layer.colour,
                                 )
                             }
 
@@ -111,18 +111,19 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                                     latlng,
                                     displayMode,
                                     //featureKey,
-                                    layerColour
+                                    layer.colour
                                 )
                             }
 
                             onEachFeature={handleEachFeature}
                         />
 
+                        {/* Add a pin to a polygon if the user is zoomed out */}
                         {zoom < 15 && (
                             <GeoJSON
                                 data={overviewFeatures}
 
-                                key={`${featureKey}-overview-${filterKey}-${displayMode}`}
+                                key={`${featureKey}-overview-${filterKey}-${displayMode}-${layer.colour}`}
 
                                 pointToLayer={(feature, latlng) =>
                                     createFeatureMarker(
@@ -130,7 +131,7 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                                         latlng,
                                         displayMode,
                                         //featureKey,
-                                        layerColour
+                                        layer.colour
                                     )
                                 }
 

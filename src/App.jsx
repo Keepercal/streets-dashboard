@@ -41,14 +41,14 @@ export default function App() {
 
   /* DATA STATES */
   const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
-  const [toggles, setToggles] = useState({});
   const [filters, setFilters] = useState([]);
 
   /* UI STATES */
-  const [activeDrawer, setActiveDrawer] = useState(null)
+  const [activeDrawer, setActiveDrawer] = useState(null) // which drawer is open
+  const [activeLayer, setActiveLayer] = useState(null) // which layer the user is inspecting
   const [statusPopupDismissed, setPopupDismissed] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
-  const [displayMode, setDisplayMode] = useState("default");
+  const [displayMode, setDisplayMode] = useState("default"); // or by last edit
 
   const {
     loadBoundaryResults,
@@ -70,8 +70,11 @@ export default function App() {
     featureLayers,
     loadFeatures,
     clearFeatures,
-    removeFeature,
+    removeLayer,
+    toggleLayerVisibility,
+    updateLayer,
     failedFeatureKey,
+    getCachedFeatures,
     status: featureStatus,
     error: featureError,
   } = useMapFeatures();
@@ -87,20 +90,6 @@ export default function App() {
       setPopupDismissed(false);
     }
   }, [boundaryStatus, featureStatus]);
-
-  /*
- * Uncheck feature toggle when loading fails
- */
-  useEffect(() => {
-    if (featureStatus === "error" && failedFeatureKey) {
-      console.log('[DEBUG] Removing failed feature toggle:', failedFeatureKey);
-
-      setToggles(prev => ({
-        ...prev,
-        [failedFeatureKey]: false,
-      }));
-    }
-  }, [featureStatus, failedFeatureKey]);
 
   /*
    * Create feature list from feature map
@@ -166,39 +155,46 @@ export default function App() {
     clearBoundaryResults()
     clearBoundary();
     clearFeatures();
-    setToggles({});
   }
 
-  /**
-   * Handle feature toggle
-   */
-  const handleToggle = (featureKey, featureTag, featureValue, featureType) => {
-    console.log('[DEBUG] handleToggle ENTER:', {
+  /* Handle removing features */
+  const handleremoveLayer = (featureKey) => {
+    removeLayer(featureKey);
+  }
+
+  /* Handle renaming features */
+  const renameLayer = (layerID, newLabel) => {
+    console.log('[DEBUG] renameLayer ENTER:', layerID, newLabel);
+    updateLayer(layerID, {
+      displayName: newLabel
+    });
+  };
+
+  /* Handle feature adding to project */
+  const handleAddLayer = (
+    featureKey, 
+    featureTag, 
+    featureValue, 
+    featureType,
+    featureLabel, 
+  ) => {
+
+    console.log('[DEBUG] handleAddLayer ENTER:', {
       featureKey,
       featureTag,
       featureValue,
       featureType,
+      featureLabel,
       selectedBoundaryKey,
     });
 
-    // Clear exititing UI state
-    setFilters([]);
-
-    setToggles(prev => {
-      const nextValue = !prev[featureKey];
-
-      console.log('[DEBUG] Toggle computed:', {
-        featureKey,
-        from: prev[featureKey],
-        to: nextValue,
-      });
-
-      if (nextValue) {
         console.log('[DEBUG] Calling loadFeatures:', {
+          featureKey,
           selectedBoundaryKey,
           featureTag,
           featureValue,
           featureType,
+          featureLabel,
         });
 
         loadFeatures(
@@ -206,24 +202,13 @@ export default function App() {
           selectedBoundaryKey,
           featureTag,
           featureValue,
-          featureType
+          featureType,
+          featureLabel
         );
 
-      } else {
-        console.log('[DEBUG] Clearing feature', featureKey);
-        removeFeature(featureKey);
-      }
-
-      return {
-        ...prev,
-        [featureKey]: nextValue,
       };
-    });
-  };
 
-  /**
-   * Handle feature toggle
-   */
+  /* Handle status popup */
   const statusPopup = useMemo(() => {
     if (statusPopupDismissed) {
       console.log('[DEBUG] Popup dismissed → idle state');
@@ -243,7 +228,7 @@ export default function App() {
         type: 'loading',
         source: 'boundary',
         title: 'Loading',
-        message: 'Fetching boundary data...',
+        message: 'Loading boundary...',
       };
     }
 
@@ -265,7 +250,7 @@ export default function App() {
         type: 'loading',
         source: 'feature',
         title: 'Loading',
-        message: 'Fetching feature data...',
+        message: 'Loading feature data from Overpass API...',
       };
     }
 
@@ -312,20 +297,14 @@ export default function App() {
           if (statusPopup.source === 'boundary') {
             console.log('[DEBUG] Resetting boundary state');
             handleClearBoundary();
-            setToggles({});
           }
 
           if (statusPopup.source === 'feature') {
-            const failedKey = status.featureKey;
+            const failedKey = statusPopup.featureKey;
             console.log('[DEBUG] Removing failed feature');
 
             if (failedKey) {
-              removeFeature(failedKey);
-
-              setToggles(prev => ({
-                ...prev,
-                [failedKey]: false,
-              }));
+              removeLayer(failedKey);
             }
           }
         }}
@@ -364,6 +343,13 @@ export default function App() {
           setActiveDrawer={setActiveDrawer}
 
           featureLayers={featureLayers}
+          activeLayer={activeLayer}
+          setActiveLayer={setActiveLayer}
+          handleAddLayer={handleAddLayer}
+          updateLayer={updateLayer}
+          toggleLayerVisibility={toggleLayerVisibility}
+          renameLayer={renameLayer}
+
           selectedBoundaryKey={selectedBoundaryKey}
 
           loadBoundaryResults={loadBoundaryResults}
@@ -371,14 +357,14 @@ export default function App() {
           boundaryResults={boundaryResults}
 
           featureOptions={featureOptions}
-          toggles={toggles}
-          handleToggle={handleToggle}
 
           displayMode={displayMode}
           setDisplayMode={setDisplayMode}
 
           handleClearBoundary={handleClearBoundary}
+          removeLayer={handleremoveLayer}
           clearFeatures={clearFeatures}
+          cachedFeatures={getCachedFeatures()}
         />
 
         <div className="main-content">
