@@ -15,6 +15,11 @@ export default function bindFeaturePopup(feature, layer, exclude) {
 
     const props = feature.properties || {};
 
+    // -------------------------
+    // OSM ID parsing
+    // -------------------------
+    const [featureType, osmID] = (feature.id || "").split("/");
+
     const featureName = 
         props.name ??
         props.brand ??
@@ -66,7 +71,7 @@ export default function bindFeaturePopup(feature, layer, exclude) {
             const lons = ring.map(p => p[0]);
             const lats = ring.map(p => p[1]);
 
-            lon = (Math.min(...lons) + Math.max(...lats)) / 2;
+            lon = (Math.min(...lons) + Math.max(...lons)) / 2;
             lat = (Math.min(...lats) + Math.max(...lats)) / 2;
             break;
         }
@@ -75,11 +80,6 @@ export default function bindFeaturePopup(feature, layer, exclude) {
             console.error("Unknown geometry format", geom.type);
             return;
     }
-
-    // -------------------------
-    // OSM ID parsing
-    // -------------------------
-    const [featureType, osmID] = (feature.id || "").split("/");
 
     // -------------------------
     // Popup container
