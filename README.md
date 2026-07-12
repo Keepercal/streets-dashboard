@@ -1,8 +1,10 @@
-###### v0.7.0-alpha
+###### v0.7.1-alpha
 # Streets Dashboard
 This web application is build for transport planners, engineers, or any public or private sector professionals involved with the built environment to search for particular features on streets. 
 
-There are a number of selectable options such as pedestrian crossings and cycle parking, which can be toggled and shown on a map. All data is pulled from OpenStreetMap, an open-source map of the world powered powered by a global community of volunteers, using the Overpass API. This application has been inspired by Overpass Turbo, a web application where you can search OSM features by writing scripts, and is intended to be a userfriendly version that does not require any prior knowledge of scripting.
+Load features onto a map and export them for use within applications such as ArcGIS. Gain insight into an area you are auditing for transportation projects like pubs with wheelchair accessibility or pedestrian crossings missing tactile paving. Future features will include deeper interrogation of map data.
+
+All data is from OpenStreetMap, an open-source map of the world powered powered by a global community of volunteers, extracted using the Overpass API. This application has been inspired by Overpass Turbo, a web application where you can search OSM features by writing scripts, and is intended to be a userfriendly version that does not require any prior knowledge of scripting.
 
 **NOTE! The data shown within this application is sourced from OpenStreetMap and therefore may not be 100% accurate.**
 
