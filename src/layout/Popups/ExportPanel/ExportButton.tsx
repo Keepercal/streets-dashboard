@@ -1,18 +1,18 @@
 import './ExportPanel.css';
 
-import { convertOSM, type ExportFormat } from '../../../services/exportFormats';
+import { convertGeoJSON, type ExportFormat } from '../../../services/exportFormats';
 import { downloadFile } from "../../../utils/downloadFile";
 
 
 interface ExportButtonProps {
-    featureData: any;
+    geojson: any;
     format: ExportFormat;
     filename?: string;
 }
 
 
 export default function ExportButton({
-    featureData,
+    geojson,
     format,
     filename = "osm-export",
 }: ExportButtonProps) {
@@ -27,8 +27,8 @@ export default function ExportButton({
             String(now.getSeconds()).padStart(2, "0"),
         ].join("-");
 
-        const convertedData = convertOSM(
-            featureData,
+        const convertedData = convertGeoJSON(
+            geojson,
             format
         );
 
