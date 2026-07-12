@@ -15,6 +15,15 @@ export default function bindFeaturePopup(feature, layer, exclude) {
 
     const props = feature.properties || {};
 
+    const featureName = 
+        props.name ??
+        props.brand ??
+        props.operator ??
+        props.amenity ??
+        props.shop ??
+        props.highway ??
+        `${featureType} ${osmID}`;
+
     const geom = feature.geometry;
 
     if (!geom) {
@@ -98,12 +107,14 @@ export default function bindFeaturePopup(feature, layer, exclude) {
             </a>
         </h3>
 
+        ${featureName ? `<h3>${featureName}<h3>` : ""}
+
         <h3>Tags</h3>
     `;
 
     /* Loop through tags and insert them into popup */
     Object.entries(props)
-        .filter(([k]) => !exclude.has(k))
+        .filter(([k]) => k !== "name" && !exclude.has(k))
         .forEach(([key, value]) => {
             const row = document.createElement("div");
             row.textContent = `${key}: ${value}`;
