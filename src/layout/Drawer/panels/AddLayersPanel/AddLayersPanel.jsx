@@ -1,6 +1,5 @@
 import './AddLayersPanel.css'
-
-import CheckboxItem from '../../../../components/CheckboxItem/CheckboxItem.jsx';
+import FeatureItem from './FeatureItem'
 
 /* HOOKS */
 import useFeatureGroups from './hooks/useFeatureGroups.js';
@@ -18,9 +17,8 @@ import GROUP_LABELS from './constants/featureGroups.js'
  */
 const AddLayersPanel = ({
     featureOptions,
-
-    toggles = {},
-    handleToggle
+    handleAddLayer,
+    cachedFeatures
 }) => {
 
     const {
@@ -43,22 +41,19 @@ const AddLayersPanel = ({
                             onClick={() => toggleGroup(group)}
                         >
                             {GROUP_LABELS[group] || group}
-                            <span className={`arrow ${openGroups[group] ? "rotated" : ""}`}>▸</span>
+                            <span className={`arrow ${openGroups[group] ? "rotated" : ""}`}>
+                                ▸
+                            </span>
                         </h4>
 
                         {/* LEVEL 3 CONTENT */}
                         <div className={`accordion-content ${openGroups[group] ? "open" : ""}`}>
 
-                            {features?.map(({ key, tag, type, label }) => (
-                                <CheckboxItem
-                                    key={key}
-                                    label={label}
-                                    checked={!!toggles[key]}
-                                    onChange={() =>
-                                        handleToggle?.(key, label, tag, key, type)
-                                    }
-                                />
-                            ))}
+                            <FeatureItem
+                                features={features}
+                                handleAddLayer={handleAddLayer}
+                                cachedFeatures={cachedFeatures}
+                            />
 
                         </div>
 

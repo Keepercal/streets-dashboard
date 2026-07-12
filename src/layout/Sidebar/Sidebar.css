@@ -44,6 +44,12 @@
         color 0.2s ease;
 }
 
+.sidebar-button-label{
+    display: flex;
+    text-align: left;
+    font-family: var(--defeault-font)
+}
+
 
 .sidebar-button:hover {
     background: rgba(255,255,255,0.08);

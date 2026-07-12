@@ -4,9 +4,9 @@ import { useState } from "react";
 
 export default function LayerItem({
     featureLayers,
-    toggleFeatureVisibility,
+    toggleLayerVisibility,
     updateLayer,
-    removeFeature,
+    removeLayer,
     renameLayer
 }) {
     const [editing, setEditing] = useState(null);
@@ -58,7 +58,7 @@ export default function LayerItem({
                                 />
                             ) : (
                                 <span className="layer-name">
-                                    {layer.displayName ?? key}
+                                    {layer.displayName ?? layer.label ?? layer.sourceKey}
                                 </span>
                             )}
                     </div>
@@ -79,7 +79,7 @@ export default function LayerItem({
                                 onClick={() => 
                                     startEditing(
                                         key,
-                                        layer.displayName ?? layer.label ?? key
+                                        layer.displayName ?? layer.label ?? layer.sourceKey
                                     )
                                 }
                                 title="Rename layer"
@@ -91,7 +91,7 @@ export default function LayerItem({
                         {/* Visibility */}
                         <button
                             className="layer-action-btn"
-                            onClick={() => toggleFeatureVisibility(key)}
+                            onClick={() => toggleLayerVisibility(key)}
                             title={
                                 layer.visible
                                     ? "Hide Layer"
@@ -128,7 +128,7 @@ export default function LayerItem({
                         {/* Delete */}
                         <button
                             className="layer-action-btn delete"
-                            onClick={() => removeFeature(key)}
+                            onClick={() => removeLayer(key)}
                             title="Delete layer"
                         >
                             <Trash2 size={22}/>

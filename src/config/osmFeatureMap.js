@@ -21,7 +21,7 @@ export const FEATURE_MAP = {
     vehicle_highways: {
         motorway: {
             tag:"highway",
-            label:"Motorway",
+            label:"Motorways",
             type: "way",
         },
         trunk: {
@@ -59,7 +59,7 @@ export const FEATURE_MAP = {
     active_travel_highways: {
         footway: {
             tag: "highway",
-            label: "Footway",
+            label: "Footways",
             type: "way",
         },
         shared_footway: {
@@ -69,7 +69,7 @@ export const FEATURE_MAP = {
         },
         path: {
             tag:"highway",
-            label:"Path",
+            label:"Paths",
             type: "way",
         },
         public_footpath: {
@@ -150,7 +150,7 @@ export const FEATURE_MAP = {
         },
         waste_basket: {
             tag: "amenity",
-            label: "Waste Bin",
+            label: "Waste Bins",
             type: "node",
         },
         recycling: {
@@ -165,7 +165,7 @@ export const FEATURE_MAP = {
         },
         picnic_site: {
             tag: "amenity",
-            label: "Picnic Table",
+            label: "Picnic Tables",
             type: "node",
         },
     },
@@ -173,12 +173,12 @@ export const FEATURE_MAP = {
     transport: {
         station: {
             tag: "railway",
-            label: "Railway Station",
+            label: "Railway Stations",
             type: "node",
         },
         bus_station: {
             tag: "amenity",
-            label: "Bus Station",
+            label: "Bus Stations",
             type: "node",
         },
         bus_stop: {
@@ -193,18 +193,13 @@ export const FEATURE_MAP = {
         },      
         airport: {
             tag: "aeroway",
-            label: "Airport",
+            label: "Airports",
             type: "way",
         },
         taxi: {
             tag: "amenity",
-            label: "Taxi Rank",
+            label: "Taxi Ranks",
             type: "node",
-        },
-        parking: {
-            tag: "amenity",
-            label: "Parking",
-            type: "way",
         },
     },
 
@@ -216,17 +211,17 @@ export const FEATURE_MAP = {
         },     
         fuel: {
             tag: "amenity",
-            label: "Fuel Station",
+            label: "Fuel Stations",
             type: "way",
         },
         charging_station: {
             tag: "amenity",
-            label: "EV Charger",
+            label: "EV Chargers",
             type: "node",
         },
         car_wash: {
             tag: "amenity",
-            label: "Car Wash",
+            label: "Car Washes",
             type: "way",
         },
         car_rental: {
@@ -236,7 +231,7 @@ export const FEATURE_MAP = {
         },
         car_repair: {
             tag: "shop",
-            label: "Garage",
+            label: "Garages",
             type: "way",
         },
     },
@@ -254,12 +249,12 @@ export const FEATURE_MAP = {
         },
         bicycle_shop: {
             tag: "shop",
-            label: "Bicycle Shop",
+            label: "Bicycle Shops",
             type: "way",
         },
         bicycle_repair_station: {
             tag: "amenity",
-            label: "Repair Station",
+            label: "Repair Stations",
             type: "way",
         },
     },
@@ -267,12 +262,12 @@ export const FEATURE_MAP = {
     healthcare: {
         hospital: {
             tag: "amenity",
-            label: "Hospital",
+            label: "Hospitals",
             type: "way",
         },
         clinic: {
             tag: "amenity",
-            label: "Clinic",
+            label: "Clinics",
             type: "way",
         },
         doctors: {
@@ -287,17 +282,17 @@ export const FEATURE_MAP = {
         },
         Pharmacy: {
             tag: "amenity",
-            label: "Pharmacy",
+            label: "Pharmacies",
             type: "way",
         },
         veterinary: {
             tag: "amenity",
-            label: "Veterinary",
+            label: "Veterinaries",
             type: "way",
         },
         defibrillator: {
             tag: "amenity",
-            label: "Defibrillator",
+            label: "Defibrillators",
             type: "way",
         },
     },
@@ -310,17 +305,17 @@ export const FEATURE_MAP = {
         },
         fire_station: {
             tag: "amenity",
-            label: "Fire Station",
+            label: "Fire Stations",
             type: "way",
         },
         ambulance_station: {
             tag: "amenity",
-            label: "Ambulance Station",
+            label: "Ambulance Stations",
             type: "way",
         },
         phone: {
             tag: "emergency",
-            label: "Emergency Phone",
+            label: "Emergency Phones",
             type: "way",
         },
     },
@@ -328,22 +323,22 @@ export const FEATURE_MAP = {
     education: {
         school: {
             tag: "amenity",
-            label: "School",
+            label: "Schools",
             type: "way",
         },
         college: {
             tag: "amenity",
-            label: "College",
+            label: "Colleges",
             type: "way",
         },      
         university: {
             tag: "amenity",
-            label: "University",
+            label: "Universities",
             type: "way",
         },  
         library: {
             tag: "amenity",
-            label: "Library",
+            label: "Libraries",
             type: "way",
         },        
     },
@@ -351,44 +346,34 @@ export const FEATURE_MAP = {
     publicServices: {
         townhall: {
             tag: "amenity",
-            label: "Town Hall",
+            label: "Town Halls",
             type: "way",
         },
         courthouse: {
             tag: "amenity",
-            label: "Court House",
+            label: "Court Houses",
             type: "way",
         },
         post_office: {
             tag: "amenity",
-            label: "Post Office",
+            label: "Post Offices",
             type: "way",
         },
         parcel_locker: {
             tag: "amenity",
-            label: "Parcel Locker",
+            label: "Parcel Lockers",
             type: "way",
         },
         community_centre: {
             tag: "amenity",
-            label: "Community Centre",
+            label: "Community Centres",
             type: "way",
         },
         prison: {
             tag: "amenity",
-            label: "Prison",
+            label: "Prisons",
             type: "way",
         },
-        police: {
-            tag: "amenity",
-            label: "Police",
-            type: "way",
-        },
-        fire_station: {
-            tag: "amenity",
-            label: "Fire Stations",
-            type: "way",
-        }
     },
 
     poi: {
@@ -412,27 +397,27 @@ export const FEATURE_MAP = {
     shopping: {
         supermarket: {
             tag: "shop",
-            label: "Supermarket",
+            label: "Supermarkets",
             type: "way",
         },
         convenience: {
             tag: "shop",
-            label: "Convenience Store",
+            label: "Convenience Stores",
             type: "way",
         },
         bakery: {
             tag: "shop",
-            label: "Supermarket",
+            label: "Bakeries",
             type: "way",
         },
         butcher: {
             tag: "shop",
-            label: "Butcher",
+            label: "Butchers",
             type: "way",
         },
         greengrocer: {
             tag: "shop",
-            label: "Greengrocer",
+            label: "Greengrocers",
             type: "way",
         },
         clothes: {
@@ -467,12 +452,12 @@ export const FEATURE_MAP = {
         },
         department_store: {
             tag: "shop",
-            label: "Department Store",
+            label: "Department Stores",
             type: "way",
         },
         kiosk: {
             tag: "shop",
-            label: "Kiosk",
+            label: "Kiosks",
             type: "way",
         },
     },
@@ -480,12 +465,12 @@ export const FEATURE_MAP = {
     fooddrink: {
         restaurant: {
             tag: "amenity",
-            label: "Restaurant",
+            label: "Restaurants",
             type: "way",
         },
         cafe: {
             tag: "amenity",
-            label: "Cafe",
+            label: "Cafes",
             type: "way",
         },
         fast_food: {
@@ -495,12 +480,12 @@ export const FEATURE_MAP = {
         },
         pub: {
             tag: "amenity",
-            label: "Pub",
+            label: "Pubs",
             type: "way",
         },
         bar: {
             tag: "amenity",
-            label: "Bar",
+            label: "Bars",
             type: "way",
         },
     },
@@ -508,52 +493,52 @@ export const FEATURE_MAP = {
     leisure: {
         playground: {
             tag: "leisure",
-            label: "Playground",
+            label: "Playgrounds",
             type: "way"
         },
         park: {
             tag: "leisure",
-            label: "Park",
+            label: "Parks",
             type: "way",
         },
         garden: {
             tag: "leisure",
-            label: "Garden",
+            label: "Gardens",
             type: "way",
         },
         dog_park: {
             tag: "leisure",
-            label: "Dog Park",
+            label: "Dog Parks",
             type: "way",
         },
         fitness_centre: {
             tag: "leisure",
-            label: "Fitness Centre",
+            label: "Fitness Centres",
             type: "way",
         },
         sports_centre: {
             tag: "leisure",
-            label: "Sports Centre",
+            label: "Sports Centres",
             type: "way",
         },
         stadium: {
             tag: "leisure",
-            label: "Stadium",
+            label: "Stadiums",
             type: "way",
         },
         swimming_pool: {
             tag: "leisure",
-            label: "Swimming Pool",
+            label: "Swimming Pools",
             type: "way",
         },
         pitch: {
             tag: "leisure",
-            label: "Sports Pitch",
+            label: "Sports Pitches",
             type: "way",
         },
         track: {
             tag: "leisure",
-            label: "Track",
+            label: "Tracks",
             type: "way",
         },
     },
@@ -561,12 +546,12 @@ export const FEATURE_MAP = {
     tourism: {
         museum: {
             tag: "tourism",
-            label: "Museum",
+            label: "Museums",
             type: "way",
         },   
         attraction: {
             tag: "tourism",
-            label: "Attraction",
+            label: "Attractions",
             type: "way",
         },
         information: {
@@ -576,12 +561,12 @@ export const FEATURE_MAP = {
         },
         viewpoint: {
             tag: "tourism",
-            label: "Viewpoint",
+            label: "Viewpoints",
             type: "node",
         },     
         zoo: {
             tag: "tourism",
-            label: "Zoo",
+            label: "Zoos",
             type: "way",
         },
         aquarium: {
@@ -594,22 +579,22 @@ export const FEATURE_MAP = {
     accommodation: {
         hotel: {
             tag: "tourism",
-            label: "Hotel",
+            label: "Hotels",
             type: "way",
         },
         hostel: {
             tag: "tourism",
-            label: "Hostel",
+            label: "Hostels",
             type: "way",
         },
         camp_site: {
             tag: "tourism",
-            label: "Camp Site",
+            label: "Camp Sites",
             type: "way",
         },
         caravan_site: {
             tag: "tourism",
-            label: "Caravan Site",
+            label: "Caravan Sites",
             type: "way",
         },
     },

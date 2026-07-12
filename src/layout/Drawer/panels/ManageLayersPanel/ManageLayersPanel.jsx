@@ -4,9 +4,9 @@ import { Ghost } from "lucide-react"
 
 export default function ManageLayersPanel({
     featureLayers,
-    toggleFeatureVisibility,
+    toggleLayerVisibility,
     updateLayer,
-    removeFeature,
+    removeLayer,
     renameLayer
 }) {
 
@@ -25,9 +25,9 @@ export default function ManageLayersPanel({
             ) : (
                 <LayerItem
                     featureLayers={featureLayers}
-                    toggleFeatureVisibility={toggleFeatureVisibility}
+                    toggleLayerVisibility={toggleLayerVisibility}
                     updateLayer={updateLayer}
-                    removeFeature={removeFeature}
+                    removeLayer={removeLayer}
                     renameLayer={renameLayer}
                 />
             )}

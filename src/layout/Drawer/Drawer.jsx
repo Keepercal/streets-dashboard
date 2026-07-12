@@ -10,10 +10,9 @@ function Drawer({
     setActiveDrawer,
 
     featureLayers,
-    activeLayer,
-    setActiveLayer,
+    handleAddLayer,
     updateLayer,
-    toggleFeatureVisibility,
+    toggleLayerVisibility,
     renameLayer,
 
     selectedBoundaryKey,
@@ -22,15 +21,14 @@ function Drawer({
     boundaryResults,
 
     featureOptions,
-    toggles,
-    handleToggle,
 
     displayMode,
     setDisplayMode,
 
     handleClearBoundary,
-    removeFeature,
+    removeLayer,
     clearFeatures,
+    cachedFeatures
 }) {
     const DRAWER_TITLES = {
         boundary: "Search for Boundary",
@@ -72,8 +70,8 @@ function Drawer({
                 {activeDrawer === "addLayers" &&
                     <AddLayersPanel
                         featureOptions={featureOptions}
-                        handleToggle={handleToggle}
-                        toggles={toggles}
+                        handleAddLayer={handleAddLayer}
+                        cachedFeatures={cachedFeatures}
                     />
                 }
 
@@ -81,9 +79,9 @@ function Drawer({
                 {activeDrawer === "manageLayers" &&
                     <ManageLayersPanel
                         featureLayers={featureLayers}
-                        toggleFeatureVisibility={toggleFeatureVisibility}
+                        toggleLayerVisibility={toggleLayerVisibility}
                         updateLayer={updateLayer}
-                        removeFeature={removeFeature}
+                        removeLayer={removeLayer}
                         renameLayer={renameLayer}
                     />
                 }

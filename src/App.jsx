@@ -41,7 +41,6 @@ export default function App() {
 
   /* DATA STATES */
   const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
-  const [toggles, setToggles] = useState({});
   const [filters, setFilters] = useState([]);
 
   /* UI STATES */
@@ -71,10 +70,11 @@ export default function App() {
     featureLayers,
     loadFeatures,
     clearFeatures,
-    removeFeature,
-    toggleFeatureVisibility,
+    removeLayer,
+    toggleLayerVisibility,
     updateLayer,
     failedFeatureKey,
+    getCachedFeatures,
     status: featureStatus,
     error: featureError,
   } = useMapFeatures();
@@ -90,20 +90,6 @@ export default function App() {
       setPopupDismissed(false);
     }
   }, [boundaryStatus, featureStatus]);
-
-  /*
- * Uncheck feature toggle when loading fails
- */
-  useEffect(() => {
-    if (featureStatus === "error" && failedFeatureKey) {
-      console.log('[DEBUG] Removing failed feature toggle:', failedFeatureKey);
-
-      setToggles(prev => ({
-        ...prev,
-        [failedFeatureKey]: false,
-      }));
-    }
-  }, [featureStatus, failedFeatureKey]);
 
   /*
    * Create feature list from feature map
@@ -169,51 +155,39 @@ export default function App() {
     clearBoundaryResults()
     clearBoundary();
     clearFeatures();
-    setToggles({});
   }
 
   /* Handle removing features */
-  const handleRemoveFeature = (featureKey) => {
-    removeFeature(featureKey);
-
-    setToggles(prev => ({
-      ...prev,
-      [featureKey]: false
-    }))
+  const handleremoveLayer = (featureKey) => {
+    removeLayer(featureKey);
   }
 
   /* Handle renaming features */
-  const renameLayer = (featureKey, newLabel) => {
-    console.log('[DEBUG] renameLayer ENTER:', featureKey, newLabel);
-    updateLayer(featureKey, {
+  const renameLayer = (layerID, newLabel) => {
+    console.log('[DEBUG] renameLayer ENTER:', layerID, newLabel);
+    updateLayer(layerID, {
       displayName: newLabel
     });
   };
 
-  /* Handle feature toggle */
-  const handleToggle = (featureKey, featureLabel, featureTag, featureValue, featureType) => {
-    console.log('[DEBUG] handleToggle ENTER:', {
+  /* Handle feature adding to project */
+  const handleAddLayer = (
+    featureKey, 
+    featureTag, 
+    featureValue, 
+    featureType,
+    featureLabel, 
+  ) => {
+
+    console.log('[DEBUG] handleAddLayer ENTER:', {
       featureKey,
-      featureLabel,
       featureTag,
       featureValue,
       featureType,
+      featureLabel,
       selectedBoundaryKey,
     });
 
-    // Clear exititing UI state
-    setFilters([]);
-
-    setToggles(prev => {
-      const nextValue = !prev[featureKey];
-
-      console.log('[DEBUG] Toggle computed:', {
-        featureKey,
-        from: prev[featureKey],
-        to: nextValue,
-      });
-
-      if (nextValue) {
         console.log('[DEBUG] Calling loadFeatures:', {
           featureKey,
           selectedBoundaryKey,
@@ -232,17 +206,7 @@ export default function App() {
           featureLabel
         );
 
-      } else {
-        console.log('[DEBUG] Clearing feature', featureKey);
-        removeFeature(featureKey);
-      }
-
-      return {
-        ...prev,
-        [featureKey]: nextValue,
       };
-    });
-  };
 
   /* Handle status popup */
   const statusPopup = useMemo(() => {
@@ -264,7 +228,7 @@ export default function App() {
         type: 'loading',
         source: 'boundary',
         title: 'Loading',
-        message: 'Fetching boundary data...',
+        message: 'Loading boundary...',
       };
     }
 
@@ -286,7 +250,7 @@ export default function App() {
         type: 'loading',
         source: 'feature',
         title: 'Loading',
-        message: 'Fetching feature data...',
+        message: 'Loading feature data from Overpass API...',
       };
     }
 
@@ -333,7 +297,6 @@ export default function App() {
           if (statusPopup.source === 'boundary') {
             console.log('[DEBUG] Resetting boundary state');
             handleClearBoundary();
-            setToggles({});
           }
 
           if (statusPopup.source === 'feature') {
@@ -341,12 +304,7 @@ export default function App() {
             console.log('[DEBUG] Removing failed feature');
 
             if (failedKey) {
-              removeFeature(failedKey);
-
-              setToggles(prev => ({
-                ...prev,
-                [failedKey]: false,
-              }));
+              removeLayer(failedKey);
             }
           }
         }}
@@ -387,8 +345,9 @@ export default function App() {
           featureLayers={featureLayers}
           activeLayer={activeLayer}
           setActiveLayer={setActiveLayer}
+          handleAddLayer={handleAddLayer}
           updateLayer={updateLayer}
-          toggleFeatureVisibility={toggleFeatureVisibility}
+          toggleLayerVisibility={toggleLayerVisibility}
           renameLayer={renameLayer}
 
           selectedBoundaryKey={selectedBoundaryKey}
@@ -398,15 +357,14 @@ export default function App() {
           boundaryResults={boundaryResults}
 
           featureOptions={featureOptions}
-          toggles={toggles}
-          handleToggle={handleToggle}
 
           displayMode={displayMode}
           setDisplayMode={setDisplayMode}
 
           handleClearBoundary={handleClearBoundary}
-          removeFeature={handleRemoveFeature}
+          removeLayer={handleremoveLayer}
           clearFeatures={clearFeatures}
+          cachedFeatures={getCachedFeatures()}
         />
 
         <div className="main-content">

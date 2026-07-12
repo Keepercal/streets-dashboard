@@ -47,7 +47,7 @@ export default function useFeatureGroups(featureOptions) {
      */
     const toggleGroup = (group) => {
         setOpenGroups((prev) => ({
-            //...prev, // impacts whether more than one accordian can be open at the same time
+            ...prev, // impacts whether more than one accordian can be open at the same time
             [group]: !prev[group]
         }));
     };
