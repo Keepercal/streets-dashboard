@@ -8,6 +8,7 @@ const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
  * Handles only transport-level concerns (fetch + status logging).
  */
 async function callOverpass(query) {
+    console.log("[DEBUG] callOverpass ENTER with query:", query)
     const url = `${OVERPASS_URL}?data=${encodeURIComponent(query)}`;
 
     const res = await fetch(url);
@@ -47,6 +48,8 @@ async function handleOverpassResponse(res, retryFn) {
         throw new Error("Overpass returned an empty result");
     }
 
+    console.log("[DEBUG] Overpass API returned a result", data);
+
     return data;
 }
 
@@ -55,27 +58,25 @@ async function handleOverpassResponse(res, retryFn) {
  * -------------
  * Fetches a boundary relation from Overpass by name.
  */
-export async function fetchBoundary(boundaryKey, boundaryType, boundaryName, boundaryID) {
-    if (!boundaryKey || boundaryKey === "none") return null;
+export async function fetchBoundary(boundaryID, boundaryType) {
+    if (!boundaryID || boundaryID === "none") return null;
 
     console.log('[DEBUG] fetchBoundary ENTER:', {
-        boundaryKey, boundaryType, boundaryName, boundaryID
+        boundaryID, boundaryType
     })
 
     let query;
 
     query = `
         [out:json][timeout:60];
-        relation(${boundaryKey});
+        relation(${boundaryID});
         out geom meta;
     `;
-
-    console.log(query)
 
     const res = await callOverpass(query);
 
     return handleOverpassResponse(res, () =>
-        fetchBoundary(boundaryKey, boundaryType, boundaryName)
+        fetchBoundary(boundaryID, boundaryType)
     );
 }
 
@@ -85,21 +86,21 @@ export async function fetchBoundary(boundaryKey, boundaryType, boundaryName, bou
  * Fetches OSM features inside a boundary area using tag filters.
  */
 export async function fetchMapFeature(
-    boundaryKey,
+    boundaryID,
     featureTag,
     featureValue,
     featureType
 ) {
-    if (!boundaryKey || boundaryKey === "none") return null;
+    if (!boundaryID || boundaryID === "none") return null;
 
     console.log('[DEBUG] ENTER fetchFeatures:', {
-        boundaryKey, featureTag, featureValue, featureType
+        boundaryID, featureTag, featureValue, featureType
     })
 
     const query = `
         [out:json][timeout:60];
 
-        relation(${boundaryKey})->.rels;
+        relation(${boundaryID})->.rels;
         .rels map_to_area -> .area;
 
         ${featureType}(area.area)["${featureTag}"="${featureValue}"];
@@ -107,13 +108,11 @@ export async function fetchMapFeature(
         out tags geom meta;
     `;
 
-    console.log(query)
-
     const res = await callOverpass(query);
 
     console.log(res)
 
     return handleOverpassResponse(res, () =>
-        fetchMapFeature(boundaryKey, featureTag, featureValue, featureType)
+        fetchMapFeature(boundaryID, featureTag, featureValue, featureType)
     );
 }

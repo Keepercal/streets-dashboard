@@ -4,7 +4,7 @@ import osmtogeojson from "osmtogeojson";
 import { fetchBoundary } from "../services/overpass/overpass";
 
 /**
- * useBoundary
+ * useBoundaryData
  * -----------
  * Fetches and manages OSM boundary data and its GeoJSON conversion.
  *
@@ -29,19 +29,19 @@ export default function useBoundary() {
         setError(null);
     };
 
-    const loadBoundary = async (boundaryKey, boundaryType, boundaryName, boundaryID) => {
+    const loadBoundary = async (boundaryID, boundaryType, boundaryName) => {
         clearBoundary();
 
         console.log('[DEBUG] loadBoundary ENTER:', {
-            boundaryKey,
+            boundaryID,
             boundaryType,
             boundaryName,
-            boundaryID,
         })
 
         const currentId = ++requestId.current;
 
-        if (boundaryKey === "none") {
+        if (boundaryID === "none") {
+            console.error("[DEBUG] BoundaryID is empty:", boundaryID)
             return;
         }
 
@@ -49,10 +49,8 @@ export default function useBoundary() {
 
         try {
             const result = await fetchBoundary( // Fetch boundary from Overpass API
-                boundaryKey,
+                boundaryID,
                 boundaryType,
-                boundaryName,
-                boundaryID
             );
 
             if (currentId !== requestId.current) return;
@@ -65,6 +63,8 @@ export default function useBoundary() {
             setStatus("success");
         } catch (err) {
             if (currentId !== requestId.current) return;
+
+            console.error(err)
 
             setBoundaryData(null);
             setBoundaryGeojson(null);

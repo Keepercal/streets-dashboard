@@ -16,6 +16,7 @@ import { fetchMapFeature } from "../services/overpass/overpass";
 export default function useMapFeatures() {
     const [featureLayers, setFeatureLayers] = useState({});
 
+    /* Status popup handling */
     const [status, setStatus] = useState("idle");
     const [error, setError] = useState(null);
 
@@ -23,6 +24,7 @@ export default function useMapFeatures() {
     const requestId = useRef(0);
     const cache = useRef(new Map());
 
+    /* Flags */
     const [failedFeatureKey, setFailedFeatureKey] = useState(null); // cleanup 
 
     /* Remove all features off map */
@@ -36,7 +38,7 @@ export default function useMapFeatures() {
 
     /* Remove a single feature */
     const removeLayer = (layerID) => {
-        console.log('[DEBUG] removing feature:', layerID);
+        console.log('[DEBUG] removing feature:', {layerID});
         setFeatureLayers(prev => {
             const next = { ...prev };
 
@@ -92,22 +94,29 @@ export default function useMapFeatures() {
                 ? featureLabel
                 : `${featureLabel} (${count + 1})`;
         }
-
+    
+    /* Array indicating what features are in the cache */
+    // Used in the UI to indicate cached features
     const getCachedFeatures = () => {
         return Array.from(cache.current.values())
             .map(layer => layer.sourceKey)
     }
 
+    /* Clear cache */
+    // Used when loading a new boundary, data isn't left over in the cache
+    const clearCache = () => { 
+        cache.current.clear();
+    }
+
     /* Loads features by calling Overpass API */
-    const loadFeatures = async (
+    const loadFeatures = async ({
         featureKey,
-        selectedBoundaryKey,
+        boundaryKey,
         featureTag,
         featureValue,
         featureType,
         featureLabel,
-    ) => {
-        const boundaryKey = selectedBoundaryKey; // current boundary
+    }) => {
         const layerID = crypto.randomUUID();
         const colour = getLayerColour(featureKey);
 
@@ -176,8 +185,6 @@ export default function useMapFeatures() {
 
             if (currentId !== requestId.current) return;
 
-            console.log(result)
-
             const geojson = osmtogeojson(result, { meta: true }); // Convert to geoJSON
 
             cache.current.set(cacheKey, {
@@ -242,6 +249,7 @@ export default function useMapFeatures() {
         updateLayer,
         failedFeatureKey,
         getCachedFeatures,
+        clearCache,
         status,
         error,
     };

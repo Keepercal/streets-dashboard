@@ -6,7 +6,7 @@
  */
 
 import { createRoot } from 'react-dom/client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState } from 'react';
 import './App.css';
 
 /* High level components */
@@ -25,13 +25,14 @@ import Legend from './components/Legend/Legend.jsx';
 
 /* Hooks */
 import useBoundarySearch from './hooks/useBoundarySearch.js';
-import useBoundary from './hooks/useBoundary.js';
+import useBoundaryData from './hooks/useBoundaryData.js';
 import useMapFeatures from './hooks/useMapFeatures.js';
-
-import evaluateFeature from './utils/evaluateFeatures.js';
+import useFilteredLayers from './hooks/useFilteredLayers.js';
+import useStatusPopup from './hooks/useStatusPopup.js';
 
 /* Misc imports */
-import { FEATURE_MAP } from './config/osmFeatureMap.js';
+import { FEATURE_OPTIONS } from './config/featureOptions.js';
+
 
 export default function App() {
   const PANELS = {
@@ -39,16 +40,15 @@ export default function App() {
     ABOUT: "about"
   }
 
-  /* DATA STATES */
-  const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
-  const [filters, setFilters] = useState([]);
-
   /* UI STATES */
   const [activeDrawer, setActiveDrawer] = useState(null) // which drawer is open
   const [activeLayer, setActiveLayer] = useState(null) // which layer the user is inspecting
-  const [statusPopupDismissed, setPopupDismissed] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
   const [displayMode, setDisplayMode] = useState("default"); // or by last edit
+
+  /* DATA STATES */
+  const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
+  const [filters, setFilters] = useState([]);
 
   const {
     loadBoundaryResults,
@@ -63,7 +63,7 @@ export default function App() {
     clearBoundary,
     status: boundaryStatus,
     error: boundaryError,
-  } = useBoundary();
+  } = useBoundaryData();
 
   /* Hook in feature data */
   const {
@@ -79,58 +79,21 @@ export default function App() {
     error: featureError,
   } = useMapFeatures();
 
-  const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if user has loaded any features
+  const filteredLayers = useFilteredLayers (
+    featureLayers,
+    filters
+  );
 
-  /*
-   * Reset status popup dismissal when loading starts
-   */
-  useEffect(() => {
-    if (boundaryStatus === 'loading' || featureStatus === 'loading') {
-      console.log('[DEBUG] Loading started → resetting statusPopupDismissed');
-      setPopupDismissed(false);
-    }
-  }, [boundaryStatus, featureStatus]);
-
-  /*
-   * Create feature list from feature map
-   */
-  const featureOptions = useMemo(() => ([
-    ...Object.entries(FEATURE_MAP).flatMap(([group, features]) =>
-      Object.entries(features).map(([key, feature]) => ({
-        value: key,
-        key,
-        group,
-        tag: feature.tag,
-        label: feature.label,
-        type: feature.type,
-      }))
-    ),
-  ]), []);
-
-  /*
-   * Handle feature filtering
-   */
-  const filteredLayers = useMemo(() => {
-    const result = {};
-
-    Object.entries(featureLayers).forEach(([key, layer]) => {
-      if (!layer.geojson?.features) return;
-
-      result[key] = {
-        ...layer,
-        geojson: {
-          ...layer.geojson,
-          features: layer.geojson.features.map(feature => ({
-            ...feature,
-            _matchesFilters: evaluateFeature(feature, filters)
-          })),
-        },
-      };
-    });
-
-    return result
-
-  }, [featureLayers, filters]);
+  const {
+    statusPopup,
+    dismissPopup,
+  } = useStatusPopup({
+    boundaryStatus,
+    boundaryError,
+    featureStatus,
+    featureError,
+    failedFeatureKey
+  })
 
   /**
    * Handle input for boundary search
@@ -138,15 +101,17 @@ export default function App() {
   const handleSelectBoundary = (result) => {
     console.log('[DEBUG] handleSelectBoundary ENTER:', result);
 
-    const boundaryKey = result.osm_id;
-    const boundaryType = result.osm_type;
-    const boundaryName = result.display_name;
-    const boundaryID = result.place_id;
+    const {
+      osm_id: boundaryID,
+      osm_type: boundaryType,
+      display_name: boundaryName,
+    } = result;
 
-    setSelectedBoundaryKey(boundaryKey);
+    setSelectedBoundaryKey(boundaryID);
 
-    loadBoundary(boundaryKey, boundaryType, boundaryName, boundaryID)
+    loadBoundary(boundaryID, boundaryType, boundaryName)
   }
+
   /**
    * Handle resetting boundary and whiping features
    */
@@ -155,11 +120,6 @@ export default function App() {
     clearBoundaryResults()
     clearBoundary();
     clearFeatures();
-  }
-
-  /* Handle removing features */
-  const handleremoveLayer = (featureKey) => {
-    removeLayer(featureKey);
   }
 
   /* Handle renaming features */
@@ -188,99 +148,18 @@ export default function App() {
       selectedBoundaryKey,
     });
 
-        console.log('[DEBUG] Calling loadFeatures:', {
+        loadFeatures({
           featureKey,
-          selectedBoundaryKey,
-          featureTag,
-          featureValue,
-          featureType,
-          featureLabel,
-        });
-
-        loadFeatures(
-          featureKey,
-          selectedBoundaryKey,
+          boundaryKey: selectedBoundaryKey,
           featureTag,
           featureValue,
           featureType,
           featureLabel
-        );
+        });
 
       };
 
-  /* Handle status popup */
-  const statusPopup = useMemo(() => {
-    if (statusPopupDismissed) {
-      console.log('[DEBUG] Popup dismissed → idle state');
-      return {
-        trigger: false,
-        type: 'idle',
-        source: null,
-        title: '',
-        message: '',
-      };
-    }
-
-    if (boundaryStatus === 'loading') {
-      console.log('[DEBUG] Popup: boundary loading');
-      return {
-        trigger: true,
-        type: 'loading',
-        source: 'boundary',
-        title: 'Loading',
-        message: 'Loading boundary...',
-      };
-    }
-
-    if (boundaryStatus === 'error') {
-      console.log('[DEBUG] Popup: boundary error', boundaryError);
-      return {
-        trigger: true,
-        type: 'error',
-        source: 'boundary',
-        title: 'Error',
-        message: boundaryError?.message,
-      };
-    }
-
-    if (featureStatus === 'loading') {
-      console.log('[DEBUG] Popup: feature loading');
-      return {
-        trigger: true,
-        type: 'loading',
-        source: 'feature',
-        title: 'Loading',
-        message: 'Loading feature data from Overpass API...',
-      };
-    }
-
-    if (featureStatus === 'error') {
-      console.log('[DEBUG] Popup: feature error', featureError);
-      return {
-        trigger: true,
-        type: 'error',
-        source: 'feature',
-        featureKey: failedFeatureKey,
-        title: 'Error',
-        message: featureError?.message,
-      };
-    }
-
-    return {
-      trigger: false,
-      type: 'idle',
-      source: null,
-      title: '',
-      message: '',
-    };
-  }, [
-    boundaryStatus,
-    featureStatus,
-    boundaryError,
-    featureError,
-    failedFeatureKey,
-    statusPopupDismissed,
-  ]);
+  const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if user has loaded any features
 
   return (
     <div className="App">
@@ -292,7 +171,7 @@ export default function App() {
         onClose={() => {
           console.log('[DEBUG] Popup closed:', statusPopup);
 
-          setPopupDismissed(true);
+          dismissPopup();
 
           if (statusPopup.source === 'boundary') {
             console.log('[DEBUG] Resetting boundary state');
@@ -356,13 +235,13 @@ export default function App() {
           handleSelectBoundary={handleSelectBoundary}
           boundaryResults={boundaryResults}
 
-          featureOptions={featureOptions}
+          featureOptions={FEATURE_OPTIONS}
 
           displayMode={displayMode}
           setDisplayMode={setDisplayMode}
 
           handleClearBoundary={handleClearBoundary}
-          removeLayer={handleremoveLayer}
+          removeLayer={removeLayer}
           clearFeatures={clearFeatures}
           cachedFeatures={getCachedFeatures()}
         />
