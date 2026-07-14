@@ -2,6 +2,7 @@ import "./ToolbarButton.css";
 
 export default function ToolbarButton({
     title,
+    icon,
     onClick,
     disabled = false
 }) {
@@ -13,6 +14,7 @@ export default function ToolbarButton({
             onClick={onClick}
         >
             {title}
+            {icon}
         </button>
     );
 }

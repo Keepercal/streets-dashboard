@@ -2,6 +2,7 @@ import './ToolbarDropdown.css';
 
 export default function ToolbarDropdown({
     title,
+    //icon,
     items,
     isOpen,
     onToggle,
@@ -28,6 +29,7 @@ export default function ToolbarDropdown({
                             key={item.id}
                             className="dropdown-item-wrapper"
                         >
+                            {/*{item.icon}*/}
                             <button
                                 className="dropdown-item"
                                 disabled={item.disabled}

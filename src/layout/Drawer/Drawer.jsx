@@ -91,6 +91,7 @@ function Drawer({
                         updateLayerFilters={updateLayerFilters}
                         removeLayer={removeLayer}
                         renameLayer={renameLayer}
+                        clearFeatures={clearFeatures}
                     />
                 }
 

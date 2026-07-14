@@ -6,6 +6,8 @@ import ToolbarDropdown from './components/ToolbarDropdown/ToolbarDropdown';
 import ToolbarButton from './components/ToolbarButton/ToolbarButton';
 import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
+import { Download, CirclePlus } from "lucide-react"
+
 export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
 
     const [openMenu, setOpenMenu] = useState(null);
@@ -49,6 +51,7 @@ export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
                 {
                     id: "new",
                     label: "New Project",
+                    icon: "CirclePlus",
                     disabled: true,
                     action: () => onOpenModal("new"),
                 },
@@ -90,6 +93,7 @@ export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
             >
                 <ToolbarButton
                     title="Export"
+                    icon={<Download size={18}/>}
                     disabled={!canExport}
                     onClick={() => onOpenModal("export")}
                 />
@@ -97,6 +101,7 @@ export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
                     <ToolbarDropdown
                         key={menu.id}
                         title={menu.title}
+                        icon={<CirclePlus size={18}/>}
                         items={menu.items}
                         isOpen={openMenu === menu.id}
                         onToggle={() =>

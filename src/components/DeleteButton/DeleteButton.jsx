@@ -1,8 +1,10 @@
 import "./DeleteButton.css"
-import { Trash2 } from "lucide-react"
+//import { Trash2 } from "lucide-react"
 
 export default function DeleteButton({
-    handleClearBoundary,
+    label,
+    icon,
+    onClick,
     disabled = false
 }){
     return(
@@ -10,9 +12,9 @@ export default function DeleteButton({
             className="delete-boundary-btn"
             disabled={disabled}
             type="button"
-            onClick={handleClearBoundary}
+            onClick={onClick}
         >
-            <Trash2 size={18}/>Delete Boundary
+            {icon}{label}
         </button>
     )
 }

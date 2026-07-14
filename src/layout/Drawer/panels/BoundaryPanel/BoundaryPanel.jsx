@@ -1,12 +1,13 @@
 import './BoundaryPanel.css'
 
 import { useState } from 'react';
+import { Trash2 } from "lucide-react"
 
 /* UI Components */
-import DeleteButton from './components/DeleteButton/DeleteButton';
 import InputItem from './components/InputItem/InputItem'
 import BoundaryOption from './components/BoundaryOption/BoundaryOption';
 import BoundaryIndicator from '../../../../components/BoundaryIndicator/BoundaryIndicator';
+import DeleteButton from '../../../../components/DeleteButton/DeleteButton.jsx';
 
 /**
  * BoundaryTab.jsx
@@ -34,7 +35,9 @@ const BoundaryPanel = ({
         <>
             <div className="panel-body">
                 <DeleteButton
-                    handleClearBoundary={handleClearBoundary}
+                    icon={<Trash2 size={18}/>}
+                    label="Remove Boundary"
+                    onClick={handleClearBoundary}
                     disabled={!hasBoundary}
                 />
 
