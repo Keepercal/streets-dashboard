@@ -23,6 +23,8 @@ function Drawer({
 
     featureOptions,
 
+    basemap,
+    setBasemap,
     displayMode,
     setDisplayMode,
 
@@ -90,6 +92,8 @@ function Drawer({
 
                 {activeDrawer === "display" &&
                     <DisplayPanel
+                        basemap={basemap}
+                        setBasemap={setBasemap}
                         displayMode={displayMode}
                         setDisplayMode={setDisplayMode}
                     />

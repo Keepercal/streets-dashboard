@@ -8,7 +8,6 @@ import BoundaryLayer from "./layers/BoundaryLayer";
 import FeatureLayer from "./layers/FeatureLayer";
 import FitBounds from "./controls/FitBounds";
 import ZoomTracker from "./controls/ZoomTracker";
-import BasemapSwitcher from "../../components/BasemapSwitcher/BasemapSwitcher";
 
 import BASEMAPS from './config/basemaps'
 
@@ -22,23 +21,16 @@ import BASEMAPS from './config/basemaps'
  * - Zoom tracking
  */
 
-function Map({ boundary, featureLayers, displayMode }) {
+function Map({ boundary, featureLayers, displayMode, basemap }) {
     //const position = [54.0182, -2.5471]; // Bristol
     const position = [54.0182, -2.5471]; // UK
 
     const [zoom, setZoom] = useState(13);
-    const [basemap, setBasemap] = useState("carto");
 
-    const activeBasemap = BASEMAPS[basemap];
+    const activeBasemap = BASEMAPS[basemap] ?? BASEMAPS.carto;
 
     return (
         <>
-            {/* Basemap switcher UI */}
-            {/*<BasemapSwitcher
-                basemap={basemap}
-                setBasemap={setBasemap}
-            />*/}
-
             <MapContainer
                 center={position}
                 //zoom={13} // Bristol

@@ -20,7 +20,6 @@ import StatusPopup from './layout/Popups/StatusPopup/StatusPopup.jsx';
 import ExportPanel from './layout/Popups/ExportPanel/ExportPanel.jsx';
 
 /* Map related components */
-import FilterPanel from './components/FilterPanel/FilterPanel.jsx';
 import Legend from './components/Legend/Legend.jsx';
 
 /* Hooks */
@@ -44,6 +43,8 @@ export default function App() {
   const [activeDrawer, setActiveDrawer] = useState(null) // which drawer is open
   const [activeLayer, setActiveLayer] = useState(null) // which layer the user is inspecting
   const [activeModal, setActiveModal] = useState(null);
+
+  const [basemap, setBasemap] = useState("carto");
   const [displayMode, setDisplayMode] = useState("default"); // or by last edit
 
   /* DATA STATES */
@@ -237,6 +238,8 @@ export default function App() {
 
           featureOptions={FEATURE_OPTIONS}
 
+          basemap={basemap}
+          setBasemap={setBasemap}
           displayMode={displayMode}
           setDisplayMode={setDisplayMode}
 
@@ -250,16 +253,11 @@ export default function App() {
 
           {hasFeatures && displayMode === "lastEdited" && <Legend />}
 
-          {/*hasFeatures && <FilterPanel
-            featureLayers={featureLayers}
-            filters={filters}
-            setFilters={setFilters}
-          />*/}
-
           <Map
             boundary={boundaryGeojson}
             featureLayers={filteredLayers}
             displayMode={displayMode}
+            basemap={basemap}
           />
 
         </div>
