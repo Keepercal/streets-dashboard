@@ -6,6 +6,11 @@ export type ExportFormat =
     | "kml"
     | "gpx";
 
+export type ExportScope =
+    | "all"
+    | "visible"
+    | "filtered"
+    | "selected"
 
 export function convertGeoJSON(
     geojson: any,

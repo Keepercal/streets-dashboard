@@ -6,6 +6,7 @@ import ManageLayersPanel from './panels/ManageLayersPanel/ManageLayersPanel'
 import DisplayPanel from './panels/DisplayPanel/DisplayPanel'
 
 function Drawer({
+    hasBoundary,
     activeDrawer,
     setActiveDrawer,
 
@@ -14,6 +15,7 @@ function Drawer({
     updateLayer,
     toggleLayerVisibility,
     renameLayer,
+    updateLayerFilters,
 
     selectedBoundaryKey,
     loadBoundaryResults,
@@ -22,9 +24,12 @@ function Drawer({
 
     featureOptions,
 
+    basemap,
+    setBasemap,
     displayMode,
     setDisplayMode,
 
+    handleClearBoundaryResults,
     handleClearBoundary,
     removeLayer,
     clearFeatures,
@@ -57,7 +62,9 @@ function Drawer({
             <div className="drawer-content">
                 {activeDrawer === "boundary" &&
                     <BoundaryPanel
+                        hasBoundary={hasBoundary}
                         loadBoundaryResults={loadBoundaryResults}
+                        handleClearBoundaryResults={handleClearBoundaryResults}
                         handleClearBoundary={handleClearBoundary}
                         clearFeatures={clearFeatures}
 
@@ -81,13 +88,17 @@ function Drawer({
                         featureLayers={featureLayers}
                         toggleLayerVisibility={toggleLayerVisibility}
                         updateLayer={updateLayer}
+                        updateLayerFilters={updateLayerFilters}
                         removeLayer={removeLayer}
                         renameLayer={renameLayer}
+                        clearFeatures={clearFeatures}
                     />
                 }
 
                 {activeDrawer === "display" &&
                     <DisplayPanel
+                        basemap={basemap}
+                        setBasemap={setBasemap}
                         displayMode={displayMode}
                         setDisplayMode={setDisplayMode}
                     />

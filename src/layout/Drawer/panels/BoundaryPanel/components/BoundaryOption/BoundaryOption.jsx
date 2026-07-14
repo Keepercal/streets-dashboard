@@ -1,0 +1,32 @@
+import './BoundaryOption.css'
+
+const BoundaryOption = ({
+    boundaryResults,
+    selectedBoundaryKey,
+    onSelectBoundary,
+    clearFeatures
+}) => {
+    return (
+        boundaryResults?.length > 0 ? (
+            boundaryResults?.map(result => (
+                <div
+                    key={result.osm_id}
+                    className={`boundary-card ${selectedBoundaryKey === result.osm_id ? "selected" : ""
+                        }`}
+                    onClick={() => {
+                        onSelectBoundary(result)
+                        clearFeatures()
+                    }}
+                >
+                    {result.display_name}
+                </div>
+            ))
+        ) : (
+            <div className="empty-state">
+                No boundary found
+            </div>
+        )
+    )
+}
+
+export default BoundaryOption

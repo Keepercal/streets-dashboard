@@ -22,9 +22,7 @@ export default function useBoundarySearch(){
     const loadBoundaryResults = async (boundaryName) => {
         setBoundaryResults(null)
 
-        console.log('[DEBUG] loadBoundaryResults ENTER:',{
-            boundaryName
-        })
+        console.log('[DEBUG] loadBoundaryResults ENTER:', {boundaryName})
 
         const currentId = ++requestId.current;
 
@@ -39,9 +37,7 @@ export default function useBoundarySearch(){
             
             setBoundaryResults(result)
 
-            console.log("Nominatim API return a result(s):", {
-                result
-            })
+            console.log("[DEBUG] Nominatim API returned result(s):", result)
         } catch (err){
             if (currentId !== requestId.current) return;
             setBoundaryResults([])

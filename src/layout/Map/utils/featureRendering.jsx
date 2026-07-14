@@ -3,9 +3,13 @@ import createPinIcon from "../../../utils/createPinIcon";
 
 const defaultBlue = "#3388ff";
 
-const green = "#739D55";
+/*const green = "#739D55";
 const yellow = "#E0C055";
-const red = "#D83F29";
+const red = "#D83F29";*/
+
+const green = "#67ba2b";
+const yellow = "#e7bb2d";
+const red = "#dd351b";
 
 /* Pin Icons (created once — NOT per marker render) */
 const defaultPin = createPinIcon(defaultBlue);

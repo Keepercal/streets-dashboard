@@ -1,5 +1,6 @@
 import './DisplayPanel.css'
 import RadioItem from '../../../../components/RadioItem/RadioItem.jsx';
+import BasemapSwitcher from './BasemapSwitcher/BasemapSwitcher.jsx';
 
 const displayModeLabels = {
     default: "Default",
@@ -15,19 +16,31 @@ const displayModeLabels = {
  * - Days since last edit
  */
 const DisplayPanel = ({
+    basemap,
+    setBasemap,
     displayMode,
     setDisplayMode
 }) => {
     return(
         <div className="panel-body">
 
-            <p className="current-display-indicator">Current: {displayModeLabels[displayMode]}</p>
-
-
-            <div className="panel-content">
+            <section className="display-section">
                 <h3>
-                    Style map content:
+                    Basemap
                 </h3>
+
+                <BasemapSwitcher
+                    basemap={basemap}
+                    setBasemap={setBasemap}
+                />
+            </section>
+
+            <section className="display-section">
+                <h3>
+                    Style map content
+                </h3>
+
+                <p className="current-display-indicator">Current: {displayModeLabels[displayMode]}</p>
 
                 <RadioItem
                     label="Default"
@@ -42,7 +55,7 @@ const DisplayPanel = ({
                     selected={displayMode}
                     onChange={setDisplayMode}
                 />
-            </div>
+            </section>
         </div>
     )}
 

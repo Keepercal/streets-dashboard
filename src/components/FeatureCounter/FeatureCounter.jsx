@@ -5,13 +5,13 @@ import "./FeatureCounter.css";
  * ------------
  * Displays a summary count across all loaded feature layers.
  */
-const FeatureCounter = ({ featureLayers }) => {
-
+const FeatureCounter = ({ features }) => {
+    
     let nodeCount = 0;
     let wayCount = 0;
     let relationCount = 0;
 
-    Object.values(featureLayers || {}).forEach(layer => {
+    Object.values(features || {}).forEach(layer => {
 
         layer.data?.elements?.forEach(feature => {
 

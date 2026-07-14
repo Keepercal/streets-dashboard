@@ -16,6 +16,7 @@ import { fetchMapFeature } from "../services/overpass/overpass";
 export default function useMapFeatures() {
     const [featureLayers, setFeatureLayers] = useState({});
 
+    /* Status popup handling */
     const [status, setStatus] = useState("idle");
     const [error, setError] = useState(null);
 
@@ -23,9 +24,10 @@ export default function useMapFeatures() {
     const requestId = useRef(0);
     const cache = useRef(new Map());
 
+    /* Flags */
     const [failedFeatureKey, setFailedFeatureKey] = useState(null); // cleanup 
 
-    /* Remove all features off map */
+    /* Remove all features from map */
     const clearFeatures = () => {
         console.log('[DEBUG] clearing all map features');
         setFeatureLayers({});
@@ -36,7 +38,7 @@ export default function useMapFeatures() {
 
     /* Remove a single feature */
     const removeLayer = (layerID) => {
-        console.log('[DEBUG] removing feature:', layerID);
+        console.log('[DEBUG] removing feature:', {layerID});
         setFeatureLayers(prev => {
             const next = { ...prev };
 
@@ -93,22 +95,78 @@ export default function useMapFeatures() {
                 : `${featureLabel} (${count + 1})`;
         }
 
-    const getCachedFeatures = () => {
-        return Array.from(cache.current.values())
-            .map(layer => layer.sourceKey)
+    /* Apply filter to layer */
+    const addLayerFilter = (layerID, filter) => {
+        setFeatureLayers(prev => ({
+            ...prev,
+            [layerID]: {
+                ...prev[layerID],
+
+                filters: [
+                    ...prev[layerID].filters,
+                    filter
+                ]
+            }
+        }))
+    }
+
+    /* Update layer filter */
+    const updateLayerFilters = (layerID, filters) => {
+        setFeatureLayers(prev => ({
+            ...prev,
+            [layerID]: {
+                ...prev[layerID],
+                filters
+            }
+        }))
+    }
+
+    /* Remove filter from layer */
+    const removeLayerFilter = (layerID, filterID) => {
+        setFeatureLayers(prev => ({
+            ...prev,
+            [layerID]: {
+                ...prev[layerID],
+
+                filters:
+                    prev[layerID].filters.filter(
+                        f => f.id !== filterID
+                    )
+            }
+        }));
+    }
+    
+    /* Array indicating what features are in the cache */
+    // Used in the UI to indicate cached features
+    const getCachedFeatures = (boundaryKey) => {
+
+        return Array.from(cache.current.entries())
+            .filter(([cacheKey]) => {
+                const [cachedBoundary] = JSON.parse(cacheKey)
+
+                return cachedBoundary === boundaryKey;
+            })
+            .map(([_, layer]) =>
+                layer.sourceKey
+            );
+    };
+
+    /* Clear cache */
+    // Used when loading a new boundary, data isn't left over in the cache
+    const clearCache = () => { 
+        cache.current.clear();
     }
 
     /* Loads features by calling Overpass API */
-    const loadFeatures = async (
+    const loadFeatures = async ({
         featureKey,
-        selectedBoundaryKey,
+        boundaryKey,
         featureTag,
         featureValue,
         featureType,
         featureLabel,
-    ) => {
-        const boundaryKey = selectedBoundaryKey; // current boundary
-        const layerID = crypto.randomUUID();
+    }) => {
+        const layerID = crypto.randomUUID(); // Generate unique ID for layer
         const colour = getLayerColour(featureKey);
 
         const currentId = ++requestId.current;
@@ -118,7 +176,7 @@ export default function useMapFeatures() {
             return;
         }
 
-        const cacheKey = JSON.stringify([ // store results in cache
+        const cacheKey = JSON.stringify([ // Store results in cache
             boundaryKey,
             featureTag,
             featureValue,
@@ -126,7 +184,7 @@ export default function useMapFeatures() {
             featureLabel,
         ]);
 
-        if (cache.current.has(cacheKey)) { // check cache for stored features
+        if (cache.current.has(cacheKey)) { // Check cache for stored features
             const cached = cache.current.get(cacheKey);
 
             // Load features from cache
@@ -145,8 +203,8 @@ export default function useMapFeatures() {
                         data: cached.data,
                         geojson: cached.geojson,
                         colour: cached.colour,
-                        visible: cached.visible,
-                        filters: cached.filters,
+                        visible: cached.visible, // will a hidden feature be loaded invisible from the cache?
+                        filters: [],
                     }
                 };
             });
@@ -176,8 +234,6 @@ export default function useMapFeatures() {
 
             if (currentId !== requestId.current) return;
 
-            console.log(result)
-
             const geojson = osmtogeojson(result, { meta: true }); // Convert to geoJSON
 
             cache.current.set(cacheKey, {
@@ -187,7 +243,6 @@ export default function useMapFeatures() {
                 label: featureLabel,
                 colour,
                 visible: true,
-                filters: []
             });
 
             setFeatureLayers(prev => {
@@ -197,7 +252,7 @@ export default function useMapFeatures() {
                     featureLabel
                 );
                 
-                return {
+                return { // Create a new object for the feature
                     ...prev,
                     [layerID]: {
                         sourceKey: featureKey,
@@ -240,8 +295,14 @@ export default function useMapFeatures() {
         removeLayer,
         toggleLayerVisibility,
         updateLayer,
+
+        addLayerFilter,
+        updateLayerFilters,
+        removeLayerFilter,
+
         failedFeatureKey,
         getCachedFeatures,
+        clearCache,
         status,
         error,
     };

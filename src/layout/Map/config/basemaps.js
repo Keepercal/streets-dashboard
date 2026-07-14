@@ -4,6 +4,16 @@ const BASEMAPS = {
         url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
         attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
     },
+    carto_grey: {
+        name: "CARTO Grey",
+        url: "https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png",
+        attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+    },
+    carto_dark: {
+        name: "CARTO Dark",
+        url: "https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png",
+        attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+    },
     openstreetmap: {
         name: "OpenStreetMap",
         url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",

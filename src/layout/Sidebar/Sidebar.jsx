@@ -36,7 +36,7 @@ const Sidebar = ({
     };
 
     const hasBoundary = !!boundaryData;
-    const hasFeatures =  featureLayers && Object.keys(featureLayers).length > 0;
+    //const hasFeatures =  featureLayers && Object.keys(featureLayers).length > 0;
 
     return (
         <div className="sidebar-content">
@@ -69,7 +69,6 @@ const Sidebar = ({
             <SidebarButton
                 label="Display"
                 icon={<Monitor />}
-                disabled={!hasFeatures}
                 active={activeDrawer === "display"}
                 onClick={() => openDrawer("display")}
             />

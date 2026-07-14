@@ -1,11 +1,14 @@
 import './Toolbar.css';
 import { useState, useRef, useEffect } from 'react';
 
-import ToolbarBrand from './ToolbarBrand';
-import Dropdown from './Dropdown';
+import ToolbarBrand from './components/ToolbarBrand/ToolbarBrand';
+import ToolbarDropdown from './components/ToolbarDropdown/ToolbarDropdown';
+import ToolbarButton from './components/ToolbarButton/ToolbarButton';
 import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
-export default function Toolbar({ onOpenPanel, canExport, boundaryName }) {
+import { Download, CirclePlus } from "lucide-react"
+
+export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
 
     const [openMenu, setOpenMenu] = useState(null);
     const toolbarRef = useRef(null);
@@ -39,11 +42,30 @@ export default function Toolbar({ onOpenPanel, canExport, boundaryName }) {
             id: "file",
             title: "File",
             items: [
-                {
+                /*{
                     id: "export",
                     label: "Export",
                     disabled: !canExport,
-                    action: () => onOpenPanel("export"),
+                    action: () => onOpenModal("export"),
+                },*/
+                {
+                    id: "new",
+                    label: "New Project",
+                    icon: "CirclePlus",
+                    disabled: true,
+                    action: () => onOpenModal("new"),
+                },
+                {
+                    id: "open",
+                    label: "Open",
+                    disabled: true,
+                    action: () => onOpenModal("open"),
+                },
+                {
+                    id: "save",
+                    label: "Save",
+                    disabled: true,
+                    action: () => onOpenModal("save"),
                 },
             ],
         },
@@ -55,7 +77,7 @@ export default function Toolbar({ onOpenPanel, canExport, boundaryName }) {
                     id: "about",
                     label: "About",
                     disabled: true,
-                    action: () => onOpenPanel("about")
+                    action: () => onOpenModal("about")
                 },
             ],
         },
@@ -69,10 +91,17 @@ export default function Toolbar({ onOpenPanel, canExport, boundaryName }) {
                 className="toolbar-content"
                 ref={toolbarRef}
             >
+                <ToolbarButton
+                    title="Export"
+                    icon={<Download size={18}/>}
+                    disabled={!canExport}
+                    onClick={() => onOpenModal("export")}
+                />
                 {menus.map(menu => (
-                    <Dropdown
+                    <ToolbarDropdown
                         key={menu.id}
                         title={menu.title}
+                        icon={<CirclePlus size={18}/>}
                         items={menu.items}
                         isOpen={openMenu === menu.id}
                         onToggle={() =>
