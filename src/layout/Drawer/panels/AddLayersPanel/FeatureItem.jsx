@@ -39,7 +39,7 @@ export default function FeatureItem({
                                         title="Cached data avaliable"
                                     />
 
-                                    <span className="cached-tooltip">
+                                    <span className="tooltip">
                                         Cached data available
                                     </span>
                                 </span>

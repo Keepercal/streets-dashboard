@@ -49,7 +49,6 @@ export default function App() {
 
   /* DATA STATES */
   const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
-  //const [filters, setFilters] = useState([]);
 
   const {
     loadBoundaryResults,
@@ -113,9 +112,15 @@ export default function App() {
   /**
    * Handle resetting boundary and whiping features
    */
+  const handleClearBoundaryResults = () => {
+    clearBoundaryResults();
+  }
+
+  /**
+   * Handle resetting boundary and whiping features
+   */
   const handleClearBoundary = () => {
     setSelectedBoundaryKey('none');
-    clearBoundaryResults()
     clearBoundary();
     clearFeatures();
     //clearCache();
@@ -157,7 +162,8 @@ export default function App() {
         });
 
       };
-
+  
+  const hasBoundary = Object.keys(boundaryData ?? {}).length > 0;
   const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if user has loaded any features
   const filteredLayers = useFilteredLayers(featureLayers);
 
@@ -220,6 +226,7 @@ export default function App() {
         </div>
 
         <Drawer
+          hasBoundary={hasBoundary}
           activeDrawer={activeDrawer}
           setActiveDrawer={setActiveDrawer}
 
@@ -247,6 +254,7 @@ export default function App() {
           displayMode={displayMode}
           setDisplayMode={setDisplayMode}
 
+          handleClearBoundaryResults={handleClearBoundaryResults}
           handleClearBoundary={handleClearBoundary}
           removeLayer={removeLayer}
           clearFeatures={clearFeatures}

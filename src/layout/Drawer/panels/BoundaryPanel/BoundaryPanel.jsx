@@ -3,8 +3,9 @@ import './BoundaryPanel.css'
 import { useState } from 'react';
 
 /* UI Components */
-import InputItem from './components/InputItem'
-import BoundaryOption from './components/BoundaryOption';
+import DeleteButton from './components/DeleteButton/DeleteButton';
+import InputItem from './components/InputItem/InputItem'
+import BoundaryOption from './components/BoundaryOption/BoundaryOption';
 import BoundaryIndicator from '../../../../components/BoundaryIndicator/BoundaryIndicator';
 
 /**
@@ -17,7 +18,9 @@ import BoundaryIndicator from '../../../../components/BoundaryIndicator/Boundary
 
  */
 const BoundaryPanel = ({
+    hasBoundary,
     loadBoundaryResults,
+    handleClearBoundaryResults,
     handleClearBoundary,
     clearFeatures,
 
@@ -30,11 +33,16 @@ const BoundaryPanel = ({
     return (
         <>
             <div className="panel-body">
+                <DeleteButton
+                    handleClearBoundary={handleClearBoundary}
+                    disabled={!hasBoundary}
+                />
+
                 <InputItem
                     onSearch={loadBoundaryResults}
                     setHasSearched={setHasSearched}
 
-                    handleClearBoundary={handleClearBoundary}
+                    handleClearBoundaryResults={handleClearBoundaryResults}
                     clearFeatures={clearFeatures}
                 />
 

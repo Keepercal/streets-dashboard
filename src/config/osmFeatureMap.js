@@ -54,6 +54,11 @@ export const FEATURE_MAP = {
             label:"Service",
             type: "way",
         },
+        unclassified: {
+            tag: "highway",
+            label: "Unclassified",
+            type: "way",
+        },
     },
 
     active_travel_highways: {
@@ -141,11 +146,6 @@ export const FEATURE_MAP = {
         bench: {
             tag: "amenity",
             label: "Benches",
-            type: "node",
-        },
-        information: {
-            tag: "tourism",
-            label: "Wayfinding",
             type: "node",
         },
         waste_basket: {
@@ -392,6 +392,11 @@ export const FEATURE_MAP = {
             label: "Artwork",
             type: "node",
         },
+        memorial: {
+            tag: "historic",
+            label: "Memorial",
+            type: "node"
+        },
     },
 
     shopping: {
@@ -405,6 +410,11 @@ export const FEATURE_MAP = {
             label: "Convenience Stores",
             type: "way",
         },
+        commercial: {
+            tag: "amenity",
+            label: "Marketplace",
+            type: "way"
+        },
         bakery: {
             tag: "shop",
             label: "Bakeries",
@@ -413,6 +423,11 @@ export const FEATURE_MAP = {
         butcher: {
             tag: "shop",
             label: "Butchers",
+            type: "way",
+        },
+        hairdresser: {
+            tag: "shop",
+            label: "Hairdressers",
             type: "way",
         },
         greengrocer: {
@@ -428,6 +443,16 @@ export const FEATURE_MAP = {
         shoes: {
             tag: "shop",
             label: "Shoes",
+            type: "way",
+        },
+        book: {
+            tag: "shop",
+            label: "Books",
+            type: "way",
+        },
+        music: {
+            tag: "shop",
+            label: "Music",
             type: "way",
         },
         electronics: {
@@ -541,12 +566,22 @@ export const FEATURE_MAP = {
             label: "Tracks",
             type: "way",
         },
+        nightclub: {
+            tag: "amenity",
+            label: "Nightclub",
+            type: "way",
+        },
     },
 
     tourism: {
         museum: {
             tag: "tourism",
             label: "Museums",
+            type: "way",
+        },
+        theatre: {
+            tag: "tourism",
+            label: "Theatre",
             type: "way",
         },   
         attraction: {
@@ -625,6 +660,11 @@ export const FEATURE_MAP = {
             label: "Farmland",
             type: "way"
         },
+        allotment: {
+            tag: "landuse",
+            label: "Allotment",
+            type: "way"
+        },
         meadow: {
             tag: "landuse",
             label: "Meadow",
@@ -650,6 +690,12 @@ export const FEATURE_MAP = {
             label: "Military",
             type: "way"
         },
+        recreation_ground: {
+            tag: "landuse",
+            label: "Recreation Ground",
+            type: "way"
+        },
+
     },
 
     buildings: {
@@ -683,7 +729,11 @@ export const FEATURE_MAP = {
             label: "Retail",
             type: "way"
         },
-
+        office: {
+            tag: "building",
+            label: "Offices",
+            type: "way"
+        },
     },
 
     naturalFeatures:{

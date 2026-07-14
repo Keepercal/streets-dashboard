@@ -1,4 +1,4 @@
-import '../BoundaryPanel.css'
+import './BoundaryOption.css'
 
 const BoundaryOption = ({
     boundaryResults,

@@ -77,5 +77,5 @@
 
 /* Selected row */
 .radio-label:has(.radio-checkbox:checked) {
-    background-color: rgba(79, 195, 247, 0.15);
+    background-color: rgba(79, 194, 247, 0.203);
 }

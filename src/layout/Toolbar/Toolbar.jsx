@@ -2,7 +2,8 @@ import './Toolbar.css';
 import { useState, useRef, useEffect } from 'react';
 
 import ToolbarBrand from './components/ToolbarBrand/ToolbarBrand';
-import Dropdown from './components/Dropdown/Dropdown';
+import ToolbarDropdown from './components/ToolbarDropdown/ToolbarDropdown';
+import ToolbarButton from './components/ToolbarButton/ToolbarButton';
 import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
 export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
@@ -39,11 +40,29 @@ export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
             id: "file",
             title: "File",
             items: [
-                {
+                /*{
                     id: "export",
                     label: "Export",
                     disabled: !canExport,
                     action: () => onOpenModal("export"),
+                },*/
+                {
+                    id: "new",
+                    label: "New Project",
+                    disabled: true,
+                    action: () => onOpenModal("new"),
+                },
+                {
+                    id: "open",
+                    label: "Open",
+                    disabled: true,
+                    action: () => onOpenModal("open"),
+                },
+                {
+                    id: "save",
+                    label: "Save",
+                    disabled: true,
+                    action: () => onOpenModal("save"),
                 },
             ],
         },
@@ -69,8 +88,13 @@ export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
                 className="toolbar-content"
                 ref={toolbarRef}
             >
+                <ToolbarButton
+                    title="Export"
+                    disabled={!canExport}
+                    onClick={() => onOpenModal("export")}
+                />
                 {menus.map(menu => (
-                    <Dropdown
+                    <ToolbarDropdown
                         key={menu.id}
                         title={menu.title}
                         items={menu.items}

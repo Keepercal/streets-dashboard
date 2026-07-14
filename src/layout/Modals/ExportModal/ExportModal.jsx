@@ -1,5 +1,5 @@
 import './ExportModal.css';
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import buildExportGeoJSON from './buildExportGeoJSON';
 
@@ -17,19 +17,26 @@ export default function ExportModal({ onClose, featureLayers }) {
 
     console.log("[DEBUG] ExportModal ENTER: ",featureLayers)
 
-    const [featureScope, setFeatureScope] = useState("all");
+    const [featureScope, setFeatureScope] = useState("filtered");
     const [layerScope, setLayerScope] = useState("all");
 
-    const [selectedLayers, setSelectedLayers] = useState(
+    const [selectedLayers, setSelectedLayers] = useState([]);
+
+    useEffect(() => {
         Object.keys(featureLayers)
-    );
+    }, [featureLayers]);
 
     const toggleLayer = (layerID) => {
-        setSelectedLayers(prev =>
-            prev.includes(layerID)
-                ? prev.filter(id => id !== layerID)
-                : [...prev, layerID]
-        );
+        setSelectedLayers(prev => {
+            if (prev.includes(layerID)) {
+                return prev.filter(id => id !== layerID);
+            }
+
+            return [
+                ...prev,
+                layerID
+            ]
+        });
     };
 
     const handleLayerScopeChange = (scope) => {
@@ -67,25 +74,25 @@ export default function ExportModal({ onClose, featureLayers }) {
             title="Export"
             onClose={onClose}
         >   
-            <section className="export-section">
+            {/*<section className="export-section">
                 <h3>Features</h3>
 
                 <RadioItem
                     className="export-radio"
-                    label="All Only"
-                    value="all"
+                    label="Export With Filters"
+                    value="filtered"
                     selected={featureScope}
                     onChange={setFeatureScope}
                 />
 
                 <RadioItem
                     className="export-radio"
-                    label="Filtered Features Only"
-                    value="filtered"
+                    label="Remove Filters on Export"
+                    value="all"
                     selected={featureScope}
                     onChange={setFeatureScope}
                 />
-            </section>
+            </section>*/}
 
             <section className="export-section">
                 <h3>Layers</h3>
