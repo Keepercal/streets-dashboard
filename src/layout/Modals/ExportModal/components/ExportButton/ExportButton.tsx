@@ -1,7 +1,7 @@
 import './ExportButton.css';
 
-import { convertGeoJSON, type ExportFormat } from '../../../../services/exportFormats';
-import { downloadFile } from "../../../../utils/downloadFile";
+import { convertGeoJSON, type ExportFormat } from '../../../../../services/exportFormats';
+import { downloadFile } from "../../../../../utils/downloadFile";
 
 
 interface ExportButtonProps {
@@ -18,6 +18,9 @@ export default function ExportButton({
 }: ExportButtonProps) {
 
     function handleExport() {
+
+        console.log("[DEBUG] handleExport ENTER", format, geojson);
+        console.log("GeoJSON:", geojson);
 
         const now = new Date();
 

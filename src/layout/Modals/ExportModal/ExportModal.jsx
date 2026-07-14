@@ -1,48 +1,157 @@
 import './ExportModal.css';
-import Modal from '../Modal'
+import { useState, useMemo } from "react";
 
-import ExportButton from './ExportButton/ExportButton'
+import buildExportGeoJSON from './buildExportGeoJSON';
+
+import Modal from '../Modal'
+import ExportButton from './components/ExportButton/ExportButton'
+import RadioItem from '../../../components/RadioItem/RadioItem';
+import CheckboxItem from '../../../components/CheckboxItem/CheckboxItem';
 
 /**
- * Export Panel
+ * Export Modal
  * ----------------
- * Panel for exporting loaded features to various formats:
+ * Modal for exporting loaded features to various formats:
  */
 export default function ExportModal({ onClose, featureLayers }) {
 
-    const combinedFeatures = {
-        type: "FeatureCollection",
-        features: Object.entries(featureLayers)
-            .flatMap(([layerKey, layer]) =>
-                layer.geojson.features.map(feature => ({
-                    ...feature,
-                    properties: {
-                        ...feature.properties,
-                        _layer: layerKey
-                    }
-                }))
+    console.log("[DEBUG] ExportModal ENTER: ",featureLayers)
+
+    const [featureScope, setFeatureScope] = useState("all");
+    const [layerScope, setLayerScope] = useState("all");
+
+    const [selectedLayers, setSelectedLayers] = useState(
+        Object.keys(featureLayers)
+    );
+
+    const toggleLayer = (layerID) => {
+        setSelectedLayers(prev =>
+            prev.includes(layerID)
+                ? prev.filter(id => id !== layerID)
+                : [...prev, layerID]
+        );
+    };
+
+    const handleLayerScopeChange = (scope) => {
+        setLayerScope(scope)
+
+        if (scope === "all") {
+            setSelectedLayers(
+                Object.keys(featureLayers)
+            );
+        }
+
+        if (scope === "selected"){
+            setSelectedLayers(
+                Object.keys(featureLayers)
             )
+        }
     }
+
+    const exportData = useMemo(() => 
+        buildExportGeoJSON({
+        featureLayers,
+        layerScope,
+        featureScope,
+        selectedLayers
+    }),
+    [
+        featureLayers,
+        layerScope,
+        featureScope,
+        selectedLayers
+    ]);
 
     return (
         <Modal
             title="Export"
             onClose={onClose}
-        >
-            <div className="export-panel-btns">
-                <ExportButton
-                    featureData={combinedFeatures}
-                    format="geojson"
+        >   
+            <section className="export-section">
+                <h3>Features</h3>
+
+                <RadioItem
+                    className="export-radio"
+                    label="All Only"
+                    value="all"
+                    selected={featureScope}
+                    onChange={setFeatureScope}
                 />
-                <ExportButton
-                    featureData={combinedFeatures}
-                    format="kml"
+
+                <RadioItem
+                    className="export-radio"
+                    label="Filtered Features Only"
+                    value="filtered"
+                    selected={featureScope}
+                    onChange={setFeatureScope}
                 />
-                <ExportButton
-                    featureData={combinedFeatures}
-                    format="gpx"
-                />
-            </div>
+            </section>
+
+            <section className="export-section">
+                <h3>Layers</h3>
+
+                <div className="export-options">
+                    <RadioItem
+                        className="export-radio"
+                        label="All Layers"
+                        value="all"
+                        selected={layerScope}
+                        onChange={handleLayerScopeChange}
+                    />
+
+                    <RadioItem
+                        className="export-radio"
+                        label="Visible Layers Only"
+                        value="visible"
+                        selected={layerScope}
+                        onChange={handleLayerScopeChange}
+                    />
+
+                    <RadioItem
+                        className="export-radio"
+                        label="Select Layers"
+                        value="selected"
+                        selected={layerScope}
+                        onChange={handleLayerScopeChange}
+                    />
+
+                    <section className="export-section">
+                        <div className="layer-selection">
+                            <h3>Available Layers</h3>
+
+                            {Object.entries(featureLayers).map(([layerID, layer]) => (
+                                <CheckboxItem
+                                    className="export-checkbox"
+                                    key={layerID}
+                                    label={layer.displayName ?? layer.label ?? layer.sourceKey}
+                                    checked={layerScope !== "selected" ? false : selectedLayers.includes(layerID)}
+                                    indeterminate={layerScope !== "selected" }
+                                    disabled={layerScope !== "selected"}
+                                    onChange={() => toggleLayer(layerID)}
+                                />
+                            ))}
+                        </div>
+                    </section>
+
+                </div>
+            </section>
+
+            <section className="export-section">
+                <h3>Export Format</h3>
+
+                <div className="export-format-btns">
+                    {["geojson", "kml", "gpx"].map(format => (
+                        <ExportButton
+                            key={format}
+                            geojson={exportData}
+                            format={format}
+                        />
+                    ))}
+                </div>
+            </section>
+
+
+
         </Modal>
     );
 }

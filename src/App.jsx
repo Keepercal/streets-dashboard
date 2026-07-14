@@ -118,6 +118,7 @@ export default function App() {
     clearBoundaryResults()
     clearBoundary();
     clearFeatures();
+    //clearCache();
   }
 
   /* Handle renaming features */
@@ -192,7 +193,7 @@ export default function App() {
       {/* Modals */}
       {activeModal === "export" && (
         <ExportModal
-          featureLayers={featureLayers}
+          featureLayers={filteredLayers}
           onClose={() => setActiveModal(null)}
         />
       )}

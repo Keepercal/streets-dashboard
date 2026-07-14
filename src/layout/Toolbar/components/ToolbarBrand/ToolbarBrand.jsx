@@ -1,4 +1,4 @@
-import './Toolbar.css';
+import './ToolbarBrand.css';
 
 const ToolbarBrand = () => (
     <a className="toolbar-brand" href="/">

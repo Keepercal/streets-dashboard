@@ -1,8 +1,8 @@
 import './Toolbar.css';
 import { useState, useRef, useEffect } from 'react';
 
-import ToolbarBrand from './ToolbarBrand';
-import Dropdown from './Dropdown';
+import ToolbarBrand from './components/ToolbarBrand/ToolbarBrand';
+import Dropdown from './components/Dropdown/Dropdown';
 import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
 export default function Toolbar({ onOpenModal, canExport, boundaryName }) {

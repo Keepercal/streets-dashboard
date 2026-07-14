@@ -1,4 +1,4 @@
-import "../Sidebar.css";
+import "./SidebarButton.css";
 
 const SidebarButton = ({
     label,
