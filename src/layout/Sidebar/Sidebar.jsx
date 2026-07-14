@@ -49,13 +49,6 @@ const Sidebar = ({
             />
 
             <SidebarButton
-                label="Display"
-                icon={<Monitor />}
-                active={activeDrawer === "display"}
-                onClick={() => openDrawer("display")}
-            />
-
-            <SidebarButton
                 label="Add Layers"
                 icon={<LayersPlus />}
                 disabled={!hasBoundary}
@@ -71,6 +64,13 @@ const Sidebar = ({
                 active={activeDrawer === "manageLayers"}
                 onClick={() =>{openDrawer("manageLayers")}
                 } 
+            />
+
+            <SidebarButton
+                label="Display"
+                icon={<Monitor />}
+                active={activeDrawer === "display"}
+                onClick={() => openDrawer("display")}
             />
 
             <FeatureCounter

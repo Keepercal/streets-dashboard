@@ -5,6 +5,7 @@ import { useState } from 'react';
 /* UI Components */
 import InputItem from './components/InputItem'
 import BoundaryOption from './components/BoundaryOption';
+import BoundaryIndicator from '../../../../components/BoundaryIndicator/BoundaryIndicator';
 
 /**
  * BoundaryTab.jsx

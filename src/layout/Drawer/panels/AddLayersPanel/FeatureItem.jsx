@@ -4,7 +4,7 @@ import { Plus, Database } from "lucide-react"
 export default function FeatureItem({
     features,
     handleAddLayer,
-    cachedFeatures = []
+    cachedFeatures,
 }) {
     return (
         <>

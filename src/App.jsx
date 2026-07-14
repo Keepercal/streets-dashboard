@@ -77,6 +77,7 @@ export default function App() {
     updateLayerFilters,
     failedFeatureKey,
     getCachedFeatures,
+    clearCache,
     status: featureStatus,
     error: featureError,
   } = useMapFeatures();
@@ -248,7 +249,7 @@ export default function App() {
           handleClearBoundary={handleClearBoundary}
           removeLayer={removeLayer}
           clearFeatures={clearFeatures}
-          cachedFeatures={getCachedFeatures()}
+          cachedFeatures={getCachedFeatures(selectedBoundaryKey)}
         />
 
         <div className="main-content">

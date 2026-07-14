@@ -138,10 +138,18 @@ export default function useMapFeatures() {
     
     /* Array indicating what features are in the cache */
     // Used in the UI to indicate cached features
-    const getCachedFeatures = () => {
-        return Array.from(cache.current.values())
-            .map(layer => layer.sourceKey)
-    }
+    const getCachedFeatures = (boundaryKey) => {
+
+        return Array.from(cache.current.entries())
+            .filter(([cacheKey]) => {
+                const [cachedBoundary] = JSON.parse(cacheKey)
+
+                return cachedBoundary === boundaryKey;
+            })
+            .map(([_, layer]) =>
+                layer.sourceKey
+            );
+    };
 
     /* Clear cache */
     // Used when loading a new boundary, data isn't left over in the cache

@@ -6,9 +6,7 @@ import "./FeatureCounter.css";
  * Displays a summary count across all loaded feature layers.
  */
 const FeatureCounter = ({ features }) => {
-
-    console.log(features)
-
+    
     let nodeCount = 0;
     let wayCount = 0;
     let relationCount = 0;
