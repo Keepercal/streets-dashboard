@@ -11,12 +11,15 @@ import evaluateFeature from "../utils/evaluateFeatures";
  * - request cancellation
  * - GeoJSON conversion
  */
-export default function useFilteredLayers(featureLayers, filters) {
+export default function useFilteredLayers(featureLayers) {
     return useMemo(() => {
+        console.log("[DEBUG]: useFilteredLayers ENTER:", featureLayers);
         const result = {};
 
         Object.entries(featureLayers).forEach(([key, layer]) => {
             if (!layer.geojson?.features) return;
+
+            const filters = layer.filters ?? []
 
             result[key] = {
                 ...layer,
@@ -32,5 +35,5 @@ export default function useFilteredLayers(featureLayers, filters) {
 
         return result
 
-    }, [featureLayers, filters]);
+    }, [featureLayers]);
 }

@@ -48,7 +48,7 @@ export default function App() {
 
   /* DATA STATES */
   const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
-  const [filters, setFilters] = useState([]);
+  //const [filters, setFilters] = useState([]);
 
   const {
     loadBoundaryResults,
@@ -73,16 +73,12 @@ export default function App() {
     removeLayer,
     toggleLayerVisibility,
     updateLayer,
+    updateLayerFilters,
     failedFeatureKey,
     getCachedFeatures,
     status: featureStatus,
     error: featureError,
   } = useMapFeatures();
-
-  const filteredLayers = useFilteredLayers (
-    featureLayers,
-    filters
-  );
 
   const {
     statusPopup,
@@ -160,6 +156,7 @@ export default function App() {
       };
 
   const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if user has loaded any features
+  const filteredLayers = useFilteredLayers(featureLayers);
 
   return (
     <div className="App">
@@ -225,9 +222,12 @@ export default function App() {
           activeLayer={activeLayer}
           setActiveLayer={setActiveLayer}
           handleAddLayer={handleAddLayer}
+
           updateLayer={updateLayer}
           toggleLayerVisibility={toggleLayerVisibility}
           renameLayer={renameLayer}
+
+          updateLayerFilters={updateLayerFilters}
 
           selectedBoundaryKey={selectedBoundaryKey}
 
@@ -250,11 +250,11 @@ export default function App() {
 
           {hasFeatures && displayMode === "lastEdited" && <Legend />}
 
-          {hasFeatures && <FilterPanel
+          {/*hasFeatures && <FilterPanel
             featureLayers={featureLayers}
             filters={filters}
             setFilters={setFilters}
-          />}
+          />*/}
 
           <Map
             boundary={boundaryGeojson}

@@ -1,11 +1,12 @@
 import "./ManageLayersPanel.css"
-import LayerItem from './LayerItem'
+import LayerItem from './LayerItem/LayerItem'
 import { Ghost } from "lucide-react"
 
 export default function ManageLayersPanel({
     featureLayers,
     toggleLayerVisibility,
     updateLayer,
+    updateLayerFilters,
     removeLayer,
     renameLayer
 }) {
@@ -23,13 +24,20 @@ export default function ManageLayersPanel({
                     </p>
                 </div>
             ) : (
-                <LayerItem
-                    featureLayers={featureLayers}
-                    toggleLayerVisibility={toggleLayerVisibility}
-                    updateLayer={updateLayer}
-                    removeLayer={removeLayer}
-                    renameLayer={renameLayer}
-                />
+                Object.entries(featureLayers).map(([layerID, layer]) => (
+                    <LayerItem
+                        key={layerID}
+                        
+                        layerID={layerID}
+                        layer={layer}
+                    
+                        toggleLayerVisibility={toggleLayerVisibility}
+                        updateLayer={updateLayer}
+                        updateLayerFilters={updateLayerFilters}
+                        removeLayer={removeLayer}
+                        renameLayer={renameLayer}
+                    />
+                ))
             )}
 
 

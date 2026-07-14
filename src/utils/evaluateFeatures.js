@@ -9,27 +9,50 @@
 export default function evaluateFeature(feature, filters) {
     const tags = feature?.properties ?? {};
 
-    return filters.every((filter) => {
+    if(!filters.length){
+        return true;
+    }
+
+    return filters.reduce((result, filter, index) => {
         const value = tags[filter.key];
 
         const normalisedValue = String(value ?? "");
 
+        let matches;
+
         switch (filter.operator) {
             case "equals":
-                return normalisedValue === filter.value;
+                matches = normalisedValue === filter.value;
+                break;
 
             case "not_equals":
-                return normalisedValue !== filter.value;
+                matches = normalisedValue !== filter.value;
+                break;
 
             case "exists":
-                return value !== undefined;
+                matches = value !== undefined;
+                break;
 
             case "missing":
-                return value === undefined;
+                matches = value === undefined;
+                break;
 
             default:
                 // Unknown operators are treated as non-blocking
-                return true;
+                matches = true;
         }
-    });
+
+        // First filter establishes the starting value
+        if (index === 0){
+            return matches;
+        }
+
+        //Combine with previous result
+        if (filter.join === "OR"){
+            return result || matches;
+        }
+
+        // Default behaviour = AND
+        return result && matches
+    }, true);
 }

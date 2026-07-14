@@ -13,7 +13,7 @@ import { useMemo } from "react";
  *
  * This hook memoises results to avoid recomputation unless `features` or `filters` change.
  */
-export default function useFilterData(features, filters) {
+export default function useFilterData(features) {
     return useMemo(() => {
         // Unique set of all property keys across all features
         const tagSet = new Set();
@@ -23,28 +23,24 @@ export default function useFilterData(features, filters) {
 
         // Extract metadata from GeoJSON features
         features?.features?.forEach(feature => {
-            const tags = feature?.properties || {};
+            const properties = feature?.properties || {};
 
-            Object.entries(tags).forEach(([key, value]) => {
+            Object.entries(properties).forEach(([key, value]) => {
                 tagSet.add(key);
 
                 if (!tagValueMap[key]) {
                     tagValueMap[key] = new Set();
                 }
 
-                tagValueMap[key].add(value);
+                if (value !== null && value !== undefined){
+                    tagValueMap[key].add(value);    
+                }
+                
             });
         });
 
-        // Determine which tags are already used by active filters
-        const activeKeys = new Set(
-            filters?.map(f => f.key) ?? []
-        );
-
         // Available (unused) tags sorted alphabetically
-        const tags = [...tagSet]
-            .filter(tag => !activeKeys.has(tag))
-            .sort();
+        const tags = [...tagSet].sort();
 
         // Helper: return sorted list of values for a given tag
         const getValues = (key) =>
@@ -53,10 +49,9 @@ export default function useFilterData(features, filters) {
                 : [];
 
         return {
-            tagSet,
-            tagValueMap,
             tags,
+            tagValueMap,
             getValues,
         };
-    }, [features, filters]);
+    }, [features]);
 }

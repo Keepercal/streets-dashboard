@@ -27,7 +27,7 @@ export default function useMapFeatures() {
     /* Flags */
     const [failedFeatureKey, setFailedFeatureKey] = useState(null); // cleanup 
 
-    /* Remove all features off map */
+    /* Remove all features from map */
     const clearFeatures = () => {
         console.log('[DEBUG] clearing all map features');
         setFeatureLayers({});
@@ -94,6 +94,47 @@ export default function useMapFeatures() {
                 ? featureLabel
                 : `${featureLabel} (${count + 1})`;
         }
+
+    /* Apply filter to layer */
+    const addLayerFilter = (layerID, filter) => {
+        setFeatureLayers(prev => ({
+            ...prev,
+            [layerID]: {
+                ...prev[layerID],
+
+                filters: [
+                    ...prev[layerID].filters,
+                    filter
+                ]
+            }
+        }))
+    }
+
+    /* Update layer filter */
+    const updateLayerFilters = (layerID, filters) => {
+        setFeatureLayers(prev => ({
+            ...prev,
+            [layerID]: {
+                ...prev[layerID],
+                filters
+            }
+        }))
+    }
+
+    /* Remove filter from layer */
+    const removeLayerFilter = (layerID, filterID) => {
+        setFeatureLayers(prev => ({
+            ...prev,
+            [layerID]: {
+                ...prev[layerID],
+
+                filters:
+                    prev[layerID].filters.filter(
+                        f => f.id !== filterID
+                    )
+            }
+        }));
+    }
     
     /* Array indicating what features are in the cache */
     // Used in the UI to indicate cached features
@@ -117,7 +158,7 @@ export default function useMapFeatures() {
         featureType,
         featureLabel,
     }) => {
-        const layerID = crypto.randomUUID();
+        const layerID = crypto.randomUUID(); // Generate unique ID for layer
         const colour = getLayerColour(featureKey);
 
         const currentId = ++requestId.current;
@@ -127,7 +168,7 @@ export default function useMapFeatures() {
             return;
         }
 
-        const cacheKey = JSON.stringify([ // store results in cache
+        const cacheKey = JSON.stringify([ // Store results in cache
             boundaryKey,
             featureTag,
             featureValue,
@@ -135,7 +176,7 @@ export default function useMapFeatures() {
             featureLabel,
         ]);
 
-        if (cache.current.has(cacheKey)) { // check cache for stored features
+        if (cache.current.has(cacheKey)) { // Check cache for stored features
             const cached = cache.current.get(cacheKey);
 
             // Load features from cache
@@ -154,8 +195,8 @@ export default function useMapFeatures() {
                         data: cached.data,
                         geojson: cached.geojson,
                         colour: cached.colour,
-                        visible: cached.visible,
-                        filters: cached.filters,
+                        visible: cached.visible, // will a hidden feature be loaded invisible from the cache?
+                        filters: [],
                     }
                 };
             });
@@ -194,7 +235,6 @@ export default function useMapFeatures() {
                 label: featureLabel,
                 colour,
                 visible: true,
-                filters: []
             });
 
             setFeatureLayers(prev => {
@@ -204,7 +244,7 @@ export default function useMapFeatures() {
                     featureLabel
                 );
                 
-                return {
+                return { // Create a new object for the feature
                     ...prev,
                     [layerID]: {
                         sourceKey: featureKey,
@@ -247,6 +287,11 @@ export default function useMapFeatures() {
         removeLayer,
         toggleLayerVisibility,
         updateLayer,
+
+        addLayerFilter,
+        updateLayerFilters,
+        removeLayerFilter,
+
         failedFeatureKey,
         getCachedFeatures,
         clearCache,

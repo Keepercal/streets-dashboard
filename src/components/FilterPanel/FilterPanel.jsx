@@ -12,7 +12,7 @@
 
 import { useMemo, useState } from "react";
 
-import useFilterData from "./useFilterData";
+import useFilterData from "../../layout/Drawer/panels/ManageLayersPanel/LayerItem/useFilterData";
 import FilterItem from "./FilterItem";
 import TagItem from "./TagItem";
 
