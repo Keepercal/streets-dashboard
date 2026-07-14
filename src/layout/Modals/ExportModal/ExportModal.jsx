@@ -1,14 +1,14 @@
-import './ExportPanel.css';
-import Popup from '../Popup'
+import './ExportModal.css';
+import Modal from '../Modal'
 
-import ExportButton from './ExportButton'
+import ExportButton from './ExportButton/ExportButton'
 
 /**
  * Export Panel
  * ----------------
  * Panel for exporting loaded features to various formats:
  */
-export default function ExportPanel({ onClose, featureLayers }) {
+export default function ExportModal({ onClose, featureLayers }) {
 
     const combinedFeatures = {
         type: "FeatureCollection",
@@ -25,11 +25,10 @@ export default function ExportPanel({ onClose, featureLayers }) {
     }
 
     return (
-        <Popup
+        <Modal
             title="Export"
             onClose={onClose}
         >
-
             <div className="export-panel-btns">
                 <ExportButton
                     featureData={combinedFeatures}
@@ -44,6 +43,6 @@ export default function ExportPanel({ onClose, featureLayers }) {
                     format="gpx"
                 />
             </div>
-        </Popup>
+        </Modal>
     );
 }

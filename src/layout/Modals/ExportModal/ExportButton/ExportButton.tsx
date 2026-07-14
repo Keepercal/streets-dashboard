@@ -1,7 +1,7 @@
-import './ExportPanel.css';
+import './ExportButton.css';
 
-import { convertGeoJSON, type ExportFormat } from '../../../services/exportFormats';
-import { downloadFile } from "../../../utils/downloadFile";
+import { convertGeoJSON, type ExportFormat } from '../../../../services/exportFormats';
+import { downloadFile } from "../../../../utils/downloadFile";
 
 
 interface ExportButtonProps {

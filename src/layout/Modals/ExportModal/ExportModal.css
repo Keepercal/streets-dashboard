@@ -1,0 +1,8 @@
+.export-panel-btns{
+    display: flex;
+    align-self: center;
+    justify-content: center;
+
+    gap: 12px;
+    width: 100%;
+}

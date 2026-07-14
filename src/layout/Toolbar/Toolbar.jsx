@@ -5,7 +5,7 @@ import ToolbarBrand from './ToolbarBrand';
 import Dropdown from './Dropdown';
 import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
-export default function Toolbar({ onOpenPanel, canExport, boundaryName }) {
+export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
 
     const [openMenu, setOpenMenu] = useState(null);
     const toolbarRef = useRef(null);
@@ -43,7 +43,7 @@ export default function Toolbar({ onOpenPanel, canExport, boundaryName }) {
                     id: "export",
                     label: "Export",
                     disabled: !canExport,
-                    action: () => onOpenPanel("export"),
+                    action: () => onOpenModal("export"),
                 },
             ],
         },
@@ -55,7 +55,7 @@ export default function Toolbar({ onOpenPanel, canExport, boundaryName }) {
                     id: "about",
                     label: "About",
                     disabled: true,
-                    action: () => onOpenPanel("about")
+                    action: () => onOpenModal("about")
                 },
             ],
         },

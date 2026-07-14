@@ -17,7 +17,7 @@ import Drawer from './layout/Drawer/Drawer'
 
 /* Popups/Panels */
 import StatusPopup from './layout/Popups/StatusPopup/StatusPopup.jsx';
-import ExportPanel from './layout/Popups/ExportPanel/ExportPanel.jsx';
+import ExportModal from './layout/Modals/ExportModal/ExportModal.jsx';
 
 /* Map related components */
 import Legend from './components/Legend/Legend.jsx';
@@ -161,6 +161,7 @@ export default function App() {
 
   return (
     <div className="App">
+      {/* Popups */}
       <StatusPopup
         trigger={statusPopup.trigger}
         type={statusPopup.type}
@@ -187,16 +188,18 @@ export default function App() {
         }}
       />
 
+      {/* Modals */}
       {activeModal === "export" && (
-        <ExportPanel
+        <ExportModal
           featureLayers={featureLayers}
           onClose={() => setActiveModal(null)}
         />
       )}
-
+      
+      {/* Main UI */}
       <header className="app-header">
         <Toolbar
-          onOpenPanel={setActiveModal}
+          onOpenModal={setActiveModal}
           canExport={hasFeatures}
           boundaryName={boundaryData?.elements?.[0]?.tags?.name ?? "None"}
         />
@@ -212,7 +215,6 @@ export default function App() {
             activeDrawer={activeDrawer}
             setActiveDrawer={setActiveDrawer}
           />
-
         </div>
 
         <Drawer
