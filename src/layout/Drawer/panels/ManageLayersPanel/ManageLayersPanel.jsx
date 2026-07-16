@@ -16,21 +16,20 @@ export default function ManageLayersPanel({
     const hasLayers = Object.keys(featureLayers).length > 0;
 
     return (
-        <div className="panel-body">
+        <>
+            <DeleteButton
+                icon={<Trash2 size={18} />}
+                label="Delete All Layers"
+                onClick={clearFeatures}
+                disabled={!hasLayers}
+            />
             {!hasLayers ? (
                 <div className="empty-state">
                     <Ghost size={180} />
                     <p>No feature layers loaded</p>
                 </div>
             ) : (
-                <>
-                    <DeleteButton
-                        icon={<Trash2 size={18} />}
-                        label="Delete All Layers"
-                        onClick={clearFeatures}
-                        disabled={!hasLayers}
-                    />
-
+                <div className="panel-body">
                     {Object.entries(featureLayers).map(([layerID, layer]) => (
                         <LayerItem
                             key={layerID}
@@ -43,8 +42,8 @@ export default function ManageLayersPanel({
                             renameLayer={renameLayer}
                         />
                     ))}
-                </>
+                </div>
             )}
-        </div>
+        </>
     );
 }

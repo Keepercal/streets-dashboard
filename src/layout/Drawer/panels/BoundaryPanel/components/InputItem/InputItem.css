@@ -2,15 +2,15 @@
     SEARCH FORM
 ========================= */
 
-.boundary-form {
+.boundary-form{
     display: flex;
     flex-direction: column;
 
     gap: 10px;
 
     flex-shrink: 0;
+    padding-bottom: 12px;
 }
-
 
 .input-item {
     width: 100%;
@@ -69,6 +69,7 @@
     cursor: pointer;
 
     font-size: 14px;
+    font-family: var(--default-font);
 
     transition:
         background 0.2s ease,

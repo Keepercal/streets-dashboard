@@ -26,7 +26,7 @@ export default function FeatureItem({
                             )
                         }
                     >
-                        <Plus />
+                        <Plus size={16}/>
 
                         {label}
 
