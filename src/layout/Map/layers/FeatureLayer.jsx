@@ -99,7 +99,6 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                                 stylePolygon(
                                     feature, 
                                     displayMode,
-                                    /*, featureKey,*/
                                     layer.colour,
                                 )
                             }
@@ -109,7 +108,6 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                                     feature,
                                     latlng,
                                     displayMode,
-                                    //featureKey,
                                     layer.colour
                                 )
                             }
