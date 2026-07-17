@@ -19,10 +19,10 @@ export default function FeaturePopup({ feature, exclude }) {
 
     return (
         <div>
-            <div className="popup-header">
+            <div className="feature-popup-header">
                 {featureName && <h2>{featureName}</h2>}
 
-                <div className="popup-id">
+                <div className="feature-popup-id">
                     <a
                         href={`https://www.openstreetmap.org/${featureType}/${osmID}`}
                         target="_blank"
@@ -39,12 +39,12 @@ export default function FeaturePopup({ feature, exclude }) {
                         rel="noopener noreferrer"
                         title="Edit in OpenStreetMap"
                     >
-                        <Pencil size={18}/>
+                        <Pencil size={18} />
                     </a>
                 </div>
             </div>
 
-            <div className="popup-content">
+            <div className="feature-popup-content">
                 <h3>Tags</h3>
 
                 <div className="tags-table">
@@ -74,8 +74,33 @@ export default function FeaturePopup({ feature, exclude }) {
                     >
                         <strong>Last edited:</strong> {formattedDate} ({timeAgoText})
                         <br />
+
                         <strong>Last edited by:</strong>{" "}
-                        {props.user ?? "Unknown"}
+                        {props.user ? (
+                            <a
+                                href={`https://www.openstreetmap.org/user/${props.user}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {props.user}
+                            </a>
+                        ) : (
+                            "Unknown"
+                        )}
+                        <br />
+
+                        <strong>Changeset:</strong>{" "}
+                        {props.changeset ? (
+                            <a
+                                href={`https://www.openstreetmap.org/changeset/${props.changeset}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                #{props.changeset}
+                            </a>
+                        ) : (
+                            "Unknown"
+                        )}
                     </div>
                 )}
 

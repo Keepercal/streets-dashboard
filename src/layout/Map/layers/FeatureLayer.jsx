@@ -60,7 +60,8 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                     features: features.features
                         .filter(f =>
                             f.geometry?.type !== "Point" &&
-                            f.geometry?.type !== "LineString"
+                            f.geometry?.type !== "LineString" &&
+                            f.geometry?.type !== "MultiLineString"
                         )
                         .map(f =>{
                             const bounds = L.geoJSON(f).getBounds();

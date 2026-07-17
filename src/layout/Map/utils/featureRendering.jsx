@@ -62,11 +62,13 @@ export function createFeatureMarker(feature, latlng, displayMode, colour) {
 
     /* Filter visual state */
     if (!match) { // If feature doesn't satisfy the current filters, alter display
-        //marker.setOpacity(0.10); // dim icon (worse performance)
-        marker.remove(); // remove icon (best performance)
+        /*marker.setOpacity(0.10); // dim icon (worse performance)
+        marker.remove(); 
         marker.setZIndexOffset(0);
 
-        marker.off(); // disables interaction
+        marker.off(); // disables interaction */
+
+        return null; // removes filtered features
     } else {
         marker.setOpacity(1);
         marker.setZIndexOffset(1000);
