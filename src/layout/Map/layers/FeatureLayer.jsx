@@ -29,7 +29,11 @@ const EXCLUDE_KEYS = new Set([
  * - Applies dynamic styling based on filter state (_matchesFilters)
  * - Binds popup content to each feature
  */
-export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
+export default function FeatureLayer({ 
+    featureLayers, 
+    zoom, 
+    displayMode,
+}) {
     if (!featureLayers || Object.keys(featureLayers).length === 0){
         return null;
     };
@@ -128,8 +132,8 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                                         feature,
                                         latlng,
                                         displayMode,
-                                        //featureKey,
-                                        layer.colour
+                                        layer.colour,
+                                        true
                                     )
                                 }
 

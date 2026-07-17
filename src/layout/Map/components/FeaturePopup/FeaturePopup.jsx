@@ -1,9 +1,9 @@
 import './FeaturePopup.css'
+import { Pencil } from "lucide-react"
 
 import { timeAgo } from "../../../../utils/timeAgo";
 import getFeatureName from "../../utils/getFeatureName";
 import getFeatureCoords from "../../utils/getFeatureCoords";
-import { Pencil } from "lucide-react"
 
 export default function FeaturePopup({ feature, exclude }) {
     const props = feature.properties ?? {};
@@ -17,11 +17,13 @@ export default function FeaturePopup({ feature, exclude }) {
     const formattedDate = new Date(props.timestamp).toLocaleDateString("en-GB");
     const timeAgoText = timeAgo(props.timestamp);
 
+    function capitaliseString(str){
+        return str.charAt(0).toUpperCase() + str.slice(1)
+    }
+
     return (
         <div>
             <div className="feature-popup-header">
-                {featureName && <h2>{featureName}</h2>}
-
                 <div className="feature-popup-id">
                     <a
                         href={`https://www.openstreetmap.org/${featureType}/${osmID}`}
@@ -29,7 +31,7 @@ export default function FeaturePopup({ feature, exclude }) {
                         rel="noopener noreferrer"
                         title="Show in OpenStreetMap"
                     >
-                        {featureType}: {osmID}
+                        {capitaliseString(featureType)}: {osmID}
                     </a>
 
                     <a
@@ -42,11 +44,17 @@ export default function FeaturePopup({ feature, exclude }) {
                         <Pencil size={18} />
                     </a>
                 </div>
+
+                {featureName &&
+                    <h2>{featureName}</h2>
+                }
+            </div>
+            
+            <div className="feature-popup-content-header">
+                <h3>Tags</h3>
             </div>
 
             <div className="feature-popup-content">
-                <h3>Tags</h3>
-
                 <div className="tags-table">
                     {Object.entries(props)
                         //.filter(([k]) => k !== "name" && !exclude.has(k)) // exclude metadata and name from tags
@@ -63,12 +71,13 @@ export default function FeaturePopup({ feature, exclude }) {
                             </div>
                         ))}
                 </div>
+            </div>
 
+            <div className="feature-popup-footer">
                 {props.timestamp && (
-                    <div
+                    <div className="feature-popup-metadata"
                         style={{
-                            marginTop: 8,
-                            fontSize: 12,
+                            fontSize: 12.5,
                             opacity: 0.75
                         }}
                     >
@@ -81,6 +90,7 @@ export default function FeaturePopup({ feature, exclude }) {
                                 href={`https://www.openstreetmap.org/user/${props.user}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                title="View user who last edited on OpenStreetMap"
                             >
                                 {props.user}
                             </a>
@@ -95,6 +105,7 @@ export default function FeaturePopup({ feature, exclude }) {
                                 href={`https://www.openstreetmap.org/changeset/${props.changeset}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                title="View changeset on OpenStreetMap"
                             >
                                 #{props.changeset}
                             </a>

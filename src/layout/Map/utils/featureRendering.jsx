@@ -1,6 +1,8 @@
 import L from "leaflet";
 import createPinIcon from "../../../utils/createPinIcon";
 
+import getDaysSinceEdit from "./getDaysSinceEdit"
+
 /*const green = "#739D55"; // old colours
 const yellow = "#E0C055";
 const red = "#D83F29";*/
@@ -28,14 +30,6 @@ function getPin(colour){
     return pinCache.get(pinColour);
 }
 
-/* Returns edit age in days */
-function getDaysSinceEdit(timestamp) {
-    if (!timestamp) return null;
-
-    const editedDate = new Date(timestamp);
-    return (Date.now() - editedDate.getTime()) / (1000 * 60 * 60 * 24);
-}
-
 /* Choose marker icon based on feature age */
 function getIconByAge(days) {
     if (days == null) return pinRed;
@@ -45,34 +39,62 @@ function getIconByAge(days) {
     return pinRed;
 }
 
+function createDotMarker(latlng, colour){
+    return L.circleMarker(latlng, {
+        opacity: 0.5,
+        radius: 4,
+        color: "white",
+        fillColor: colour ?? defaultBlue,
+        fillOpacity: 0.8,
+        weight: 1,
+    });
+}
+
 /* Create marker for point features */
-export function createFeatureMarker(feature, latlng, displayMode, colour) {
+export function createFeatureMarker(
+    feature, 
+    latlng, 
+    displayMode, 
+    colour, 
+    overview = false
+) {
     const match = feature._matchesFilters !== false;
 
-    const daysSinceEdit = getDaysSinceEdit(
-        feature.properties?.timestamp
-    );
+    /* Filter visual state */
+    // If feature doesn't satisfy the current filters, alter display
+    if (!match){
+        return null;
+    }
+
+    if (overview){
+        return createDotMarker(latlng, colour ?? defaultBlue)
+    }
+
+    /*if (!match){
+      marker.setOpacity(0.10); // dim icon (worse performance)
+        marker.remove(); 
+        marker.setZIndexOffset(0);
+        marker.off(); // disables interaction 
+
+        return null;
+    }*/
+
+    if (displayMode === "heatmap"){
+        return createDotMarker(latlng, colour ?? defaultBlue)
+    }
+
+    const daysSinceEdit = getDaysSinceEdit(feature.properties?.timestamp);
 
     const icon = 
         displayMode === "lastEdited"
             ? getIconByAge(daysSinceEdit)
             : getPin(colour)
 
+
     const marker = L.marker(latlng, { icon });
 
-    /* Filter visual state */
-    if (!match) { // If feature doesn't satisfy the current filters, alter display
-        /*marker.setOpacity(0.10); // dim icon (worse performance)
-        marker.remove(); 
-        marker.setZIndexOffset(0);
-
-        marker.off(); // disables interaction */
-
-        return null; // removes filtered features
-    } else {
-        marker.setOpacity(1);
-        marker.setZIndexOffset(1000);
-    }
+    marker.setOpacity(1);
+    marker.setZIndexOffset(1000);
 
     return marker;
 }

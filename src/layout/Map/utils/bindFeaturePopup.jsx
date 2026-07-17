@@ -18,5 +18,7 @@ export default function bindFeaturePopup(feature, layer, exclude) {
         />
     );
 
-    layer.bindPopup(container);
+    layer.bindPopup(container, {
+        //maxHeight: 400
+    });
 }
