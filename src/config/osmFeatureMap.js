@@ -89,7 +89,7 @@ export const FEATURE_MAP = {
         },
         bridleway: {
             tag:"highway",
-            label:"Public Rights of Way",
+            label:"Bridleway",
             type: "way",
         },
         school_street: {
@@ -445,7 +445,7 @@ export const FEATURE_MAP = {
             label: "Shoes",
             type: "way",
         },
-        book: {
+        books: {
             tag: "shop",
             label: "Books",
             type: "way",

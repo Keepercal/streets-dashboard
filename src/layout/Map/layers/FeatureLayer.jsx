@@ -4,9 +4,8 @@ import { GeoJSON } from 'react-leaflet'
 import L from "leaflet";
 import React from "react";
 
-import bindFeaturePopup from '../utils/bindFeaturePopup'
+import bindFeaturePopup from '../utils/bindFeaturePopup.jsx'
 import { createFeatureMarker, stylePolygon } from '../utils/featureRendering'
-import getLayerColour from "../../../utils/layerColours";
 
 // Fields not displayed in the popup
 const EXCLUDE_KEYS = new Set([
