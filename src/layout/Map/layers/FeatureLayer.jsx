@@ -4,9 +4,8 @@ import { GeoJSON } from 'react-leaflet'
 import L from "leaflet";
 import React from "react";
 
-import bindFeaturePopup from '../utils/bindFeaturePopup'
+import bindFeaturePopup from '../utils/bindFeaturePopup.jsx'
 import { createFeatureMarker, stylePolygon } from '../utils/featureRendering'
-import getLayerColour from "../../../utils/layerColours";
 
 // Fields not displayed in the popup
 const EXCLUDE_KEYS = new Set([
@@ -30,7 +29,11 @@ const EXCLUDE_KEYS = new Set([
  * - Applies dynamic styling based on filter state (_matchesFilters)
  * - Binds popup content to each feature
  */
-export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
+export default function FeatureLayer({ 
+    featureLayers, 
+    zoom, 
+    displayMode,
+}) {
     if (!featureLayers || Object.keys(featureLayers).length === 0){
         return null;
     };
@@ -61,7 +64,8 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                     features: features.features
                         .filter(f =>
                             f.geometry?.type !== "Point" &&
-                            f.geometry?.type !== "LineString"
+                            f.geometry?.type !== "LineString" &&
+                            f.geometry?.type !== "MultiLineString"
                         )
                         .map(f =>{
                             const bounds = L.geoJSON(f).getBounds();
@@ -100,7 +104,6 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                                 stylePolygon(
                                     feature, 
                                     displayMode,
-                                    /*, featureKey,*/
                                     layer.colour,
                                 )
                             }
@@ -110,7 +113,6 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                                     feature,
                                     latlng,
                                     displayMode,
-                                    //featureKey,
                                     layer.colour
                                 )
                             }
@@ -130,8 +132,8 @@ export default function FeatureLayer({ featureLayers, zoom, displayMode }) {
                                         feature,
                                         latlng,
                                         displayMode,
-                                        //featureKey,
-                                        layer.colour
+                                        layer.colour,
+                                        true
                                     )
                                 }
 

@@ -10,7 +10,7 @@ import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndica
 import GROUP_LABELS from '../Drawer/panels/AddLayersPanel/constants/featureGroups'
 
 /* API imports */
-import { Map, LayersPlus, Layers, Monitor } from "lucide-react";
+import { Map, LayersPlus, Layers, MonitorCog } from "lucide-react";
 
 /**
  * Sidebar.jsx
@@ -68,7 +68,7 @@ const Sidebar = ({
 
             <SidebarButton
                 label="Display"
-                icon={<Monitor />}
+                icon={<MonitorCog />}
                 active={activeDrawer === "display"}
                 onClick={() => openDrawer("display")}
             />

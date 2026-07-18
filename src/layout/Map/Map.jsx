@@ -6,6 +6,7 @@ import App from "../../App"
 
 import BoundaryLayer from "./layers/BoundaryLayer";
 import FeatureLayer from "./layers/FeatureLayer";
+import HeatmapLayer from "./layers/HeatmapLayer";
 import FitBounds from "./controls/FitBounds";
 import ZoomTracker from "./controls/ZoomTracker";
 
@@ -51,12 +52,16 @@ function Map({ boundary, featureLayers, displayMode, basemap }) {
                     attribution={activeBasemap.attribution}
                 />
 
-                {/* Feature overlays */}
-                <FeatureLayer
-                    featureLayers={featureLayers}
-                    zoom={zoom}
-                    displayMode={displayMode}
-                />
+                {displayMode === "heatmap" ? (
+                    <HeatmapLayer
+                        featureLayers={featureLayers}
+                    />
+                ) : (
+                    <FeatureLayer
+                        featureLayers={featureLayers}
+                        zoom={zoom}
+                    />
+                )}
 
                 {/* Boundary + auto-fit */}
                 {boundary && (

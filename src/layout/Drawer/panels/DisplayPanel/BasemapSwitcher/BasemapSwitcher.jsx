@@ -14,14 +14,14 @@ const basemaps = [
         preview: "/streets-dashboard/images/carto.jpeg"
     },
     {
-        id: "carto_dark",
-        label: "CARTO Dark",
-        preview: "/streets-dashboard/images/carto_dark.jpeg"
+        id: "carto_grey",
+        label: "CARTO (Grey)",
+        preview: "/streets-dashboard/images/carto_grey.jpeg"
     },
     {
-        id: "carto_grey",
-        label: "CARTO Grey",
-        preview: "/streets-dashboard/images/carto_grey.jpeg"
+        id: "carto_dark",
+        label: "CARTO (Dark)",
+        preview: "/streets-dashboard/images/carto_dark.jpeg"
     },
     {
         id: "openstreetmap",

@@ -3,7 +3,7 @@ import { useMemo } from "react";
 /**
  * useFilterData
  * -------------
- * Extracts and prepares metadata from GeoJSON features for use in a filter UI.
+ * Extracts and prepares metadata from GeoJSON features for use in the filter UI.
  *
  * Responsibilities:
  * - Collect all unique property keys (tags) from features
@@ -13,6 +13,16 @@ import { useMemo } from "react";
  *
  * This hook memoises results to avoid recomputation unless `features` or `filters` change.
  */
+const OSM_METADATA_KEYS = new Set([
+    "id",
+    "relations",
+    "tainted",
+    "timestamp",
+    "version",
+    "changeset",
+    "uid",
+]);
+
 export default function useFilterData(features) {
     return useMemo(() => {
         // Unique set of all property keys across all features
@@ -26,6 +36,7 @@ export default function useFilterData(features) {
             const properties = feature?.properties || {};
 
             Object.entries(properties).forEach(([key, value]) => {
+                if (OSM_METADATA_KEYS.has(key)) return;
                 tagSet.add(key);
 
                 if (!tagValueMap[key]) {

@@ -12,14 +12,15 @@
     box-sizing: border-box;
 }
 
+.boundary-results{
+    overflow-y: auto;
+    padding: 8px 0px;
+
+}
+
 /* =========================
     SCROLLBAR
 ========================= */
-
-.panel-body {
-    overflow-y: auto;
-}
-
 
 .panel-body::-webkit-scrollbar {
     width: 8px;

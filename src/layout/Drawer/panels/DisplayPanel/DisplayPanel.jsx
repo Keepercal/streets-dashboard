@@ -4,7 +4,8 @@ import BasemapSwitcher from './BasemapSwitcher/BasemapSwitcher.jsx';
 
 const displayModeLabels = {
     default: "Default",
-    lastEdited: "By Last Edit"
+    lastEdited: "By Last Edit",
+    heatmap: "Heatmap"
 }
 
 /**
@@ -52,6 +53,12 @@ const DisplayPanel = ({
                 <RadioItem
                     label="By Last Edit"
                     value="lastEdited"
+                    selected={displayMode}
+                    onChange={setDisplayMode}
+                />
+                <RadioItem
+                    label="Heatmap"
+                    value="heatmap"
                     selected={displayMode}
                     onChange={setDisplayMode}
                 />

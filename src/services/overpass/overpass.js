@@ -103,7 +103,7 @@ export async function fetchMapFeature(
         relation(${boundaryID})->.rels;
         .rels map_to_area -> .area;
 
-        ${featureType}(area.area)["${featureTag}"="${featureValue}"];
+        nwr(area.area)["${featureTag}"="${featureValue}"];
 
         out tags geom meta;
     `;

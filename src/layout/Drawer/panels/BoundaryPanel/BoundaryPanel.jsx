@@ -33,22 +33,20 @@ const BoundaryPanel = ({
 
     return (
         <>
-            <div className="panel-body">
-                <DeleteButton
+            <DeleteButton
                     icon={<Trash2 size={18}/>}
                     label="Remove Boundary"
                     onClick={handleClearBoundary}
                     disabled={!hasBoundary}
-                />
+            />
+            <InputItem
+                onSearch={loadBoundaryResults}
+                setHasSearched={setHasSearched}
 
-                <InputItem
-                    onSearch={loadBoundaryResults}
-                    setHasSearched={setHasSearched}
-
-                    handleClearBoundaryResults={handleClearBoundaryResults}
-                    clearFeatures={clearFeatures}
-                />
-
+                handleClearBoundaryResults={handleClearBoundaryResults}
+                clearFeatures={clearFeatures}
+            />
+            <div className="panel-body">
                 {hasSearched ? (
                     <div className="boundary-results">
                         <BoundaryOption

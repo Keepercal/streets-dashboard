@@ -62,6 +62,11 @@ export const FEATURE_MAP = {
     },
 
     active_travel_highways: {
+        path: {
+            tag:"highway",
+            label:"Paths",
+            type: "way",
+        },
         footway: {
             tag: "highway",
             label: "Footways",
@@ -72,16 +77,6 @@ export const FEATURE_MAP = {
             label: "Shared-Use Footways",
             type: "way",
         },
-        path: {
-            tag:"highway",
-            label:"Paths",
-            type: "way",
-        },
-        public_footpath: {
-            tag:"designation",
-            label:"Public Rights of Way",
-            type: "way",
-        },
         cycleway: {
             tag: "highway",
             label: "Cycle Ways",
@@ -89,6 +84,11 @@ export const FEATURE_MAP = {
         },
         bridleway: {
             tag:"highway",
+            label:"Bridleway",
+            type: "way",
+        },
+        public_footpath: {
+            tag:"designation",
             label:"Public Rights of Way",
             type: "way",
         },
@@ -445,7 +445,7 @@ export const FEATURE_MAP = {
             label: "Shoes",
             type: "way",
         },
-        book: {
+        books: {
             tag: "shop",
             label: "Books",
             type: "way",
@@ -655,6 +655,11 @@ export const FEATURE_MAP = {
             label: "Retail",
             type: "way"
         },
+        recreation_ground: {
+            tag: "landuse",
+            label: "Recreation Ground",
+            type: "way"
+        },
         farmland: {
             tag: "landuse",
             label: "Farmland",
@@ -690,12 +695,11 @@ export const FEATURE_MAP = {
             label: "Military",
             type: "way"
         },
-        recreation_ground: {
+        construction: {
             tag: "landuse",
-            label: "Recreation Ground",
+            label: "Construction",
             type: "way"
         },
-
     },
 
     buildings: {

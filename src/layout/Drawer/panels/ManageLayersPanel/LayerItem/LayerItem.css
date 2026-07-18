@@ -2,16 +2,10 @@
     LayerItem.css
 ========================= */
 
-.layer-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 4px;
-}
-
 .layer-item {
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
 
     min-height: 42px;
 
@@ -32,7 +26,6 @@
         box-shadow 0.15s ease;
 }
 
-
 .layer-item:hover {
     background: #f8f9fa;
 
@@ -50,7 +43,6 @@
     justify-content: space-between;
     gap: 12px;
 }
-
 
 .layer-name {
     flex: 1;
@@ -117,7 +109,6 @@
     opacity: 0.55;
 }
 
-
 /* Optional colour swatch version */
 .colour-swatch {
     position: relative;
@@ -173,9 +164,3 @@
 .layer-filter-toggle:hover {
     background: #f3f3f3;
 }
-
-
-
-/* =========================
-    FilterRow.css
-========================= */

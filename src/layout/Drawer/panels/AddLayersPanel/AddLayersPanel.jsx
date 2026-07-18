@@ -29,37 +29,34 @@ const AddLayersPanel = ({
 
     return (
         <>
-            <div className="panel-body">
+            {Object.entries(groupedFeatures).map(([group, features]) => (
 
-                {Object.entries(groupedFeatures).map(([group, features]) => (
+                <div key={group} className="accordion-group">
 
-                    <div key={group} className="accordion-group">
+                    {/* LEVEL 2 HEADER */}
+                    <h4
+                        className="accordion-header"
+                        onClick={() => toggleGroup(group)}
+                    >
+                        {GROUP_LABELS[group] || group}
+                        <span className={`arrow ${openGroups[group] ? "rotated" : ""}`}>
+                            ▸
+                        </span>
+                    </h4>
 
-                        {/* LEVEL 2 HEADER */}
-                        <h4
-                            className="accordion-header"
-                            onClick={() => toggleGroup(group)}
-                        >
-                            {GROUP_LABELS[group] || group}
-                            <span className={`arrow ${openGroups[group] ? "rotated" : ""}`}>
-                                ▸
-                            </span>
-                        </h4>
+                    {/* LEVEL 3 CONTENT */}
+                    <div className={`accordion-content ${openGroups[group] ? "open" : ""}`}>
 
-                        {/* LEVEL 3 CONTENT */}
-                        <div className={`accordion-content ${openGroups[group] ? "open" : ""}`}>
-
-                            <FeatureItem
-                                features={features}
-                                handleAddLayer={handleAddLayer}
-                                cachedFeatures={cachedFeatures}
-                            />
-
-                        </div>
+                        <FeatureItem
+                            features={features}
+                            handleAddLayer={handleAddLayer}
+                            cachedFeatures={cachedFeatures}
+                        />
 
                     </div>
-                ))}
-            </div>
+
+                </div>
+            ))}
         </>
     )
 }
