@@ -8,8 +8,6 @@ import getFeatureCords from "../utils/getFeatureCoords.js"
 export default function HeatmapLayer({ featureLayers }){
     const map = useMap();
 
-    console.log(featureLayers)
-
     /* Build heatmap points */
     const points = useMemo(() => {
         const heatPoints = [];

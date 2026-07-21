@@ -25,6 +25,7 @@ import BASEMAPS from './config/basemaps'
 function Map({ boundary, featureLayers, displayMode, basemap }) {
     //const position = [54.0182, -2.5471]; // Bristol
     const position = [54.0182, -2.5471]; // UK
+    //const position = [0, 0]; // Globe
 
     const [zoom, setZoom] = useState(13);
 
@@ -36,6 +37,7 @@ function Map({ boundary, featureLayers, displayMode, basemap }) {
                 center={position}
                 //zoom={13} // Bristol
                 zoom={6} // UK
+                //zoom={2} // Global
                 zoomControl={false}
                 style={{ height: "100vh", width: "100%" }}
             >

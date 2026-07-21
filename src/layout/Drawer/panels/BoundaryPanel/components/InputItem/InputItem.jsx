@@ -22,6 +22,7 @@ export default function InputItem({
 
     const clearResults = () => {
         handleClearBoundaryResults();
+        setHasSearched(false);
         setBoundaryName("")
     };
 

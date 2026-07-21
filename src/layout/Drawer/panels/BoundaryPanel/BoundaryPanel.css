@@ -18,6 +18,11 @@
 
 }
 
+.panel-header{
+    display: flex;
+    flex-direction: column;
+}
+
 /* =========================
     SCROLLBAR
 ========================= */

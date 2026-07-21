@@ -1,4 +1,5 @@
 import './BoundaryOption.css'
+import { Ghost } from "lucide-react";
 
 const BoundaryOption = ({
     boundaryResults,
@@ -23,7 +24,8 @@ const BoundaryOption = ({
             ))
         ) : (
             <div className="empty-state">
-                No boundary found
+                <Ghost size={180} />
+                <p>Could not load any boundaries with that name</p>
             </div>
         )
     )

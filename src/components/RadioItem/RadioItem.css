@@ -57,7 +57,8 @@
 
     border-radius: 50%;
 
-    background-color: #4fc3f7;
+    /*background-color: #4fc3f7;*/
+    background-color: #e29f00;
 
     transform: scale(0);
 
@@ -67,7 +68,7 @@
 
 /* Selected state */
 .radio-checkbox:checked {
-    border-color: #4fc3f7;
+    border-color: #e29f00;
 }
 
 .radio-checkbox:checked::before {
@@ -77,5 +78,6 @@
 
 /* Selected row */
 .radio-label:has(.radio-checkbox:checked) {
-    background-color: rgba(79, 194, 247, 0.203);
+    /*background-color: rgba(79, 194, 247, 0.203);*/
+    background-color: #e29e0037;
 }
