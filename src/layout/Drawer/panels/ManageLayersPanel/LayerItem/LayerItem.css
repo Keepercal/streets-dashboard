@@ -98,6 +98,15 @@
     color: #222;
 }
 
+.layer-action-btn.hide{
+    color: #d83f29;
+}
+
+.layer-action-btn.rename-confirm:hover{
+    background: rgb(231, 255, 231);
+    color: green;
+}
+
 
 .layer-action-btn.delete:hover {
     background: #fdecea;

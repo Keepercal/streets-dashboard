@@ -70,7 +70,7 @@ export default function LayerItem({
                         {/* Rename */}
                         {editing ? (
                             <button
-                                className="layer-action-btn"
+                                className="layer-action-btn  rename-confirm"
                                 onClick={() => saveRename(layerID)}
                                 title="Save name"
                             >
@@ -78,7 +78,7 @@ export default function LayerItem({
                             </button>
                         ) : (
                             <button
-                                className="layer-action-btn"
+                                className="layer-action-btn rename"
                                 onClick={() =>
                                     startEditing(
                                         layerID,
@@ -93,7 +93,9 @@ export default function LayerItem({
 
                         {/* Visibility */}
                         <button
-                            className="layer-action-btn"
+                            className={`layer-action-btn ${
+                                layer.visible ? "show" : "hide"
+                            }`}
                             onClick={() => toggleLayerVisibility(layerID)}
                             title={
                                 layer.visible

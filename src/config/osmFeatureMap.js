@@ -280,7 +280,7 @@ export const FEATURE_MAP = {
             label: "Dentist",
             type: "way",
         },
-        Pharmacy: {
+        pharmacy: {
             tag: "amenity",
             label: "Pharmacies",
             type: "way",
@@ -736,6 +736,16 @@ export const FEATURE_MAP = {
         office: {
             tag: "building",
             label: "Offices",
+            type: "way"
+        },
+        civic: {
+            tag: "building",
+            label: "Civic",
+            type: "way"
+        },
+        government: {
+            tag: "building",
+            label: "Government",
             type: "way"
         },
     },
