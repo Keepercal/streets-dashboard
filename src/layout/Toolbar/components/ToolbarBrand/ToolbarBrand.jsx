@@ -1,7 +1,7 @@
 import './ToolbarBrand.css';
 
 const ToolbarBrand = () => (
-    <a className="toolbar-brand" href="/">
+    <div className="toolbar-brand" href="/">
         <img 
             className="brand-logo" 
             src='./favicon.svg' 
@@ -11,7 +11,7 @@ const ToolbarBrand = () => (
             <h2 className="brand-title">{__APP_NAME__}</h2>
             <p className="version-tag">v{__APP_VERSION__}</p>
         </div>
-    </a>
+    </div>
 )
 
 export default ToolbarBrand;
