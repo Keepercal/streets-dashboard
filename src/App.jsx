@@ -6,7 +6,7 @@
  */
 
 import { createRoot } from 'react-dom/client';
-import { useState } from 'react';
+import { useMemo, useEffect, useState, useRef } from 'react';
 import './App.css';
 
 /* High level components */
@@ -28,6 +28,7 @@ import useBoundaryData from './hooks/useBoundaryData.js';
 import useMapFeatures from './hooks/useMapFeatures.js';
 import useFilteredLayers from './hooks/useFilteredLayers.js';
 import useStatusPopup from './hooks/useStatusPopup.js';
+import useProject from './hooks/useProject.js';
 
 /* Misc imports */
 import { FEATURE_OPTIONS } from './config/featureOptions.js';
@@ -50,6 +51,9 @@ export default function App() {
   /* DATA STATES */
   const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
 
+  /* FLAGS */
+  const didRestore = useRef(false)
+
   const {
     loadBoundaryResults,
     boundaryResults,
@@ -57,26 +61,49 @@ export default function App() {
   } = useBoundarySearch();
 
   const {
+    // boundary data
     boundaryData,
     boundaryGeojson,
+
+    // boundary handling
     loadBoundary,
     clearBoundary,
+
+    exportBoundary,
+    restoreBoundary,
+
+    // status
     status: boundaryStatus,
     error: boundaryError,
   } = useBoundaryData();
 
   /* Hook in feature data */
   const {
+    //state
     featureLayers,
+
+    // data operations
     loadFeatures,
     clearFeatures,
     removeLayer,
+
+    // layer editing
     toggleLayerVisibility,
     updateLayer,
+    addLayerFilter,
     updateLayerFilters,
-    failedFeatureKey,
+    removeLayerFilter,
+
+    // persistence
+    exportLayers,
+    restoreLayers,
+
+    // cache
     getCachedFeatures,
     clearCache,
+
+    // status
+    failedFeatureKey,
     status: featureStatus,
     error: featureError,
   } = useMapFeatures();
@@ -136,11 +163,11 @@ export default function App() {
 
   /* Handle feature adding to project */
   const handleAddLayer = (
-    featureKey, 
-    featureTag, 
-    featureValue, 
+    featureKey,
+    featureTag,
+    featureValue,
     featureType,
-    featureLabel, 
+    featureLabel,
   ) => {
 
     console.log('[DEBUG] handleAddLayer ENTER:', {
@@ -152,19 +179,76 @@ export default function App() {
       selectedBoundaryKey,
     });
 
-        loadFeatures({
-          featureKey,
-          boundaryKey: selectedBoundaryKey,
-          featureTag,
-          featureValue,
-          featureType,
-          featureLabel
-        });
+    loadFeatures({
+      featureKey,
+      boundaryKey: selectedBoundaryKey,
+      featureTag,
+      featureValue,
+      featureType,
+      featureLabel
+    });
 
-      };
-  
-  const hasBoundary = Object.keys(boundaryData ?? {}).length > 0;
-  const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if user has loaded any features
+  };
+
+  const boundaryState = useMemo(() => ({
+    selectedBoundaryKey,
+    data: boundaryData,
+    geojson: boundaryGeojson
+  }), [
+    selectedBoundaryKey,
+    boundaryData,
+    boundaryGeojson
+  ])
+
+  function restoreProject(project) {
+
+    if(!project) return;
+
+    console.log("[DEBUG] Restoring project", project)
+
+    setBasemap(project.settings?.basemap ?? "carto");
+
+    setDisplayMode(
+        project.settings?.displayMode ?? "default"
+    );
+
+    setSelectedBoundaryKey(
+        project.boundary?.selectedBoundaryKey ?? "none"
+    );
+
+    restoreBoundary(
+        project.boundary
+    );
+
+    restoreLayers(
+        project.layers ?? []
+    );
+}
+
+  // Handles project saving and loading
+  const projectManager = useProject({
+
+    basemap,
+    displayMode,
+
+    boundary: boundaryState,
+
+    layers: exportLayers(),
+
+    onRestore: restoreProject
+
+  });
+
+  useEffect(() => {
+    if (didRestore.current) return;
+
+    didRestore.current = true;
+
+    projectManager.restoreAutosave();
+  }, [projectManager]);
+
+  const hasBoundary = Object.keys(boundaryData ?? {}).length > 0; // Flag to check if boundary exists
+  const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if features exist
   const filteredLayers = useFilteredLayers(featureLayers);
 
   return (
@@ -203,7 +287,7 @@ export default function App() {
           onClose={() => setActiveModal(null)}
         />
       )}
-      
+
       {/* Main UI */}
       <header className="app-header">
         <Toolbar

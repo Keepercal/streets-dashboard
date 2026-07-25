@@ -238,6 +238,15 @@ export default function useMapFeatures() {
 
             cache.current.set(cacheKey, {
                 sourceKey: featureKey,
+
+                query: {
+                    boundaryKey,
+                    featureTag,
+                    featureValue,
+                    featureType,
+                    featureLabel
+                },
+
                 data: result,
                 geojson,
                 label: featureLabel,
@@ -288,21 +297,68 @@ export default function useMapFeatures() {
         }));
     };
 
+    const exportLayers = () => {
+        return Object.entries(featureLayers).map(
+            ([id, layer]) => ({
+                id,
+                ...layer
+            })
+        )
+    }
+
+    const restoreLayers = (layers) => {
+
+        if(!layers){
+            setFeatureLayers({});
+            return;
+        }
+
+        const restored = {};
+
+        layers.forEach(layer => {
+            restored[layer.id] = {
+                sourceKey: layer.sourceKey,
+                label: layer.label,
+                data: layer.data,
+                geojson: layer.geojson,
+                colour: layer.colour,
+                visible: layer.visible,
+                filters: layer.filters ?? [],
+            };
+        });
+
+        setFeatureLayers(restored);
+
+        setStatus("success");
+        setError(null);
+    }
+
     return {
+        // state
         featureLayers,
+
+        // data operations
         loadFeatures,
         clearFeatures,
         removeLayer,
+
+        // layer editing
         toggleLayerVisibility,
         updateLayer,
-
         addLayerFilter,
         updateLayerFilters,
         removeLayerFilter,
 
-        failedFeatureKey,
+        // persistence
+        exportLayers,
+        restoreLayers,
+
+        // cache
         getCachedFeatures,
         clearCache,
+
+        // status
+        failedFeatureKey,
         status,
         error,
     };

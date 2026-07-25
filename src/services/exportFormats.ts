@@ -10,14 +10,29 @@ export type ExportScope =
     | "all"
     | "visible"
     | "filtered"
-    | "selected"
+    | "selected";
 
+/**
+ * Convert GeoJSON into another format
+ *
+ * Supports:
+ * - GeoJSON
+ * - KML
+ * - GPX
+ */
 export function convertGeoJSON(
-    geojson: any,
+    geojson: object,
     format: ExportFormat
 ): string {
 
+    if (!geojson) {
+        throw new Error(
+            "No GeoJSON data provided"
+        );
+    }
+
     switch (format) {
+        // Return formatted GeoJSON
         case "geojson":
             return JSON.stringify(
                 geojson,
@@ -25,17 +40,22 @@ export function convertGeoJSON(
                 2
             );
 
+        // Convert GeoJSON to KML
         case "kml":
-            return tokml(geojson);
-
-        case "gpx":
-            return new XMLSerializer().serializeToString(
-                GeoJsonToGpx(geojson)
+            return tokml(
+                geojson
             );
+
+        // Convert GeoJSON to GPX
+        case "gpx":
+            return new XMLSerializer()
+                .serializeToString(
+                    GeoJsonToGpx(geojson)
+                );
 
         default:
             throw new Error(
-                `Unsupported format: ${format}`
+                `Unsupported export format: ${format}`
             );
     }
 }

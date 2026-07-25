@@ -9,9 +9,10 @@ import { fetchBoundary } from "../services/overpass/overpass";
  * Fetches and manages OSM boundary data and its GeoJSON conversion.
  *
  * Handles:
- * - loading state
- * - request cancellation (via request id)
+ * - loading boundary using a service from the Overpass API
+ * - clearing boundaries
  * - resetting state
+ * - exporting and restoring boundaries
  */
 export default function useBoundary() {
     const [boundaryData, setBoundaryData] = useState(null);
@@ -21,14 +22,7 @@ export default function useBoundary() {
 
     const requestId = useRef(0);
 
-    const clearBoundary = () => {
-        setBoundaryData(null);
-        setBoundaryGeojson(null);
-
-        setStatus("idle");
-        setError(null);
-    };
-
+    /* Load boundary by fetching from Overpass API */
     const loadBoundary = async (boundaryID, boundaryType, boundaryName) => {
         clearBoundary();
 
@@ -72,13 +66,51 @@ export default function useBoundary() {
             setStatus("error");
             setError(err);
         }
+    };  
+
+    /* Clear the current boundary */
+    const clearBoundary = () => {
+        setBoundaryData(null);
+        setBoundaryGeojson(null);
+
+        setStatus("idle");
+        setError(null);
     };
+
+    /* Export the boundary data as an object */
+    function exportBoundary(){
+        return{
+            data: boundaryData,
+            geojson: boundaryGeojson
+        }
+    }
+
+    /* Restore a given boundary */
+    function restoreBoundary(boundary){
+        requestId.current++;
+
+        if(!boundary){
+            clearBoundary();
+            return
+        }
+
+        setBoundaryData(boundary.data)
+        setBoundaryGeojson(boundary.geojson)
+
+        setStatus("success");
+        setError(null);
+    }
 
     return {
         boundaryData,
         boundaryGeojson,
-        clearBoundary,
+
         loadBoundary,
+        clearBoundary,
+
+        exportBoundary,
+        restoreBoundary,
+
         status,
         error,
     };

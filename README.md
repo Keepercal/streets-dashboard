@@ -1,4 +1,4 @@
-###### v0.9.2-alpha
+###### v1.0.0-beta
 # Streets Dashboard
 This web application is build for transport planners, engineers, or any public or private sector professionals involved with the built environment to search for particular features on streets. 
 
