@@ -1,12 +1,12 @@
-const AUTOSAVE_KEY = "osm-project-autosave";
+const SESSION_KEY = "osm-project-session";
 
 /**
  * Save project to local storage
  */
-export function saveAutosave(project) {
+export function saveSession(project) {
 
     localStorage.setItem(
-        AUTOSAVE_KEY,
+        SESSION_KEY,
         JSON.stringify(project)
     );
 }
@@ -14,9 +14,9 @@ export function saveAutosave(project) {
 /**
  * Load saved project from local storage
  */
-export function loadAutosave() {
+export function loadSession() {
 
-    const json = localStorage.getItem(AUTOSAVE_KEY);
+    const json = localStorage.getItem(SESSION_KEY);
 
     // No saved project exists
     if (!json) {
@@ -30,7 +30,7 @@ export function loadAutosave() {
     } catch (error) {
 
         console.error(
-            "[DEBUG] Failed to load autosave:",
+            "[DEBUG] Failed to load session:",
             error
         );
 
@@ -41,9 +41,9 @@ export function loadAutosave() {
 /**
  * Remove saved project
  */
-export function clearAutosave() {
+export function clearSession() {
     
     localStorage.removeItem(
-        AUTOSAVE_KEY
+        SESSION_KEY
     );
 }

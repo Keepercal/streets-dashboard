@@ -234,13 +234,14 @@ export default function App() {
   /* 
     Creates a brand new project 
   */
-  function createNewProject(name) {
+  function createNewProject(name, description) {
 
-    console.log("[DEBUG] Creating new project...")
+    console.log("[DEBUG] Creating new project...", {name, description})
 
     const project = createProject({
       metadata: {
         name,
+        description,
       },
     });
 
@@ -249,7 +250,7 @@ export default function App() {
 
     loadProject(project);
 
-    setActiveDrawer(null);
+    setActiveDrawer("boundary"); // Auto opens boundary search drawer
     setActiveLayer(null);
 
   }
@@ -269,13 +270,13 @@ export default function App() {
 
   });
 
-  // Restore autosave on refresh
+  // Restore session on refresh
   useEffect(() => {
     if (didRestore.current) return;
 
     didRestore.current = true;
 
-    projectManager.restoreAutosave();
+    projectManager.restoreSession();
   }, [projectManager]);
 
   /* FLAGS */
@@ -316,8 +317,8 @@ export default function App() {
       {activeModal === MODALS.NEW_PROJECT && (
         <NewProjectModal
 
-          onCreate={(name) => {
-            createNewProject(name);
+          onCreate={(name, description) => {
+            createNewProject(name, description);
             setActiveModal(null)
           }}
 

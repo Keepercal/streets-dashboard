@@ -1,5 +1,5 @@
 import { useMemo, useEffect, useState, useCallback } from "react";
-import { saveAutosave, loadAutosave } from "../services/projectService"
+import { saveSession, loadSession } from "../services/sessionService"
 import { createProject } from "../models/project";
 
 /**
@@ -53,9 +53,9 @@ export default function useProject({
         ]);
 
     // Load saved project from storage
-    const restoreAutosave = useCallback(() => {
+    const restoreSession = useCallback(() => {
 
-        const project = loadAutosave();
+        const project = loadSession();
 
         // No saved project found
         if (!project) {
@@ -84,7 +84,7 @@ export default function useProject({
         if (!hydrated || restoring) return;
 
         const timer = setTimeout(() => {
-            saveAutosave(currentProject);
+            saveSession(currentProject);
         }, 1000);
 
         return () => clearTimeout(timer);
@@ -99,7 +99,7 @@ export default function useProject({
     const saveProject = useCallback(() => {
         if (!hydrated || restoring) return;
 
-        saveAutosave(currentProject);
+        saveSession(currentProject);
     }, [currentProject, hydrated, restoring]);
 
     // Export project as a JSON file
@@ -139,7 +139,7 @@ export default function useProject({
     return {
         currentProject,
 
-        restoreAutosave,
+        restoreSession,
 
         saveProject,
         saveProjectAs,

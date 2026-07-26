@@ -3,16 +3,20 @@ import { useState } from "react";
 
 import Modal from "../Modal"
 
+import FormInput from "../components/FormInput/FormInput"
+
 export default function NewProjectModal ({
     onClose,
     onCreate
 }) {
     const [projectName, setProjectName] = useState("");
+    const [projectDescription, setProjectDescription] = useState("");
 
     const handleCreate = () => {
         const name = projectName.trim() || "Untitled Project";
+        const description = projectDescription || "";
 
-        onCreate(name);
+        onCreate(name, description);
         onClose();
     }
 
@@ -24,18 +28,25 @@ export default function NewProjectModal ({
             <section className="project-section">
                 <h3>Project Details</h3>
 
-                <label>
-                    Project Name
-                </label>
+                <div className="project-metadata">
+                    <FormInput
+                        label="Project Name"
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.target.value)}
+                        placeholder="Untitled Project"
+                    />
 
-                <input
-                    type="text"
-                    value={projectName}
-                    placeholder="Untitled Project"
-                    onChange={(e) => 
-                        setProjectName(e.target.value)
-                    }
-                />
+                    <FormInput
+                        label="Description"
+                        type="textarea"
+                        value={projectDescription}
+                        onChange={(e) => 
+                            setProjectDescription(e.target.value)
+                        }
+                        placeholder="Describe your project (optional)"
+                    />
+                </div>
+                
             </section>
 
             <section className="project-actions">
