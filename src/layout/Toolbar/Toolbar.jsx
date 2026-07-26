@@ -43,11 +43,10 @@ export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
             title: "File",
             items: [
                 {
-                    id: "new",
+                    id: "new-project",
                     label: "New Project",
                     icon: "CirclePlus",
-                    disabled: true,
-                    action: () => onOpenModal("new"),
+                    action: () => onOpenModal("new-project"),
                 },
                 {
                     id: "open",

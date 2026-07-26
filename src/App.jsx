@@ -18,6 +18,7 @@ import Drawer from './layout/Drawer/Drawer'
 /* Popups/Panels */
 import StatusPopup from './layout/Popups/StatusPopup/StatusPopup.jsx';
 import ExportModal from './layout/Modals/ExportModal/ExportModal.jsx';
+import NewProjectModal from './layout/Modals/NewProjectModal/NewProjectModal.jsx';
 
 /* Map related components */
 import Legend from './components/Legend/Legend.jsx';
@@ -35,10 +36,13 @@ import { FEATURE_OPTIONS } from './config/featureOptions.js';
 import { createProject } from "./models/project"
 
 export default function App() {
-  const PANELS = {
+
+  const MODALS = {
     EXPORT: "export",
-    ABOUT: "about"
-  }
+    NEW_PROJECT: "new-project",
+    OPEN_PROJECT: "open-project",
+    SAVE_PROJECT: "save-project",
+};
 
   /* UI STATES */
   const [activeDrawer, setActiveDrawer] = useState(null) // which drawer is open
@@ -205,40 +209,14 @@ export default function App() {
     boundaryGeojson
   ])
 
-  function createNewProject(name) {
-
-    console.log("[DEBUG] Creating new project...")
-
-    const project = createProject({
-      metadata: {
-        name,
-      },
-    });
-
-    restoreProject(project);
-
-    restoreProject(project);
-
-    setBasemap("carto");
-    setDisplayMode("default");
-
-    setSelectedBoundaryKey("none");
-
-    clearBoundaryResults();
-    clearBoundary();
-    clearFeatures();
-    clearCache();
-
-    setActiveDrawer(null);
-    setActiveLayer(null);
-
-  }
-
-  function restoreProject(project) {
+  /*
+    Loads a restored project back onto the map and configures the application settings
+  */
+  function loadProject(project) {
 
     if (!project) return;
 
-    console.log("[DEBUG] Restoring project", project)
+    console.log("[DEBUG] Loading project", project)
 
     setProjectInfo(project.metadata);
 
@@ -253,6 +231,29 @@ export default function App() {
     restoreLayers(project.layers ?? []);
   }
 
+  /* 
+    Creates a brand new project 
+  */
+  function createNewProject(name) {
+
+    console.log("[DEBUG] Creating new project...")
+
+    const project = createProject({
+      metadata: {
+        name,
+      },
+    });
+
+    clearBoundaryResults();
+    clearCache();
+
+    loadProject(project);
+
+    setActiveDrawer(null);
+    setActiveLayer(null);
+
+  }
+
   // Handles project saving and loading
   const projectManager = useProject({
     projectInfo,
@@ -264,7 +265,7 @@ export default function App() {
 
     layers: exportLayers(),
 
-    onRestore: restoreProject
+    onRestore: loadProject
 
   });
 
@@ -312,7 +313,19 @@ export default function App() {
       />
 
       {/* Modals */}
-      {activeModal === "export" && (
+      {activeModal === MODALS.NEW_PROJECT && (
+        <NewProjectModal
+
+          onCreate={(name) => {
+            createNewProject(name);
+            setActiveModal(null)
+          }}
+
+          onClose={() => setActiveModal(null)}
+        />
+      )}
+
+      {activeModal === MODALS.EXPORT && (
         <ExportModal
           featureLayers={filteredLayers}
           onClose={() => setActiveModal(null)}
