@@ -11,27 +11,27 @@ const basemaps = [
     {
         id: "carto",
         label: "CARTO",
-        preview: "/streets-dashboard/images/carto.jpeg"
+        preview: "/streets-dashboard/images/carto.png"
     },
     {
         id: "carto_grey",
         label: "CARTO (Grey)",
-        preview: "/streets-dashboard/images/carto_grey.jpeg"
+        preview: "/streets-dashboard/images/carto_grey.png"
     },
     {
         id: "carto_dark",
         label: "CARTO (Dark)",
-        preview: "/streets-dashboard/images/carto_dark.jpeg"
+        preview: "/streets-dashboard/images/carto_dark.png"
     },
     {
         id: "openstreetmap",
         label: "OSM",
-        preview: "/streets-dashboard/images/osm.jpeg"
+        preview: "/streets-dashboard/images/osm.png"
     },
     {
         id: "satellite",
         label: "Satellite",
-        preview: "/streets-dashboard/images/satellite.jpeg"
+        preview: "/streets-dashboard/images/satellite.png"
     }
 ];
 

@@ -32,7 +32,7 @@ import useProject from './hooks/useProject.js';
 
 /* Misc imports */
 import { FEATURE_OPTIONS } from './config/featureOptions.js';
-
+import { createProject } from "./models/project"
 
 export default function App() {
   const PANELS = {
@@ -49,6 +49,14 @@ export default function App() {
   const [displayMode, setDisplayMode] = useState("default"); // or by last edit
 
   /* DATA STATES */
+  const [projectInfo, setProjectInfo] = useState({
+    id: crypto.randomUUID(),
+    name: "Untitled Project",
+    created: new Date().toISOString(),
+  });
+
+  const [projectModified, setProjectModified] = useState(false);
+
   const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
 
   /* FLAGS */
@@ -166,7 +174,6 @@ export default function App() {
     featureKey,
     featureTag,
     featureValue,
-    featureType,
     featureLabel,
   ) => {
 
@@ -174,7 +181,6 @@ export default function App() {
       featureKey,
       featureTag,
       featureValue,
-      featureType,
       featureLabel,
       selectedBoundaryKey,
     });
@@ -184,7 +190,6 @@ export default function App() {
       boundaryKey: selectedBoundaryKey,
       featureTag,
       featureValue,
-      featureType,
       featureLabel
     });
 
@@ -200,33 +205,57 @@ export default function App() {
     boundaryGeojson
   ])
 
+  function createNewProject(name) {
+
+    console.log("[DEBUG] Creating new project...")
+
+    const project = createProject({
+      metadata: {
+        name,
+      },
+    });
+
+    restoreProject(project);
+
+    restoreProject(project);
+
+    setBasemap("carto");
+    setDisplayMode("default");
+
+    setSelectedBoundaryKey("none");
+
+    clearBoundaryResults();
+    clearBoundary();
+    clearFeatures();
+    clearCache();
+
+    setActiveDrawer(null);
+    setActiveLayer(null);
+
+  }
+
   function restoreProject(project) {
 
-    if(!project) return;
+    if (!project) return;
 
     console.log("[DEBUG] Restoring project", project)
 
+    setProjectInfo(project.metadata);
+
     setBasemap(project.settings?.basemap ?? "carto");
 
-    setDisplayMode(
-        project.settings?.displayMode ?? "default"
-    );
+    setDisplayMode(project.settings?.displayMode ?? "default");
 
-    setSelectedBoundaryKey(
-        project.boundary?.selectedBoundaryKey ?? "none"
-    );
+    setSelectedBoundaryKey(project.boundary?.selectedBoundaryKey ?? "none");
 
-    restoreBoundary(
-        project.boundary
-    );
+    restoreBoundary(project.boundary);
 
-    restoreLayers(
-        project.layers ?? []
-    );
-}
+    restoreLayers(project.layers ?? []);
+  }
 
   // Handles project saving and loading
   const projectManager = useProject({
+    projectInfo,
 
     basemap,
     displayMode,
@@ -239,6 +268,7 @@ export default function App() {
 
   });
 
+  // Restore autosave on refresh
   useEffect(() => {
     if (didRestore.current) return;
 
@@ -247,6 +277,7 @@ export default function App() {
     projectManager.restoreAutosave();
   }, [projectManager]);
 
+  /* FLAGS */
   const hasBoundary = Object.keys(boundaryData ?? {}).length > 0; // Flag to check if boundary exists
   const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if features exist
   const filteredLayers = useFilteredLayers(featureLayers);

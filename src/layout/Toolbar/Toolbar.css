@@ -42,6 +42,7 @@
     width: 42px;
     height: 42px;
 
+    padding: 0px 4px;
     border-radius: 6px;
 
     transition: 
@@ -54,5 +55,5 @@
 
 .github-link img {
     width: 32px;
-    height: auto;
+    height: 32px;
 }

@@ -1,8 +1,6 @@
 import { useMemo, useEffect, useState, useCallback } from "react";
-import {
-    saveAutosave,
-    loadAutosave
-} from "../services/projectService"
+import { saveAutosave, loadAutosave } from "../services/projectService"
+import { createProject } from "../models/project";
 
 /**
  * useProject
@@ -15,6 +13,7 @@ import {
  * - manual save
  */
 export default function useProject({
+    projectInfo,
     basemap,
     displayMode,
     boundary,
@@ -29,24 +28,29 @@ export default function useProject({
     const [restoring, setRestoring] = useState(false);
 
     // Create the current project as an object
-    const currentProject = useMemo(() => ({
-        version: 1,
+    const currentProject = useMemo(() =>
+        createProject({
 
-        settings: {
+            metadata: {
+                ...projectInfo,
+                modified: new Date().toISOString(),
+            },
+
+            settings: {
+                basemap,
+                displayMode,
+            },
+
+            boundary,
+            layers,
+        }),
+        [
+            projectInfo,
             basemap,
             displayMode,
-        },
-
-        boundary,
-
-        layers,
-
-    }), [
-        basemap,
-        displayMode,
-        boundary,
-        layers
-    ]);
+            boundary,
+            layers,
+        ]);
 
     // Load saved project from storage
     const restoreAutosave = useCallback(() => {
@@ -54,7 +58,7 @@ export default function useProject({
         const project = loadAutosave();
 
         // No saved project found
-        if (!project){
+        if (!project) {
             setHydrated(true);
             return false;
         }
@@ -93,8 +97,10 @@ export default function useProject({
 
     // Manually save current project
     const saveProject = useCallback(() => {
+        if (!hydrated || restoring) return;
+
         saveAutosave(currentProject);
-    }, [currentProject]);
+    }, [currentProject, hydrated, restoring]);
 
     // Export project as a JSON file
     const saveProjectAs = useCallback(() => {
@@ -107,7 +113,7 @@ export default function useProject({
 
         const blob = new Blob(
             [json],
-            {type:"application/json"}
+            { type: "application/json" }
         );
 
         const url = URL.createObjectURL(blob);
@@ -115,7 +121,13 @@ export default function useProject({
         const link = document.createElement("a");
 
         link.href = url;
-        link.download = "project.json";
+
+        const filename =
+            currentProject.metadata.filename
+                .replace(/[<>:"/\\|?*]+/g, "_")
+                .trim();
+
+        link.download = `${filename || "Untitled Project"}.json`
 
         link.click();
 

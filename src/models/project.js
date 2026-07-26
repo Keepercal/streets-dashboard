@@ -1,21 +1,32 @@
 // Creates a default/empty object for a new project
-export function createEmptyProject(){
+export function createProject(overrides = {}){
+    const now = new Date().toISOString();
+
     return{
         version: 1,
 
-        name: "Untitled Project",
+        metadata: {
+            id: crypto.randomUUID(),
+            name: "Untitled Project",
+            description: "",
+            created: now,
+            modified: now,
+            ...overrides.metadata
+        },
 
         settings: {
             basemap: "carto",
-            displayMode: "default"
+            displayMode: "default",
+            ...overrides.settings
         },
 
         boundary: {
             selectedBoundaryKey: "none",
             data: null,
             geojson: null,
+            ...overrides.boundary,
         },
 
-        layers: []
+        layers: overrides.layers ?? [],
     };
 }

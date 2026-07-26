@@ -42,12 +42,6 @@ export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
             id: "file",
             title: "File",
             items: [
-                /*{
-                    id: "export",
-                    label: "Export",
-                    disabled: !canExport,
-                    action: () => onOpenModal("export"),
-                },*/
                 {
                     id: "new",
                     label: "New Project",

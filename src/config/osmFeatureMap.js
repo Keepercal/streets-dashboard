@@ -247,7 +247,7 @@ export const FEATURE_MAP = {
             label: "Bicycle Rental",
             type: "way",
         },
-        bicycle_shop: {
+        bicycle: {
             tag: "shop",
             label: "Bicycle Shops",
             type: "way",
