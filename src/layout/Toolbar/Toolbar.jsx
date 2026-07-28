@@ -19,6 +19,7 @@ export default function Toolbar({
 	onOpenModal,
 	canExport,
 	canSave,
+	onSave,
 	boundaryName,
 }) {
 	/* States */
@@ -39,7 +40,10 @@ export default function Toolbar({
 		...menu,
 		items: menu.items.map((item) => ({
 			...item,
-			disabled: item.id === 'save' ? !canSave : item.disabled,
+			disabled:
+				item.id === 'save' || item.id === 'save-as'
+					? !canSave
+					: item.disabled,
 		})),
 	}));
 

@@ -243,8 +243,9 @@ export default function App() {
 	const handleNewSession = () => {
 		console.log('[DEBUG] Creating empty session');
 
-		setSessionInfo(createSession());
 		setProject(null);
+
+		setSessionInfo(createSession());
 
 		clearBoundaryResults();
 		clearBoundary();
@@ -285,9 +286,51 @@ export default function App() {
 	}
 
 	/*
+	 * Saves the current project
+	 */
+	async function saveCurrentProject() {
+		if (!project) {
+			console.log('[DEBUG] No existing project, opening Save As');
+			setActiveModal(MODALS.SAVE_PROJECT);
+			return;
+		}
+
+		const updatedProject = {
+			...project,
+
+			metadata: {
+				...project.metadata,
+				modified: new Date().toISOString(),
+			},
+
+			settings: {
+				basemap,
+				displayMode,
+			},
+
+			boundary: {
+				selectedBoundaryKey,
+				data: boundaryData,
+				geojson: boundaryGeojson,
+			},
+
+			layers: exportLayers(),
+		};
+
+		await saveProjectToDB(updatedProject);
+
+		console.log('[DEBUG] Saving project', updatedProject);
+
+		setProject(updatedProject);
+		setProjectModified(false);
+
+		console.log('[DEBUG] Project saved:', project);
+	}
+
+	/*
 	 * Creates a brand new project
 	 */
-	async function saveProject(name, description) {
+	async function saveProjectAs(name, description) {
 		const newProject = createProject({
 			metadata: {
 				name,
@@ -324,6 +367,28 @@ export default function App() {
 		setProjectModified(false);
 
 		console.log('[DEBUG] Project saved:', project);
+	}
+
+	function handleProjectDeleted(id) {
+		if (project?.metadata.id !== id) return;
+
+		console.log('[DEBUG] Deleted active project, clearing session');
+
+		setProject(null);
+
+		setSessionInfo(createSession());
+
+		clearBoundaryResults();
+		clearBoundary();
+		clearFeatures();
+		clearCache();
+
+		setSelectedBoundaryKey('none');
+
+		setBasemap('carto');
+		setDisplayMode('default');
+
+		setProjectModified(false);
 	}
 
 	/*
@@ -400,12 +465,14 @@ export default function App() {
 					}}
 
 					onClose={() => setActiveModal(null)}
+
+					onProjectDeleted={handleProjectDeleted}
 				/>
 			)}
 			{activeModal === MODALS.SAVE_PROJECT && (
 				<SaveModal
 					onSave={(name, description) => {
-						saveProject(name, description);
+						saveProjectAs(name, description);
 						setActiveModal(null);
 					}}
 
@@ -426,6 +493,7 @@ export default function App() {
 					onOpenModal={setActiveModal}
 					canExport={hasFeatures}
 					canSave={hasBoundary}
+					onSave={saveCurrentProject}
 					boundaryName={
 						boundaryData?.elements?.[0]?.tags?.name ?? 'None'
 					}

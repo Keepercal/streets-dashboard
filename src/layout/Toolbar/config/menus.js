@@ -20,13 +20,11 @@ export const menus = [
 			{
 				id: 'save',
 				label: 'Save',
-				modal: 'save-project',
 			},
 			{
 				id: 'save-as',
 				label: 'Save As...',
-				modal: 'save-project-as',
-				disabled: true,
+				modal: 'save-project',
 			},
 		],
 	},
