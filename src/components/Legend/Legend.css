@@ -28,7 +28,7 @@
     LEGEND HEADER
 ========================= */
 
-.legend h3 {
+.legend h4 {
 	margin: 5px 0;
 }
 
@@ -42,6 +42,18 @@
 	gap: 6px;
 
 	margin-bottom: 5px;
+	font-size: 15px;
+}
+
+.legend-dot {
+	width: 10px;
+	height: 10px;
+
+	border-radius: 50%;
+
+	border: 1px solid white;
+
+	flex-shrink: 0;
 }
 
 /* =========================

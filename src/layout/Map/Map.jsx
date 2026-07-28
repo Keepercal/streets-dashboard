@@ -41,7 +41,7 @@ function Map({ boundary, featureLayers, displayMode, basemap }) {
 				zoomControl={false}
 				style={{ height: '100vh', width: '100%' }}
 			>
-				<ZoomControl position="topright" />
+				<ZoomControl position="bottomright" />
 
 				{/* Track zoom level */}
 				<ZoomTracker onZoom={setZoom} />
@@ -56,7 +56,11 @@ function Map({ boundary, featureLayers, displayMode, basemap }) {
 				{displayMode === 'heatmap' ? (
 					<HeatmapLayer featureLayers={featureLayers} />
 				) : (
-					<FeatureLayer featureLayers={featureLayers} zoom={zoom} />
+					<FeatureLayer
+						featureLayers={featureLayers}
+						zoom={zoom}
+						displayMode={displayMode}
+					/>
 				)}
 
 				{/* Boundary + auto-fit */}
