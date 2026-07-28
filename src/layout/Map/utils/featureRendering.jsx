@@ -50,8 +50,6 @@ export function createFeatureMarker(
 	colour
 	//overview = false
 ) {
-	console.log(displayMode);
-
 	const match = feature._matchesFilters !== false;
 
 	// Hide features that don't match filters
@@ -73,8 +71,6 @@ export function createFeatureMarker(
 
 /* Polygon styling based on age + filter state */
 export function stylePolygon(feature, displayMode, colour) {
-	console.log('Polygon style:', feature.id, feature._matchesFilters);
-
 	const match = feature._matchesFilters !== false;
 
 	let polygonColour = colour ?? defaultBlue;

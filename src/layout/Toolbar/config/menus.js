@@ -15,13 +15,12 @@ export const menus = [
 			{
 				id: 'save',
 				label: 'Save',
-				modal: 'save',
-				disabled: true,
+				modal: 'save-project',
 			},
 			{
 				id: 'open',
 				label: 'Open',
-				modal: 'open',
+				modal: 'open-project',
 				disabled: true,
 			},
 		],

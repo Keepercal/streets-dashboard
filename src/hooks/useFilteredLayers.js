@@ -13,7 +13,6 @@ import evaluateFeature from '../utils/evaluateFeatures';
  */
 export default function useFilteredLayers(featureLayers) {
 	return useMemo(() => {
-		console.log('[DEBUG]: useFilteredLayers ENTER:', featureLayers);
 		const result = {};
 
 		Object.entries(featureLayers).forEach(([key, layer]) => {

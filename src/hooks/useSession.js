@@ -1,57 +1,61 @@
 import { useMemo, useEffect, useState, useCallback } from 'react';
 import { saveSession, loadSession } from '../services/sessionService';
-import { createProject } from '../models/project';
+import { createSession } from '../models/session';
 
 /**
- * useProject
+ * useSession
  * -----------
- * Handles project saving and loading.
+ * Handles session saving and loading.
  *
  * Includes:
  * - autosave
  * - restore
- * - manual save
  */
-export default function useProject({
-	projectInfo,
+export default function useSession({
+	sessionInfo,
 	basemap,
 	displayMode,
 	boundary,
 	layers,
 	onRestore,
 }) {
-	// Prevent autosave until the initial project load is complete
+	// Prevent autosave until the initial session load is complete
 	const [hydrated, setHydrated] = useState(false);
 
-	// Prevent autosave while restoring a project
+	// Prevent autosave while restoring a session
 	const [restoring, setRestoring] = useState(false);
 
-	// Create the current project as an object
-	const currentProject = useMemo(
+	// Create the current session as an object
+	const currentSession = useMemo(
 		() =>
-			createProject({
-				metadata: {
-					...projectInfo,
-					modified: new Date().toISOString(),
-				},
+			createSession({
+				...sessionInfo,
+				projectId: sessionInfo.projectId,
 
-				settings: {
-					basemap,
-					displayMode,
-				},
+				modified: new Date().toISOString(),
 
-				boundary,
-				layers,
+				data: {
+					settings: {
+						basemap,
+						displayMode,
+					},
+
+					boundary,
+
+					layers,
+				},
 			}),
-		[projectInfo, basemap, displayMode, boundary, layers]
+		[sessionInfo, basemap, displayMode, boundary, layers]
 	);
 
-	// Load saved project from storage
+	// Load saved session from storage
 	const restoreSession = useCallback(() => {
-		const project = loadSession();
+		const session = loadSession();
 
-		// No saved project found
-		if (!project) {
+		// No session found
+		if (!session) {
+			console.log('[DEBUG] No saved session found');
+
 			setHydrated(true);
 			return false;
 		}
@@ -59,7 +63,7 @@ export default function useProject({
 		setRestoring(true);
 
 		// Send project data back to App
-		onRestore?.(project);
+		onRestore?.(session);
 
 		// Enable autosave after restore finishes
 		setTimeout(() => {
@@ -75,21 +79,21 @@ export default function useProject({
 		if (!hydrated || restoring) return;
 
 		const timer = setTimeout(() => {
-			saveSession(currentProject);
+			saveSession(currentSession);
 		}, 1000);
 
 		return () => clearTimeout(timer);
-	}, [currentProject, hydrated, restoring]);
+	}, [currentSession, hydrated, restoring]);
 
 	// Manually save current project
-	const saveProject = useCallback(() => {
+	const saveCurrentSession = useCallback(() => {
 		if (!hydrated || restoring) return;
 
-		saveSession(currentProject);
-	}, [currentProject, hydrated, restoring]);
+		saveSession(currentSession);
+	}, [currentSession, hydrated, restoring]);
 
 	// Export project as a JSON file
-	const saveProjectAs = useCallback(() => {
+	/*const saveProjectAs = useCallback(() => {
 		const json = JSON.stringify(currentProject, null, 2);
 
 		const blob = new Blob([json], { type: 'application/json' });
@@ -109,15 +113,15 @@ export default function useProject({
 		link.click();
 
 		URL.revokeObjectURL(url);
-	}, [currentProject]);
+	}, [currentProject]); */
 
 	return {
-		currentProject,
+		currentSession,
 
 		restoreSession,
 
-		saveProject,
-		saveProjectAs,
+		saveCurrentSession,
+		//saveProjectAs,
 
 		hydrated,
 	};

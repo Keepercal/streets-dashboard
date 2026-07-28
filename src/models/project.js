@@ -1,4 +1,5 @@
-// Creates a default/empty object for a new project
+// models/project.js
+
 export function createProject(overrides = {}) {
 	const now = new Date().toISOString();
 

@@ -37,9 +37,9 @@ export default function ToolbarDropdown({
 								{item.label}
 							</button>
 
-							{item.disabled && (
+							{/*{item.disabled && (
 								<span className="tooltip">Coming soon</span>
-							)}
+							)}*/}
 						</div>
 					))}
 				</div>

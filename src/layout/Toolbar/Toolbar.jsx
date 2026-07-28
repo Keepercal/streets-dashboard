@@ -15,7 +15,12 @@ import { useClickOutside } from './hooks/useClickOutside';
 /* Config */
 import { menus } from './config/menus';
 
-export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
+export default function Toolbar({
+	onOpenModal,
+	canExport,
+	canSave,
+	boundaryName,
+}) {
 	/* States */
 	const [openMenu, setOpenMenu] = useState(null);
 	const toolbarRef = useRef(null);
@@ -30,6 +35,14 @@ export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
 		setOpenMenu((current) => (current === id ? null : id));
 	}
 
+	const toolbarMenus = menus.map((menu) => ({
+		...menu,
+		items: menu.items.map((item) => ({
+			...item,
+			disabled: item.id === 'save' ? !canSave : item.disabled,
+		})),
+	}));
+
 	return (
 		<div className="toolbar">
 			<ToolbarBrand />
@@ -41,7 +54,7 @@ export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
 					disabled={!canExport}
 					onClick={() => onOpenModal('export')}
 				/>
-				{menus.map((menu) => (
+				{toolbarMenus.map((menu) => (
 					<ToolbarDropdown
 						key={menu.id}
 						title={menu.title}

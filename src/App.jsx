@@ -19,6 +19,7 @@ import Drawer from './layout/Drawer/Drawer';
 import StatusPopup from './layout/Popups/StatusPopup/StatusPopup.jsx';
 import ExportModal from './layout/Modals/ExportModal/ExportModal.jsx';
 import NewProjectModal from './layout/Modals/NewProjectModal/NewProjectModal.jsx';
+import SaveModal from './layout/Modals/SaveModal/SaveModal.jsx';
 
 /* Map related components */
 import Legend from './components/Legend/Legend.jsx';
@@ -29,18 +30,20 @@ import useBoundaryData from './hooks/useBoundaryData.js';
 import useMapFeatures from './hooks/useMapFeatures.js';
 import useFilteredLayers from './hooks/useFilteredLayers.js';
 import useStatusPopup from './hooks/useStatusPopup.js';
-import useProject from './hooks/useProject.js';
+import useSession from './hooks/useSession.js';
 
 /* Misc imports */
 import { FEATURE_OPTIONS } from './config/featureOptions.js';
 import { createProject } from './models/project';
+import { createSession } from './models/session.js';
+import { isProjectSession } from './utils/sessionUtils';
 
 export default function App() {
 	const MODALS = {
 		EXPORT: 'export',
 		NEW_PROJECT: 'new-project',
-		OPEN_PROJECT: 'open-project',
 		SAVE_PROJECT: 'save-project',
+		OPEN_PROJECT: 'open-project',
 	};
 
 	/* UI STATES */
@@ -52,11 +55,9 @@ export default function App() {
 	const [displayMode, setDisplayMode] = useState('default'); // or by last edit
 
 	/* DATA STATES */
-	const [projectInfo, setProjectInfo] = useState({
-		id: crypto.randomUUID(),
-		name: 'Untitled Project',
-		created: new Date().toISOString(),
-	});
+	const [sessionInfo, setSessionInfo] = useState(createSession());
+
+	const [project, setProject] = useState(null);
 
 	const [projectModified, setProjectModified] = useState(false);
 
@@ -142,14 +143,14 @@ export default function App() {
 	};
 
 	/**
-	 * Handle resetting boundary and whiping features
+	 * Handle resetting boundary and wiping features
 	 */
 	const handleClearBoundaryResults = () => {
 		clearBoundaryResults();
 	};
 
 	/**
-	 * Handle resetting boundary and whiping features
+	 * Handle resetting boundary and wiping features
 	 */
 	const handleClearBoundary = () => {
 		setSelectedBoundaryKey('none');
@@ -166,7 +167,9 @@ export default function App() {
 		});
 	};
 
-	/* Handle feature adding to project */
+	/*
+	 * Handle feature adding to project
+	 */
 	const handleAddLayer = (
 		featureKey,
 		featureTag,
@@ -200,51 +203,105 @@ export default function App() {
 	);
 
 	/*
-  Loads a restored project back onto the map and configures the application settings
-*/
-	function loadProject(project) {
-		if (!project) return;
+	 * Loads a restored project back onto the map and configures the application settings
+	 */
+	function restoreSession(session) {
+		if (!session) return;
 
-		console.log('[DEBUG] Loading project', project);
+		console.log('[DEBUG] Restoring session:', session);
 
-		setProjectInfo(project.metadata);
+		console.log(
+			'[DEBUG] Session type:',
+			session.projectId
+				? `Project (${session.projectId})`
+				: 'Temporary session'
+		);
 
-		setBasemap(project.settings?.basemap ?? 'carto');
+		console.log('[DEBUG] Session data:', session.data);
 
-		setDisplayMode(project.settings?.displayMode ?? 'default');
+		setSessionInfo(session);
 
-		setSelectedBoundaryKey(project.boundary?.selectedBoundaryKey ?? 'none');
+		const data = session.data ?? {};
 
-		restoreBoundary(project.boundary);
+		setBasemap(data.settings?.basemap ?? 'carto');
 
-		restoreLayers(project.layers ?? []);
+		setDisplayMode(data.settings?.displayMode ?? 'default');
+
+		setSelectedBoundaryKey(data.boundary?.selectedBoundaryKey ?? 'none');
+
+		restoreBoundary(data.boundary);
+
+		restoreLayers(data.layers ?? []);
 	}
 
-	/* 
-  Creates a brand new project 
-*/
-	function createNewProject(name, description) {
-		console.log('[DEBUG] Creating new project...', { name, description });
+	/*
+	 * Creates a blank session
+	 */
+	const handleNewSession = () => {
+		console.log('[DEBUG] Creating empty session');
 
-		const project = createProject({
+		setSessionInfo(createSession());
+		setProject(null);
+
+		clearBoundaryResults();
+		clearBoundary();
+		clearFeatures();
+		clearCache();
+
+		setSelectedBoundaryKey('none');
+
+		setBasemap('carto');
+		setDisplayMode('default');
+
+		setActiveDrawer('boundary');
+		setActiveModal(null);
+	};
+
+	/*
+	 * Creates a brand new project
+	 */
+	function saveProject(name, description) {
+		const newProject = createProject({
 			metadata: {
 				name,
 				description,
 			},
+
+			settings: {
+				basemap,
+				displayMode,
+			},
+
+			boundary: {
+				selectedBoundaryKey,
+				data: boundaryData,
+				geojson: boundaryGeojson,
+			},
+
+			layers: exportLayers(),
 		});
 
-		clearBoundaryResults();
-		clearCache();
+		console.log('[DEBUG] Saving project', newProject);
 
-		loadProject(project);
+		setProject(newProject);
 
-		setActiveDrawer('boundary'); // Auto opens boundary search drawer
-		setActiveLayer(null);
+		// Link the current session to this project
+		setSessionInfo((prev) => ({
+			...prev,
+			projectId: newProject.metadata.id,
+			modified: new Date().toISOString(),
+		}));
+
+		setProjectModified(false);
+
+		console.log('[DEBUG] Project saved:', project);
 	}
 
-	// Handles project saving and loading
-	const projectManager = useProject({
-		projectInfo,
+	/*
+	 *Handles sessions
+	 */
+	const sessionManager = useSession({
+		sessionInfo,
 
 		basemap,
 		displayMode,
@@ -253,7 +310,7 @@ export default function App() {
 
 		layers: exportLayers(),
 
-		onRestore: loadProject,
+		onRestore: restoreSession,
 	});
 
 	// Restore session on refresh
@@ -262,8 +319,8 @@ export default function App() {
 
 		didRestore.current = true;
 
-		projectManager.restoreSession();
-	}, [projectManager]);
+		sessionManager.restoreSession();
+	}, [sessionManager]);
 
 	/* FLAGS */
 	const hasBoundary = Object.keys(boundaryData ?? {}).length > 0; // Flag to check if boundary exists
@@ -302,8 +359,14 @@ export default function App() {
 			{/* Modals */}
 			{activeModal === MODALS.NEW_PROJECT && (
 				<NewProjectModal
-					onCreate={(name, description) => {
-						createNewProject(name, description);
+					onCreate={handleNewSession}
+					onClose={() => setActiveModal(null)}
+				/>
+			)}
+			{activeModal === MODALS.SAVE_PROJECT && (
+				<SaveModal
+					onSave={(name, description) => {
+						saveProject(name, description);
 						setActiveModal(null);
 					}}
 
@@ -323,6 +386,7 @@ export default function App() {
 				<Toolbar
 					onOpenModal={setActiveModal}
 					canExport={hasFeatures}
+					canSave={hasBoundary}
 					boundaryName={
 						boundaryData?.elements?.[0]?.tags?.name ?? 'None'
 					}
