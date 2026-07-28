@@ -19,12 +19,12 @@ export const menus = [
 				modal: 'open-project',
 				action: 'modal',
 			},
-			{
+			/*{
 				id: 'save',
 				label: 'Save',
 				action: 'save',
 				requires: 'canSave',
-			},
+			}*/
 			{
 				id: 'save-as',
 				label: 'Save As...',

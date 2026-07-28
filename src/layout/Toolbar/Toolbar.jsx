@@ -1,6 +1,6 @@
 /* Style/UI */
 import './Toolbar.css';
-import { Download, CirclePlus } from 'lucide-react';
+import { Download, CirclePlus, Save } from 'lucide-react';
 
 /* Components */
 import ToolbarBrand from './components/ToolbarBrand/ToolbarBrand';
@@ -20,6 +20,7 @@ export default function Toolbar({
 	canExport,
 	canSave,
 	onSave,
+	isDirty,
 	boundaryName,
 }) {
 	/* States */
@@ -64,6 +65,13 @@ export default function Toolbar({
 			<ToolbarBrand />
 
 			<div className="toolbar-content" ref={toolbarRef}>
+				<ToolbarButton
+					title="Save"
+					icon={<Save size={18} />}
+					indicator={isDirty}
+					disabled={!isDirty}
+					onClick={onSave}
+				/>
 				<ToolbarButton
 					title="Export"
 					icon={<Download size={18} />}

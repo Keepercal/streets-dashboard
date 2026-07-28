@@ -1,12 +1,13 @@
 .toolbar-button {
 	height: 36px;
 
-	padding: 0 14px;
+	padding: 0 8px;
 
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
+	gap: 0.5rem;
 
 	border: 1px solid rgba(255, 255, 255, 0.12);
 
@@ -70,4 +71,29 @@
 	box-shadow: none;
 
 	opacity: 0.7;
+}
+
+.toolbar-button {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.toolbar-button-icon {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.toolbar-button-indicator {
+	position: absolute;
+	top: -2px;
+	right: -2px;
+
+	width: 7px;
+	height: 7px;
+
+	border-radius: 50%;
+	background: orange;
 }

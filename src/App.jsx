@@ -59,15 +59,8 @@ export default function App() {
 
 	/* DATA STATES */
 	const [sessionInfo, setSessionInfo] = useState(createSession());
-
 	const [project, setProject] = useState(null);
-
-	const [projectModified, setProjectModified] = useState(false);
-
 	const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
-
-	/* FLAGS */
-	const didRestore = useRef(false);
 
 	const { loadBoundaryResults, boundaryResults, clearBoundaryResults } =
 		useBoundarySearch();
@@ -87,7 +80,9 @@ export default function App() {
 		// status
 		status: boundaryStatus,
 		error: boundaryError,
-	} = useBoundaryData();
+	} = useBoundaryData({
+		onChange: () => setIsDirty(true),
+	});
 
 	/* Hook in feature data */
 	const {
@@ -118,7 +113,9 @@ export default function App() {
 		failedFeatureKey,
 		status: featureStatus,
 		error: featureError,
-	} = useMapFeatures();
+	} = useMapFeatures({
+		onChange: () => setIsDirty(true),
+	});
 
 	const { statusPopup, dismissPopup } = useStatusPopup({
 		boundaryStatus,
@@ -194,6 +191,8 @@ export default function App() {
 			featureValue,
 			featureLabel,
 		});
+
+		setIsDirty(true);
 	};
 
 	const boundaryState = useMemo(
@@ -244,6 +243,7 @@ export default function App() {
 		console.log('[DEBUG] Creating empty session');
 
 		setProject(null);
+		setIsDirty(false);
 
 		setSessionInfo(createSession());
 
@@ -322,7 +322,7 @@ export default function App() {
 		console.log('[DEBUG] Saving project', updatedProject);
 
 		setProject(updatedProject);
-		setProjectModified(false);
+		setIsDirty(false);
 
 		console.log('[DEBUG] Project saved:', project);
 	}
@@ -364,7 +364,7 @@ export default function App() {
 			modified: new Date().toISOString(),
 		}));
 
-		setProjectModified(false);
+		setIsDirty(false);
 
 		console.log('[DEBUG] Project saved:', project);
 	}
@@ -388,7 +388,7 @@ export default function App() {
 		setBasemap('carto');
 		setDisplayMode('default');
 
-		setProjectModified(false);
+		setIsDirty(false);
 	}
 
 	/*
@@ -417,9 +417,11 @@ export default function App() {
 	}, [sessionManager]);
 
 	/* FLAGS */
+	const [isDirty, setIsDirty] = useState(false);
 	const hasBoundary = Object.keys(boundaryData ?? {}).length > 0; // Flag to check if boundary exists
 	const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if features exist
 	const filteredLayers = useFilteredLayers(featureLayers);
+	const didRestore = useRef(false);
 
 	return (
 		<div className="App">
@@ -494,6 +496,7 @@ export default function App() {
 					canExport={hasFeatures}
 					canSave={hasBoundary}
 					onSave={saveCurrentProject}
+					isDirty={isDirty}
 					boundaryName={
 						boundaryData?.elements?.[0]?.tags?.name ?? 'None'
 					}

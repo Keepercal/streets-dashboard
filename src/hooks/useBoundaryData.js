@@ -14,13 +14,17 @@ import { fetchBoundary } from '../services/overpass/overpass';
  * - resetting state
  * - exporting and restoring boundaries
  */
-export default function useBoundary() {
+export default function useBoundary({ onChange = {} }) {
 	const [boundaryData, setBoundaryData] = useState(null);
 	const [boundaryGeojson, setBoundaryGeojson] = useState(null);
 	const [status, setStatus] = useState('idle');
 	const [error, setError] = useState(null);
 
 	const requestId = useRef(0);
+
+	function markDirty() {
+		onChange?.();
+	}
 
 	/* Load boundary by fetching from Overpass API */
 	const loadBoundary = async (boundaryID, boundaryType, boundaryName) => {
@@ -56,6 +60,7 @@ export default function useBoundary() {
 			setBoundaryGeojson(geojson);
 
 			setStatus('success');
+			markDirty();
 		} catch (err) {
 			if (currentId !== requestId.current) return;
 

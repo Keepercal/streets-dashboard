@@ -13,7 +13,7 @@ import { fetchMapFeature } from '../services/overpass/overpass';
  * - request cancellation
  * - GeoJSON conversion
  */
-export default function useMapFeatures() {
+export default function useMapFeatures({ onChange = {} }) {
 	const [featureLayers, setFeatureLayers] = useState({});
 
 	/* Status popup handling */
@@ -26,6 +26,10 @@ export default function useMapFeatures() {
 
 	/* Flags */
 	const [failedFeatureKey, setFailedFeatureKey] = useState(null); // cleanup
+
+	function markDirty() {
+		onChange?.();
+	}
 
 	/* Remove all features from map */
 	const clearFeatures = () => {
@@ -49,6 +53,7 @@ export default function useMapFeatures() {
 
 		setError(null);
 		setStatus('idle');
+		markDirty();
 	};
 
 	/* Show or hide features on the map */
@@ -67,6 +72,8 @@ export default function useMapFeatures() {
 				},
 			};
 		});
+
+		markDirty();
 	};
 
 	/* Generate a colour for feature data, colour will be consistent across projects */
@@ -101,6 +108,8 @@ export default function useMapFeatures() {
 				filters: [...prev[layerID].filters, filter],
 			},
 		}));
+
+		markDirty();
 	};
 
 	/* Update layer filter */
@@ -112,6 +121,8 @@ export default function useMapFeatures() {
 				filters,
 			},
 		}));
+
+		markDirty();
 	};
 
 	/* Remove filter from layer */
@@ -124,6 +135,8 @@ export default function useMapFeatures() {
 				filters: prev[layerID].filters.filter((f) => f.id !== filterID),
 			},
 		}));
+
+		markDirty();
 	};
 
 	/* Array indicating what features are in the cache */
@@ -263,6 +276,7 @@ export default function useMapFeatures() {
 			});
 
 			setStatus('success');
+			markDirty();
 		} catch (err) {
 			if (currentId !== requestId.current) return;
 
@@ -282,6 +296,8 @@ export default function useMapFeatures() {
 				...changes,
 			},
 		}));
+
+		markDirty();
 	};
 
 	const exportLayers = () => {
@@ -315,6 +331,7 @@ export default function useMapFeatures() {
 
 		setStatus('success');
 		setError(null);
+		markDirty();
 	};
 
 	return {

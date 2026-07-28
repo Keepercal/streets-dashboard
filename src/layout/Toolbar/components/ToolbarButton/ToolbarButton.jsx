@@ -3,6 +3,7 @@ import './ToolbarButton.css';
 export default function ToolbarButton({
 	title,
 	icon,
+	indicator = false,
 	onClick,
 	disabled = false,
 }) {
@@ -14,6 +15,7 @@ export default function ToolbarButton({
 		>
 			{title}
 			{icon}
+			{indicator && <span className="toolbar-button-indicator" />}
 		</button>
 	);
 }
