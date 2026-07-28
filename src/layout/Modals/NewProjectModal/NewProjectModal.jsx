@@ -8,7 +8,7 @@ export default function NewProjectModal({ onClose, onCreate }) {
 	return (
 		<Modal title="New Project" onClose={onClose}>
 			<section className="project-section">
-				<h3>Start a new project?</h3>
+				<h3>Start a new project session?</h3>
 				<p>This will clear the current working session</p>
 			</section>
 

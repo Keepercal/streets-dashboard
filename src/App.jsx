@@ -19,6 +19,7 @@ import Drawer from './layout/Drawer/Drawer';
 import StatusPopup from './layout/Popups/StatusPopup/StatusPopup.jsx';
 import ExportModal from './layout/Modals/ExportModal/ExportModal.jsx';
 import NewProjectModal from './layout/Modals/NewProjectModal/NewProjectModal.jsx';
+import OpenProjectModal from './layout/Modals/OpenProjectModal/OpenProjectModal.jsx';
 import SaveModal from './layout/Modals/SaveModal/SaveModal.jsx';
 
 /* Map related components */
@@ -37,6 +38,8 @@ import { FEATURE_OPTIONS } from './config/featureOptions.js';
 import { createProject } from './models/project';
 import { createSession } from './models/session.js';
 import { isProjectSession } from './utils/sessionUtils';
+
+import { saveProject as saveProjectToDB, getProject } from './db/projectDB.js';
 
 export default function App() {
 	const MODALS = {
@@ -257,10 +260,34 @@ export default function App() {
 		setActiveModal(null);
 	};
 
+	async function handleOpenProject(projectId) {
+		const project = await getProject(projectId);
+
+		if (!project) {
+			console.error('Project not found');
+			return;
+		}
+
+		console.log('[DEBUG] Opening project:', project);
+
+		setProject(project);
+
+		restoreSession({
+			projectId: project.metadata.id,
+			data: {
+				settings: project.settings,
+				boundary: project.boundary,
+				layers: project.layers,
+			},
+		});
+
+		setProjectModified(false);
+	}
+
 	/*
 	 * Creates a brand new project
 	 */
-	function saveProject(name, description) {
+	async function saveProject(name, description) {
 		const newProject = createProject({
 			metadata: {
 				name,
@@ -280,6 +307,8 @@ export default function App() {
 
 			layers: exportLayers(),
 		});
+
+		await saveProjectToDB(newProject);
 
 		console.log('[DEBUG] Saving project', newProject);
 
@@ -360,6 +389,16 @@ export default function App() {
 			{activeModal === MODALS.NEW_PROJECT && (
 				<NewProjectModal
 					onCreate={handleNewSession}
+					onClose={() => setActiveModal(null)}
+				/>
+			)}
+			{activeModal === MODALS.OPEN_PROJECT && (
+				<OpenProjectModal
+					onOpen={(projectId) => {
+						handleOpenProject(projectId);
+						setActiveModal(null);
+					}}
+
 					onClose={() => setActiveModal(null)}
 				/>
 			)}

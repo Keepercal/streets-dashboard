@@ -8,9 +8,14 @@ export const menus = [
 		items: [
 			{
 				id: 'new-project',
-				label: 'New Project',
+				label: 'New Session',
 				icon: CirclePlus,
 				modal: 'new-project',
+			},
+			{
+				id: 'open',
+				label: 'Open Project',
+				modal: 'open-project',
 			},
 			{
 				id: 'save',
@@ -18,9 +23,9 @@ export const menus = [
 				modal: 'save-project',
 			},
 			{
-				id: 'open',
-				label: 'Open',
-				modal: 'open-project',
+				id: 'save-as',
+				label: 'Save As...',
+				modal: 'save-project-as',
 				disabled: true,
 			},
 		],
