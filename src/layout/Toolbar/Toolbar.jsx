@@ -69,7 +69,7 @@ export default function Toolbar({
 					title="Save"
 					icon={<Save size={18} />}
 					indicator={isDirty}
-					disabled={!isDirty}
+					disabled={!isDirty || !canSave}
 					onClick={onSave}
 				/>
 				<ToolbarButton

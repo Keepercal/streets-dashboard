@@ -69,6 +69,7 @@ export default function App() {
 		// boundary data
 		boundaryData,
 		boundaryGeojson,
+		boundaryName = boundaryData?.elements?.[0]?.tags?.name ?? 'None',
 
 		// boundary handling
 		loadBoundary,
@@ -257,7 +258,7 @@ export default function App() {
 		setBasemap('carto');
 		setDisplayMode('default');
 
-		setActiveDrawer('boundary');
+		setActiveDrawer(null);
 		setActiveModal(null);
 	};
 
@@ -282,7 +283,7 @@ export default function App() {
 			},
 		});
 
-		setProjectModified(false);
+		setIsDirty(false);
 	}
 
 	/*
@@ -497,9 +498,7 @@ export default function App() {
 					canSave={hasBoundary}
 					onSave={saveCurrentProject}
 					isDirty={isDirty}
-					boundaryName={
-						boundaryData?.elements?.[0]?.tags?.name ?? 'None'
-					}
+					boundaryName={boundaryName}
 				/>
 			</header>
 

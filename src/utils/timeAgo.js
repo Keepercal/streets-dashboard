@@ -1,15 +1,15 @@
 /**
  * timeAgo
  * -------
- * Converts a timestamp into a human-readable relative time string.
+ * Converts a time into a human-readable relative time string.
  *
  * Examples:
  * - "just now"
  * - "5 minutes ago"
  * - "2 days ago"
  */
-export function timeAgo(timestamp) {
-	const diffMs = Date.now() - new Date(timestamp).getTime();
+export function timeAgo(time) {
+	const diffMs = Date.now() - new Date(time).getTime();
 
 	const minute = 60 * 1000;
 	const hour = 60 * minute;
@@ -21,7 +21,7 @@ export function timeAgo(timestamp) {
 		`${value} ${unit}${value !== 1 ? 's' : ''} ago`;
 
 	if (diffMs < minute) {
-		return 'just now';
+		return 'Just now';
 	}
 
 	if (diffMs < hour) {

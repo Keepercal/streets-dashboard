@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react';
 import Modal from '../Modal';
 import { getProjects, deleteProject } from '../../../db/projectDB';
 
+import { timeAgo } from '../../../utils/timeAgo';
+
 export default function OpenProjectModal({
 	onOpen,
 	onClose,
@@ -32,16 +34,38 @@ export default function OpenProjectModal({
 	return (
 		<Modal title="Open project" onClose={onClose}>
 			{projects.map((project) => (
-				<div className="project-item">
+				<div key={project.metadata.id} className="project-item">
 					<button
-						key={project.metadata.id}
+						className="project-card"
 						onClick={() => onOpen(project.metadata.id)}
 					>
-						<h3>{project.metadata.name}</h3>
-						<p>{project.metadata.description}</p>
+						<div className="project-card-content">
+							<h3>{project.metadata.name}</h3>
+
+							<div className="project-meta">
+								<span>
+									{project?.boundary.data.elements?.[0]?.tags
+										?.name ?? 'None'}
+								</span>
+							</div>
+
+							{project.metadata.description && (
+								<p className="project-description">
+									{project.metadata.description}
+								</p>
+							)}
+
+							<span className="project-updated">
+								{timeAgo(project?.metadata.modified)}
+							</span>
+						</div>
 					</button>
-					<button onClick={() => handleDelete(project.metadata.id)}>
-						<Trash2 />
+					<button
+						className="project-card-delete"
+						onClick={() => handleDelete(project.metadata.id)}
+						aria-label={`Delete ${project.metadata.name}`}
+					>
+						<Trash2 size={22} />
 					</button>
 				</div>
 			))}
