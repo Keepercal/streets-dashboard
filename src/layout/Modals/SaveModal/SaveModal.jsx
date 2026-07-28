@@ -5,7 +5,7 @@ import Modal from '../Modal';
 
 import FormInput from '../components/FormInput/FormInput';
 
-export default function SaveModal({ onClose, onSave }) {
+export default function SaveModal({ onClose, onSaveAs }) {
 	const [projectName, setProjectName] = useState('');
 	const [projectDescription, setProjectDescription] = useState('');
 
@@ -13,7 +13,7 @@ export default function SaveModal({ onClose, onSave }) {
 		const name = projectName.trim() || 'Untitled Project';
 		const description = projectDescription || '';
 
-		onSave(name, description);
+		onSaveAs(name, description);
 		onClose();
 	};
 

@@ -26,6 +26,21 @@ export default function Toolbar({
 	const [openMenu, setOpenMenu] = useState(null);
 	const toolbarRef = useRef(null);
 
+	function handleMenuItemClick(item) {
+		switch (item.action) {
+			case 'save':
+				onSave();
+				break;
+			case 'modal':
+				onOpenModal(item.modal);
+				break;
+			default:
+				console.warn(`Unknown action: ${item.action}`);
+		}
+
+		setOpenMenu(null);
+	}
+
 	/* Closes dropdown menu when user clicks anywhere on screen */
 	useClickOutside(toolbarRef, () => {
 		setOpenMenu(null);
@@ -40,10 +55,7 @@ export default function Toolbar({
 		...menu,
 		items: menu.items.map((item) => ({
 			...item,
-			disabled:
-				item.id === 'save' || item.id === 'save-as'
-					? !canSave
-					: item.disabled,
+			disabled: item.requires === 'canSave' ? !canSave : item.disabled,
 		})),
 	}));
 
@@ -66,10 +78,7 @@ export default function Toolbar({
 						items={menu.items}
 						isOpen={openMenu === menu.id}
 						onToggle={() => toggleMenu(menu.id)}
-						onItemClick={(item) => {
-							onOpenModal(item.modal);
-							setOpenMenu(null);
-						}}
+						onItemClick={handleMenuItemClick}
 					/>
 				))}
 			</div>

@@ -471,7 +471,7 @@ export default function App() {
 			)}
 			{activeModal === MODALS.SAVE_PROJECT && (
 				<SaveModal
-					onSave={(name, description) => {
+					onSaveAs={(name, description) => {
 						saveProjectAs(name, description);
 						setActiveModal(null);
 					}}
