@@ -6,29 +6,22 @@ export default function ToolbarDropdown({
     items,
     isOpen,
     onToggle,
-    onItemClick
+    onItemClick,
 }) {
     return (
-        <div
-            className="dropdown"
-        >
+        <div className="dropdown">
             <button
-                className={`dropdown-button ${isOpen ? "open" : ""}`}
+                className={`dropdown-button ${isOpen ? 'open' : ''}`}
                 onClick={onToggle}
             >
                 {title}
-                <span className={`arrow ${isOpen ? "rotated" : ""}`}>
-                    ▸
-                </span>
+                <span className={`arrow ${isOpen ? 'rotated' : ''}`}>▸</span>
             </button>
 
             {isOpen && (
                 <div className="dropdown-menu">
-                    {items.map(item => (
-                        <div
-                            key={item.id}
-                            className="dropdown-item-wrapper"
-                        >
+                    {items.map((item) => (
+                        <div key={item.id} className="dropdown-item-wrapper">
                             {/*{item.icon}*/}
                             <button
                                 className="dropdown-item"
@@ -45,9 +38,7 @@ export default function ToolbarDropdown({
                             </button>
 
                             {item.disabled && (
-                                <span className="tooltip">
-                                    Coming soon
-                                </span>
+                                <span className="tooltip">Coming soon</span>
                             )}
                         </div>
                     ))}

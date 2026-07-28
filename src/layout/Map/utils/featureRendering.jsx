@@ -1,25 +1,26 @@
-import L from "leaflet";
+import L from 'leaflet';
 
-import getDaysSinceEdit from "./getDaysSinceEdit";
+import getDaysSinceEdit from './getDaysSinceEdit';
 
-const defaultBlue = "#3388ff";
+const defaultBlue = '#3388ff';
 
-const green = "#5ba328";
-const yellow = "#e7bb2d";
-const red = "#dd351b";
+const green = '#5ba328';
+const yellow = '#e7bb2d';
+const red = '#dd351b';
 
 /* Choose dot colour based on feature age */
 function getColourByAge(days) {
-
     if (days == null) {
         return red;
     }
 
     if (days <= 365) {
+        // Less than 1 year
         return green;
     }
 
     if (days <= 3 * 365) {
+        // Less than 3 years
         return yellow;
     }
 
@@ -27,20 +28,17 @@ function getColourByAge(days) {
 }
 
 /* Create point marker */
-function createDotMarker(latlng, colour){
-
+function createDotMarker(latlng, colour) {
     return L.circleMarker(latlng, {
-
         radius: 5,
 
-        color: "#ffffff",
+        color: '#ffffff',
         weight: 1,
 
         fillColor: colour ?? defaultBlue,
         fillOpacity: 0.9,
 
         opacity: 1,
-
     });
 }
 
@@ -49,76 +47,50 @@ export function createFeatureMarker(
     feature,
     latlng,
     displayMode,
-    colour,
-    overview = false
+    colour
+    //overview = false
 ) {
+    console.log(displayMode);
 
     const match = feature._matchesFilters !== false;
 
     // Hide features that don't match filters
-    if (!match){
+    if (!match) {
         return null;
     }
 
     let markerColour = colour ?? defaultBlue;
 
     // Change dot colour based on edit age
-    if (displayMode === "lastEdited") {
-
-        const daysSinceEdit = getDaysSinceEdit(
-            feature.properties?.timestamp
-        );
+    if (displayMode === 'lastEdited') {
+        const daysSinceEdit = getDaysSinceEdit(feature.properties?.timestamp);
 
         markerColour = getColourByAge(daysSinceEdit);
     }
 
-    return createDotMarker(
-        latlng,
-        markerColour
-    );
+    return createDotMarker(latlng, markerColour);
 }
 
 /* Polygon styling based on age + filter state */
-export function stylePolygon(
-    feature,
-    displayMode,
-    colour
-) {
+export function stylePolygon(feature, displayMode, colour) {
+    console.log('Polygon style:', feature.id, feature._matchesFilters);
 
     const match = feature._matchesFilters !== false;
-
-    const YEAR = 365;
-    const THREE_YEARS = 3 * YEAR;
 
     let polygonColour = colour ?? defaultBlue;
 
     /* Display features by age */
-    if (displayMode === "lastEdited") {
+    if (displayMode === 'lastEdited') {
+        const daysSinceEdit = getDaysSinceEdit(feature.properties?.timestamp);
 
-        const daysSinceEdit = getDaysSinceEdit(
-            feature.properties?.timestamp
-        );
-
-        if (daysSinceEdit == null){
-            polygonColour = red;
-
-        } else if (daysSinceEdit <= YEAR){
-            polygonColour = green;
-
-        } else if (daysSinceEdit <= THREE_YEARS){
-            polygonColour = yellow;
-
-        } else {
-            polygonColour = red;
-        }
+        polygonColour = getColourByAge(daysSinceEdit);
     }
 
     /* Filtered styling */
     if (!match) {
-
         return {
             color: polygonColour,
-            opacity: 0.10,
+            opacity: 0.1,
             weight: 2,
             fillOpacity: 0.15,
             interactive: false,

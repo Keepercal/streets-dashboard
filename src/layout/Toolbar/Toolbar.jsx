@@ -1,107 +1,56 @@
+/* Style/UI */
 import './Toolbar.css';
-import { useState, useRef, useEffect } from 'react';
+import { Download, CirclePlus } from 'lucide-react';
 
+/* Components */
 import ToolbarBrand from './components/ToolbarBrand/ToolbarBrand';
 import ToolbarDropdown from './components/ToolbarDropdown/ToolbarDropdown';
 import ToolbarButton from './components/ToolbarButton/ToolbarButton';
 import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
-import { Download, CirclePlus } from "lucide-react"
+/* Hooks */
+import { useState, useRef } from 'react';
+import { useClickOutside } from './hooks/useClickOutside';
+
+/* Config */
+import { menus } from './config/menus';
 
 export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
-
+    /* States */
     const [openMenu, setOpenMenu] = useState(null);
     const toolbarRef = useRef(null);
 
     /* Closes dropdown menu when user clicks anywhere on screen */
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (
-                toolbarRef.current &&
-                !toolbarRef.current.contains(event.target)
-            ) {
-                setOpenMenu(null);
-            }
-        }
+    useClickOutside(toolbarRef, () => {
+        setOpenMenu(null);
+    });
 
-        document.addEventListener(
-            "mousedown",
-            handleClickOutside
-        );
-
-        return () => {
-            document.removeEventListener(
-                "mousedown",
-                handleClickOutside
-            );
-        };
-    }, []);
-
-    const menus = [
-        {
-            id: "file",
-            title: "File",
-            items: [
-                {
-                    id: "new-project",
-                    label: "New Project",
-                    icon: "CirclePlus",
-                    action: () => onOpenModal("new-project"),
-                },
-                {
-                    id: "open",
-                    label: "Open",
-                    disabled: true,
-                    action: () => onOpenModal("open"),
-                },
-                {
-                    id: "save",
-                    label: "Save",
-                    disabled: true,
-                    action: () => onOpenModal("save"),
-                },
-            ],
-        },
-        {
-            id: "help",
-            title: "Help",
-            items: [
-                {
-                    id: "about",
-                    label: "About",
-                    disabled: true,
-                    action: () => onOpenModal("about")
-                },
-            ],
-        },
-    ];
+    /* Toggles menu */
+    function toggleMenu(id) {
+        setOpenMenu((current) => (current === id ? null : id));
+    }
 
     return (
         <div className="toolbar">
             <ToolbarBrand />
 
-            <div
-                className="toolbar-content"
-                ref={toolbarRef}
-            >
+            <div className="toolbar-content" ref={toolbarRef}>
                 <ToolbarButton
                     title="Export"
-                    icon={<Download size={18}/>}
+                    icon={<Download size={18} />}
                     disabled={!canExport}
-                    onClick={() => onOpenModal("export")}
+                    onClick={() => onOpenModal('export')}
                 />
-                {menus.map(menu => (
+                {menus.map((menu) => (
                     <ToolbarDropdown
                         key={menu.id}
                         title={menu.title}
-                        icon={<CirclePlus size={18}/>}
+                        icon={<CirclePlus size={18} />}
                         items={menu.items}
                         isOpen={openMenu === menu.id}
-                        onToggle={() =>
-                            setOpenMenu(openMenu === menu.id ? null : menu.id)
-                        }
+                        onToggle={() => toggleMenu(menu.id)}
                         onItemClick={(item) => {
-                            item.action();
+                            onOpenModal(item.modal);
                             setOpenMenu(null);
                         }}
                     />
@@ -109,20 +58,15 @@ export default function Toolbar({ onOpenModal, canExport, boundaryName }) {
             </div>
 
             <div className="toolbar-actions">
-                <BoundaryIndicator
-                    boundaryName={boundaryName}
-                />
+                <BoundaryIndicator boundaryName={boundaryName} />
                 <a
                     href="https://github.com/Keepercal/streets-dashboard"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="github-link"
-                    aria-label='Open GitHub repository'
+                    aria-label="Open GitHub repository"
                 >
-                    <img
-                        src='./github-mark.svg'
-                        alt='GitHub'
-                    />
+                    <img src="./github-mark.svg" alt="GitHub" />
                 </a>
             </div>
         </div>

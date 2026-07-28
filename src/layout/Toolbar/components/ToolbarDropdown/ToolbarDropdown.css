@@ -17,8 +17,6 @@
     align-items: center;
     gap: 4px;
 
-    font-family: var(--default-font);
-
     padding: 6px 16px;
 
     border: 1px solid transparent;
@@ -89,7 +87,9 @@
 
     color: #223d57;
     text-align: left;
+
     font-size: 15px;
+    font-family: var(--default-font);
 
     cursor: pointer;
 
@@ -108,7 +108,7 @@
 
 .dropdown-item-wrapper svg{
     color: rgba(0, 0, 0, 0.588);
-    stroke-width: "2"
+    stroke-width: ""
 }
 
 .dropdown-item:hover {
