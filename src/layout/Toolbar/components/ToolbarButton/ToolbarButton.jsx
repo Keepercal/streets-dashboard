@@ -1,20 +1,19 @@
-import "./ToolbarButton.css";
+import './ToolbarButton.css';
 
 export default function ToolbarButton({
-    title,
-    icon,
-    onClick,
-    disabled = false
+	title,
+	icon,
+	onClick,
+	disabled = false,
 }) {
-
-    return (
-        <button
-            className="toolbar-button"
-            disabled={disabled}
-            onClick={onClick}
-        >
-            {title}
-            {icon}
-        </button>
-    );
+	return (
+		<button
+			className="toolbar-button"
+			disabled={disabled}
+			onClick={onClick}
+		>
+			{title}
+			{icon}
+		</button>
+	);
 }

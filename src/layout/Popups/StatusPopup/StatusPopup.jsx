@@ -1,5 +1,5 @@
-import { BarLoader } from "react-spinners";
-import Popup from '../Popup'
+import { BarLoader } from 'react-spinners';
+import Popup from '../Popup';
 
 /**
  * StatusPopup
@@ -10,37 +10,26 @@ import Popup from '../Popup'
  * - alerts
  */
 export default function StatusPopup({
-    trigger,
-    type,
-    title,
-    message,
-    onClose,
-    children,
+	trigger,
+	type,
+	title,
+	message,
+	onClose,
+	children,
 }) {
-    if (!trigger) return null;
+	if (!trigger) return null;
 
-    return (
-        <Popup
-            title={title}
-            type={type}
-            onClose={onClose}
-        >
+	return (
+		<Popup title={title} type={type} onClose={onClose}>
+			{message && <p className={`popup-message ${type}`}>{message}</p>}
 
-            {message && (
-                <p className={`popup-message ${type}`}>
-                    {message}
-                </p>
-            )}
+			{type === 'loading' && (
+				<div className="popup-loader">
+					<BarLoader width="100%" />
+				</div>
+			)}
 
-
-            {type === "loading" && (
-                <div className="popup-loader">
-                    <BarLoader width="100%"/>
-                </div>
-            )}
-
-            {children}
-
-        </Popup>
-    );
+			{children}
+		</Popup>
+	);
 }

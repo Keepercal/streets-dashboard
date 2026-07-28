@@ -1,4 +1,4 @@
-import "./FeatureCounter.css";
+import './FeatureCounter.css';
 
 /**
  * FeatureCounter
@@ -6,57 +6,44 @@ import "./FeatureCounter.css";
  * Displays a summary count across all loaded feature layers.
  */
 const FeatureCounter = ({ features }) => {
-    
-    let nodeCount = 0;
-    let wayCount = 0;
-    let relationCount = 0;
+	let nodeCount = 0;
+	let wayCount = 0;
+	let relationCount = 0;
 
-    Object.values(features || {}).forEach(layer => {
+	Object.values(features || {}).forEach((layer) => {
+		layer.data?.elements?.forEach((feature) => {
+			switch (feature.type) {
+				case 'node':
+					nodeCount++;
+					break;
 
-        layer.data?.elements?.forEach(feature => {
+				case 'way':
+					wayCount++;
+					break;
 
-            switch (feature.type) {
-                case "node":
-                    nodeCount++;
-                    break;
+				case 'relation':
+					relationCount++;
+					break;
 
-                case "way":
-                    wayCount++;
-                    break;
+				default:
+					break;
+			}
+		});
+	});
 
-                case "relation":
-                    relationCount++;
-                    break;
+	return (
+		<div className="feature-count">
+			<div className="feature-count-content">
+				<div className="feature-count-item">
+					<p>Nodes {nodeCount}</p>
 
-                default:
-                    break;
-            }
+					<p>Ways {wayCount}</p>
 
-        });
-
-    });
-
-    return (
-        <div className="feature-count">
-            <div className="feature-count-content">
-
-                <div className="feature-count-item">
-                    <p>
-                        Nodes {nodeCount}
-                    </p>
-
-                    <p>
-                        Ways {wayCount}
-                    </p>
-
-                    <p>
-                        Relations {relationCount}
-                    </p>
-                </div>
-
-            </div>
-        </div>
-    );
+					<p>Relations {relationCount}</p>
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default FeatureCounter;

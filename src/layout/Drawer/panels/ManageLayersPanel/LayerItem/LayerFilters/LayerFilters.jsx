@@ -1,110 +1,84 @@
-import "./LayerFilters.css"
-import useFilterData from "../useFilterData.js"
-import FilterRow from "../FilterRow/FilterRow.jsx"
-import FilterJoin from "../FilterJoin/FilterJoin.jsx";
+import './LayerFilters.css';
+import useFilterData from '../useFilterData.js';
+import FilterRow from '../FilterRow/FilterRow.jsx';
+import FilterJoin from '../FilterJoin/FilterJoin.jsx';
 
-export default function LayerFilters({
-    layerID,
-    layer,
-    updateLayerFilters,
-}) {
-    const filters = layer.filters ?? [];
-    
-    const { tags, getValues } = useFilterData(
-        layer.geojson,
-        filters
-    )
+export default function LayerFilters({ layerID, layer, updateLayerFilters }) {
+	const filters = layer.filters ?? [];
 
-    /* Creates new filter object */
-    const addFilter = () => {
-        const newFilter = { 
-            id: crypto.randomUUID(),
-            key: "",
-            operator: "equals",
-            value: ""
-        };
+	const { tags, getValues } = useFilterData(layer.geojson, filters);
 
-        // Only add join if this is NOT the first filter
-        if (filters.length > 0){
-            newFilter.join = "AND"
-        }
+	/* Creates new filter object */
+	const addFilter = () => {
+		const newFilter = {
+			id: crypto.randomUUID(),
+			key: '',
+			operator: 'equals',
+			value: '',
+		};
 
-        updateLayerFilters(
-            layerID,
-            [
-                ...filters,
-                newFilter
-            ]
-        );
-    };
+		// Only add join if this is NOT the first filter
+		if (filters.length > 0) {
+			newFilter.join = 'AND';
+		}
 
-    const updateFilter = (filterID, changes) => {
-        const updatedFilters = filters.map(filter =>
-            filter.id === filterID
-                ? {
-                    ...filter,
-                    ...changes
-                }
-                : filter
-        );
+		updateLayerFilters(layerID, [...filters, newFilter]);
+	};
 
-        updateLayerFilters(
-            layerID,
-            updatedFilters
-        );
-    };
+	const updateFilter = (filterID, changes) => {
+		const updatedFilters = filters.map((filter) =>
+			filter.id === filterID
+				? {
+						...filter,
+						...changes,
+					}
+				: filter
+		);
 
-    const removeFilter = (filterID) => {
-        const updatedFilters = filters.filter(
-            filter => filter.id !== filterID
-        );
+		updateLayerFilters(layerID, updatedFilters);
+	};
 
-        if (updatedFilters.length > 0){
-            const firstFilter = updatedFilters[0];
+	const removeFilter = (filterID) => {
+		const updatedFilters = filters.filter(
+			(filter) => filter.id !== filterID
+		);
 
-            const {
-                join,
-                ...cleanFirstFilter
-            } = firstFilter;
+		if (updatedFilters.length > 0) {
+			const firstFilter = updatedFilters[0];
 
-            updatedFilters[0] = cleanFirstFilter;
-        }
+			const { join, ...cleanFirstFilter } = firstFilter;
 
-        updateLayerFilters(
-            layerID,
-            updatedFilters
-        );
-    };
+			updatedFilters[0] = cleanFirstFilter;
+		}
 
-    return (
-        <div className="layer-filters">
+		updateLayerFilters(layerID, updatedFilters);
+	};
 
-            {filters.map((filter, index) => (
-                <div key={filter.id}>
-                    {index > 0 && (
-                        <FilterJoin
-                            filter={filter}
-                            updateFilter={updateFilter}
-                        />
-                    )}
+	return (
+		<div className="layer-filters">
+			{filters.map((filter, index) => (
+				<div key={filter.id}>
+					{index > 0 && (
+						<FilterJoin
+							filter={filter}
+							updateFilter={updateFilter}
+						/>
+					)}
 
-                    <FilterRow
-                        filter={filter}
-                        tags={tags}
-                        getValues={getValues}
+					<FilterRow
+						filter={filter}
+						tags={tags}
+						getValues={getValues}
 
-                        updateFilter={updateFilter}
-                        removeFilter={removeFilter}
-                    />
-                </div>
-            ))}
+						updateFilter={updateFilter}
+						removeFilter={removeFilter}
+					/>
+				</div>
+			))}
 
-            <button
-                className="add-filter-btn"
-                onClick={addFilter}
-            >
-                + Add Filter
-            </button>
-        </div>
-    )
+			<button className="add-filter-btn" onClick={addFilter}>
+				+ Add Filter
+			</button>
+		</div>
+	);
 }

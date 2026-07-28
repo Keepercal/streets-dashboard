@@ -10,97 +10,97 @@ const red = '#dd351b';
 
 /* Choose dot colour based on feature age */
 function getColourByAge(days) {
-    if (days == null) {
-        return red;
-    }
+	if (days == null) {
+		return red;
+	}
 
-    if (days <= 365) {
-        // Less than 1 year
-        return green;
-    }
+	if (days <= 365) {
+		// Less than 1 year
+		return green;
+	}
 
-    if (days <= 3 * 365) {
-        // Less than 3 years
-        return yellow;
-    }
+	if (days <= 3 * 365) {
+		// Less than 3 years
+		return yellow;
+	}
 
-    return red;
+	return red;
 }
 
 /* Create point marker */
 function createDotMarker(latlng, colour) {
-    return L.circleMarker(latlng, {
-        radius: 5,
+	return L.circleMarker(latlng, {
+		radius: 5,
 
-        color: '#ffffff',
-        weight: 1,
+		color: '#ffffff',
+		weight: 1,
 
-        fillColor: colour ?? defaultBlue,
-        fillOpacity: 0.9,
+		fillColor: colour ?? defaultBlue,
+		fillOpacity: 0.9,
 
-        opacity: 1,
-    });
+		opacity: 1,
+	});
 }
 
 /* Create marker for point features */
 export function createFeatureMarker(
-    feature,
-    latlng,
-    displayMode,
-    colour
-    //overview = false
+	feature,
+	latlng,
+	displayMode,
+	colour
+	//overview = false
 ) {
-    console.log(displayMode);
+	console.log(displayMode);
 
-    const match = feature._matchesFilters !== false;
+	const match = feature._matchesFilters !== false;
 
-    // Hide features that don't match filters
-    if (!match) {
-        return null;
-    }
+	// Hide features that don't match filters
+	if (!match) {
+		return null;
+	}
 
-    let markerColour = colour ?? defaultBlue;
+	let markerColour = colour ?? defaultBlue;
 
-    // Change dot colour based on edit age
-    if (displayMode === 'lastEdited') {
-        const daysSinceEdit = getDaysSinceEdit(feature.properties?.timestamp);
+	// Change dot colour based on edit age
+	if (displayMode === 'lastEdited') {
+		const daysSinceEdit = getDaysSinceEdit(feature.properties?.timestamp);
 
-        markerColour = getColourByAge(daysSinceEdit);
-    }
+		markerColour = getColourByAge(daysSinceEdit);
+	}
 
-    return createDotMarker(latlng, markerColour);
+	return createDotMarker(latlng, markerColour);
 }
 
 /* Polygon styling based on age + filter state */
 export function stylePolygon(feature, displayMode, colour) {
-    console.log('Polygon style:', feature.id, feature._matchesFilters);
+	console.log('Polygon style:', feature.id, feature._matchesFilters);
 
-    const match = feature._matchesFilters !== false;
+	const match = feature._matchesFilters !== false;
 
-    let polygonColour = colour ?? defaultBlue;
+	let polygonColour = colour ?? defaultBlue;
 
-    /* Display features by age */
-    if (displayMode === 'lastEdited') {
-        const daysSinceEdit = getDaysSinceEdit(feature.properties?.timestamp);
+	/* Display features by age */
+	if (displayMode === 'lastEdited') {
+		const daysSinceEdit = getDaysSinceEdit(feature.properties?.timestamp);
 
-        polygonColour = getColourByAge(daysSinceEdit);
-    }
+		polygonColour = getColourByAge(daysSinceEdit);
+	}
 
-    /* Filtered styling */
-    if (!match) {
-        return {
-            color: polygonColour,
-            opacity: 0.1,
-            weight: 2,
-            fillOpacity: 0.15,
-            interactive: false,
-        };
-    }
+	/* Filtered styling */
+	if (!match) {
+		return {
+			color: polygonColour,
+			opacity: 0.1,
+			weight: 2,
+			fillOpacity: 0.15,
+			interactive: false,
+		};
+	}
 
-    return {
-        color: polygonColour,
-        opacity: 1,
-        weight: 3,
-        fillOpacity: 0.2,
-    };
+	return {
+		color: polygonColour,
+		opacity: 1,
+		weight: 3,
+		fillOpacity: 0.2,
+	};
 }

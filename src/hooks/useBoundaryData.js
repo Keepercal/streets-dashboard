@@ -1,7 +1,7 @@
-import { useState, useRef } from "react";
-import osmtogeojson from "osmtogeojson";
+import { useState, useRef } from 'react';
+import osmtogeojson from 'osmtogeojson';
 
-import { fetchBoundary } from "../services/overpass/overpass";
+import { fetchBoundary } from '../services/overpass/overpass';
 
 /**
  * useBoundaryData
@@ -15,103 +15,104 @@ import { fetchBoundary } from "../services/overpass/overpass";
  * - exporting and restoring boundaries
  */
 export default function useBoundary() {
-    const [boundaryData, setBoundaryData] = useState(null);
-    const [boundaryGeojson, setBoundaryGeojson] = useState(null);
-    const [status, setStatus] = useState("idle");
-    const [error, setError] = useState(null);
+	const [boundaryData, setBoundaryData] = useState(null);
+	const [boundaryGeojson, setBoundaryGeojson] = useState(null);
+	const [status, setStatus] = useState('idle');
+	const [error, setError] = useState(null);
 
-    const requestId = useRef(0);
+	const requestId = useRef(0);
 
-    /* Load boundary by fetching from Overpass API */
-    const loadBoundary = async (boundaryID, boundaryType, boundaryName) => {
-        clearBoundary();
+	/* Load boundary by fetching from Overpass API */
+	const loadBoundary = async (boundaryID, boundaryType, boundaryName) => {
+		clearBoundary();
 
-        console.log('[DEBUG] loadBoundary ENTER:', {
-            boundaryID,
-            boundaryType,
-            boundaryName,
-        })
+		console.log('[DEBUG] loadBoundary ENTER:', {
+			boundaryID,
+			boundaryType,
+			boundaryName,
+		});
 
-        const currentId = ++requestId.current;
+		const currentId = ++requestId.current;
 
-        if (boundaryID === "none") {
-            console.error("[DEBUG] BoundaryID is empty:", boundaryID)
-            return;
-        }
+		if (boundaryID === 'none') {
+			console.error('[DEBUG] BoundaryID is empty:', boundaryID);
+			return;
+		}
 
-        setStatus("loading");
+		setStatus('loading');
 
-        try {
-            const result = await fetchBoundary( // Fetch boundary from Overpass API
-                boundaryID,
-                boundaryType,
-            );
+		try {
+			const result = await fetchBoundary(
+				// Fetch boundary from Overpass API
+				boundaryID,
+				boundaryType
+			);
 
-            if (currentId !== requestId.current) return;
+			if (currentId !== requestId.current) return;
 
-            const geojson = osmtogeojson(result, { meta: true }); // Convert results to geoJSON
+			const geojson = osmtogeojson(result, { meta: true }); // Convert results to geoJSON
 
-            setBoundaryData(result);
-            setBoundaryGeojson(geojson);
+			setBoundaryData(result);
+			setBoundaryGeojson(geojson);
 
-            setStatus("success");
-        } catch (err) {
-            if (currentId !== requestId.current) return;
+			setStatus('success');
+		} catch (err) {
+			if (currentId !== requestId.current) return;
 
-            console.error(err)
+			console.error(err);
 
-            setBoundaryData(null);
-            setBoundaryGeojson(null);
+			setBoundaryData(null);
+			setBoundaryGeojson(null);
 
-            setStatus("error");
-            setError(err);
-        }
-    };  
+			setStatus('error');
+			setError(err);
+		}
+	};
 
-    /* Clear the current boundary */
-    const clearBoundary = () => {
-        setBoundaryData(null);
-        setBoundaryGeojson(null);
+	/* Clear the current boundary */
+	const clearBoundary = () => {
+		setBoundaryData(null);
+		setBoundaryGeojson(null);
 
-        setStatus("idle");
-        setError(null);
-    };
+		setStatus('idle');
+		setError(null);
+	};
 
-    /* Export the boundary data as an object */
-    function exportBoundary(){
-        return{
-            data: boundaryData,
-            geojson: boundaryGeojson
-        }
-    }
+	/* Export the boundary data as an object */
+	function exportBoundary() {
+		return {
+			data: boundaryData,
+			geojson: boundaryGeojson,
+		};
+	}
 
-    /* Restore a given boundary */
-    function restoreBoundary(boundary){
-        requestId.current++;
+	/* Restore a given boundary */
+	function restoreBoundary(boundary) {
+		requestId.current++;
 
-        if(!boundary){
-            clearBoundary();
-            return
-        }
+		if (!boundary) {
+			clearBoundary();
+			return;
+		}
 
-        setBoundaryData(boundary.data)
-        setBoundaryGeojson(boundary.geojson)
+		setBoundaryData(boundary.data);
+		setBoundaryGeojson(boundary.geojson);
 
-        setStatus("success");
-        setError(null);
-    }
+		setStatus('success');
+		setError(null);
+	}
 
-    return {
-        boundaryData,
-        boundaryGeojson,
+	return {
+		boundaryData,
+		boundaryGeojson,
 
-        loadBoundary,
-        clearBoundary,
+		loadBoundary,
+		clearBoundary,
 
-        exportBoundary,
-        restoreBoundary,
+		exportBoundary,
+		restoreBoundary,
 
-        status,
-        error,
-    };
+		status,
+		error,
+	};
 }

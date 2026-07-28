@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import searchBoundaries from "../services/nominatim/searchBoundaries"
+import { useState, useRef } from 'react';
+import searchBoundaries from '../services/nominatim/searchBoundaries';
 
 /**
  * useSearchBoundary
@@ -11,43 +11,43 @@ import searchBoundaries from "../services/nominatim/searchBoundaries"
  * - request cancellation (via request id)
  * - resetting state
  */
-export default function useBoundarySearch(){
-    const [boundaryResults, setBoundaryResults] = useState([])
-    const requestId = useRef(0);
+export default function useBoundarySearch() {
+	const [boundaryResults, setBoundaryResults] = useState([]);
+	const requestId = useRef(0);
 
-    const clearBoundaryResults = () => {
-        setBoundaryResults([]);
-    }
+	const clearBoundaryResults = () => {
+		setBoundaryResults([]);
+	};
 
-    const loadBoundaryResults = async (boundaryName) => {
-        setBoundaryResults(null)
+	const loadBoundaryResults = async (boundaryName) => {
+		setBoundaryResults(null);
 
-        console.log('[DEBUG] loadBoundaryResults ENTER:', {boundaryName})
+		console.log('[DEBUG] loadBoundaryResults ENTER:', { boundaryName });
 
-        const currentId = ++requestId.current;
+		const currentId = ++requestId.current;
 
-        if (boundaryName === 'none'){
-            return
-        }
+		if (boundaryName === 'none') {
+			return;
+		}
 
-        try{
-            const result = await searchBoundaries(boundaryName)
+		try {
+			const result = await searchBoundaries(boundaryName);
 
-            if (currentId !== requestId.current) return;
-            
-            setBoundaryResults(result)
+			if (currentId !== requestId.current) return;
 
-            console.log("[DEBUG] Nominatim API returned result(s):", result)
-        } catch (err){
-            if (currentId !== requestId.current) return;
-            setBoundaryResults([])
-            console.error(err)
-        }
-    };
+			setBoundaryResults(result);
 
-    return{
-        boundaryResults,
-        loadBoundaryResults,
-        clearBoundaryResults
-    }
+			console.log('[DEBUG] Nominatim API returned result(s):', result);
+		} catch (err) {
+			if (currentId !== requestId.current) return;
+			setBoundaryResults([]);
+			console.error(err);
+		}
+	};
+
+	return {
+		boundaryResults,
+		loadBoundaryResults,
+		clearBoundaryResults,
+	};
 }

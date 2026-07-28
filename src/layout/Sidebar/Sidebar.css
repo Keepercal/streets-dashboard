@@ -3,14 +3,14 @@
 ========================= */
 
 .sidebar-content {
-    width: 100%;
-    height: 100%;
-    margin: 12px 6px;
+	width: 100%;
+	height: 100%;
+	margin: 12px 6px;
 
-    overflow-y: auto;
+	overflow-y: auto;
 
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 
-    box-sizing: border-box;
+	box-sizing: border-box;
 }

@@ -5,22 +5,22 @@
 html,
 body,
 #root {
-    height: 100%;
-    font-family: "Google Sans Flex", sans-serif;
+	height: 100%;
+	font-family: 'Google Sans Flex', sans-serif;
 }
 
-:root{
-    --default-font: font-family: "Google Sans Flex", sans-serif;
-    
-    --header-height: 60px;
-    --header-bg: #1f2d3d;
+:root {
+	--default-font: font-family: 'Google Sans Flex', sans-serif;
 
-    --sidebar-width: 160px;
-    /* --sidebar-width: 140px; */
-    --sidebar-bg: #223d57;
+	--header-height: 60px;
+	--header-bg: #1f2d3d;
 
-    --drawer-width: 360px;
-    --drawer-bg: #526D82;
+	--sidebar-width: 160px;
+	/* --sidebar-width: 140px; */
+	--sidebar-bg: #223d57;
+
+	--drawer-width: 360px;
+	--drawer-bg: #526d82;
 }
 
 /* =========================
@@ -28,37 +28,37 @@ body,
 ========================= */
 
 .App {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	overflow: hidden;
 }
 
 /* =========================
     APP UI PARAMETERS
 ========================= */
 
-.app-header{
-    height: var(--header-height);
-    flex-shrink: 0px;
-    background: var(--header-bg);
-    color: white;
+.app-header {
+	height: var(--header-height);
+	flex-shrink: 0px;
+	background: var(--header-bg);
+	color: white;
 
-    display: flex;
-    align-items: center;
-    padding: 0 12px;
+	display: flex;
+	align-items: center;
+	padding: 0 12px;
 
-    position: relative;
-    z-index: 2000;
+	position: relative;
+	z-index: 2000;
 }
 
-.app-body{
-    flex: 1;
-    display: grid;
-    grid-template-columns: var(--sidebar-width) 1fr;
-    overflow: hidden;
+.app-body {
+	flex: 1;
+	display: grid;
+	grid-template-columns: var(--sidebar-width) 1fr;
+	overflow: hidden;
 
-    position: relative;
+	position: relative;
 }
 
 /* =========================
@@ -66,23 +66,23 @@ body,
 ========================= */
 
 .sidebar {
-    grid-column: 1;
-    position: relative;
-    display: flex;
-    width: 100%;
+	grid-column: 1;
+	position: relative;
+	display: flex;
+	width: 100%;
 
-    z-index: 1000;
-    box-sizing: border-box;
+	z-index: 1000;
+	box-sizing: border-box;
 
-    background-color: var(--sidebar-bg);
-    color: #ecf0f1;
+	background-color: var(--sidebar-bg);
+	color: #ecf0f1;
 }
 
 .main-content {
-    grid-column: 2;
-    height: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+	grid-column: 2;
+	height: 100%;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
 }

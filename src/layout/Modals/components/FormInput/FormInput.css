@@ -1,64 +1,54 @@
 .form-input {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
 
-    margin-bottom: 18px;
+	margin-bottom: 18px;
 }
 
 .form-input label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #444;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: #444;
 }
-
 
 .form-input input,
 .form-input textarea {
+	width: 100%;
+	box-sizing: border-box;
 
-    width: 100%;
-    box-sizing: border-box;
+	padding: 10px 12px;
 
-    padding: 10px 12px;
+	font-size: 0.95rem;
 
-    font-size: 0.95rem;
+	border: 1px solid #d0d0d0;
+	border-radius: 8px;
 
-    border: 1px solid #d0d0d0;
-    border-radius: 8px;
+	background: white;
 
-    background: white;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+	transition:
+		border-color 0.2s ease,
+		box-shadow 0.2s ease;
 }
-
 
 .form-input textarea {
+	min-height: 100px;
 
-    min-height: 100px;
+	resize: vertical;
 
-    resize: vertical;
-
-    font-family: inherit;
+	font-family: inherit;
 }
-
 
 .form-input input:focus,
 .form-input textarea:focus {
+	outline: none;
 
-    outline: none;
+	border-color: #3388ff;
 
-    border-color: #3388ff;
-
-    box-shadow: 
-        0 0 0 3px rgba(51, 136, 255, 0.15);
+	box-shadow: 0 0 0 3px rgba(51, 136, 255, 0.15);
 }
-
 
 .form-input input::placeholder,
 .form-input textarea::placeholder {
-
-    color: #999;
-
+	color: #999;
 }

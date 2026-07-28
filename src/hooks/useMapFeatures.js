@@ -1,7 +1,7 @@
-import { useState, useRef } from "react";
-import osmtogeojson from "osmtogeojson";
+import { useState, useRef } from 'react';
+import osmtogeojson from 'osmtogeojson';
 
-import { fetchMapFeature } from "../services/overpass/overpass";
+import { fetchMapFeature } from '../services/overpass/overpass';
 
 /**
  * useMapFeatures
@@ -14,352 +14,336 @@ import { fetchMapFeature } from "../services/overpass/overpass";
  * - GeoJSON conversion
  */
 export default function useMapFeatures() {
-    const [featureLayers, setFeatureLayers] = useState({});
+	const [featureLayers, setFeatureLayers] = useState({});
 
-    /* Status popup handling */
-    const [status, setStatus] = useState("idle");
-    const [error, setError] = useState(null);
+	/* Status popup handling */
+	const [status, setStatus] = useState('idle');
+	const [error, setError] = useState(null);
 
-    /* Cacheing */
-    const requestId = useRef(0);
-    const cache = useRef(new Map());
+	/* Cacheing */
+	const requestId = useRef(0);
+	const cache = useRef(new Map());
 
-    /* Flags */
-    const [failedFeatureKey, setFailedFeatureKey] = useState(null); // cleanup 
+	/* Flags */
+	const [failedFeatureKey, setFailedFeatureKey] = useState(null); // cleanup
 
-    /* Remove all features from map */
-    const clearFeatures = () => {
-        console.log('[DEBUG] clearing all map features');
-        setFeatureLayers({});
+	/* Remove all features from map */
+	const clearFeatures = () => {
+		console.log('[DEBUG] clearing all map features');
+		setFeatureLayers({});
 
-        setError(null);
-        setStatus("idle");
-    };
+		setError(null);
+		setStatus('idle');
+	};
 
-    /* Remove a single feature */
-    const removeLayer = (layerID) => {
-        console.log('[DEBUG] removing feature:', {layerID});
-        setFeatureLayers(prev => {
-            const next = { ...prev };
+	/* Remove a single feature */
+	const removeLayer = (layerID) => {
+		console.log('[DEBUG] removing feature:', { layerID });
+		setFeatureLayers((prev) => {
+			const next = { ...prev };
 
-            delete next[layerID];
+			delete next[layerID];
 
-            return next;
-        });
+			return next;
+		});
 
-        setError(null);
-        setStatus("idle");
-    }
+		setError(null);
+		setStatus('idle');
+	};
 
-    /* Show or hide features on the map */
-    const toggleLayerVisibility = (layerID) => {
-        console.log('[DEBUG] toggleLayerVisibility ENTER:', layerID);
-        setFeatureLayers(prev => {
-            const layer = prev[layerID];
+	/* Show or hide features on the map */
+	const toggleLayerVisibility = (layerID) => {
+		console.log('[DEBUG] toggleLayerVisibility ENTER:', layerID);
+		setFeatureLayers((prev) => {
+			const layer = prev[layerID];
 
-            if (!layer) return prev;
+			if (!layer) return prev;
 
-            return{
-                ...prev,
-                [layerID]: {
-                    ...prev[layerID],
-                    visible: !prev[layerID].visible
-                }
-            }
-        })
-    }
+			return {
+				...prev,
+				[layerID]: {
+					...prev[layerID],
+					visible: !prev[layerID].visible,
+				},
+			};
+		});
+	};
 
-    /* Generate a colour for feature data, colour will be consistent across projects */
-    function getLayerColour(key) {
-        let hash = 0;
+	/* Generate a colour for feature data, colour will be consistent across projects */
+	function getLayerColour(key) {
+		let hash = 0;
 
-        for (let i = 0; i < key.length; i++) {
-            hash = key.charCodeAt(i) + ((hash << 5) - hash);
-        }
+		for (let i = 0; i < key.length; i++) {
+			hash = key.charCodeAt(i) + ((hash << 5) - hash);
+		}
 
-        const colour = (hash & 0x00FFFFFF)
-            .toString(16)
-            .padStart(6, "0");
+		const colour = (hash & 0x00ffffff).toString(16).padStart(6, '0');
 
-        return `#${colour}`;
-    }
+		return `#${colour}`;
+	}
 
-    /* Create label for each layer with an indicator for if it's a duplicate */
-    const createLayerLabel = (layers, featureKey, featureLabel) => {
-            const count = Object.values(layers)
-                .filter(layer => layer.sourceKey === featureKey)
-                .length;
+	/* Create label for each layer with an indicator for if it's a duplicate */
+	const createLayerLabel = (layers, featureKey, featureLabel) => {
+		const count = Object.values(layers).filter(
+			(layer) => layer.sourceKey === featureKey
+		).length;
 
-            return count === 0
-                ? featureLabel
-                : `${featureLabel} (${count + 1})`;
-        }
+		return count === 0 ? featureLabel : `${featureLabel} (${count + 1})`;
+	};
 
-    /* Apply filter to layer */
-    const addLayerFilter = (layerID, filter) => {
-        setFeatureLayers(prev => ({
-            ...prev,
-            [layerID]: {
-                ...prev[layerID],
+	/* Apply filter to layer */
+	const addLayerFilter = (layerID, filter) => {
+		setFeatureLayers((prev) => ({
+			...prev,
+			[layerID]: {
+				...prev[layerID],
 
-                filters: [
-                    ...prev[layerID].filters,
-                    filter
-                ]
-            }
-        }))
-    }
+				filters: [...prev[layerID].filters, filter],
+			},
+		}));
+	};
 
-    /* Update layer filter */
-    const updateLayerFilters = (layerID, filters) => {
-        setFeatureLayers(prev => ({
-            ...prev,
-            [layerID]: {
-                ...prev[layerID],
-                filters
-            }
-        }))
-    }
+	/* Update layer filter */
+	const updateLayerFilters = (layerID, filters) => {
+		setFeatureLayers((prev) => ({
+			...prev,
+			[layerID]: {
+				...prev[layerID],
+				filters,
+			},
+		}));
+	};
 
-    /* Remove filter from layer */
-    const removeLayerFilter = (layerID, filterID) => {
-        setFeatureLayers(prev => ({
-            ...prev,
-            [layerID]: {
-                ...prev[layerID],
+	/* Remove filter from layer */
+	const removeLayerFilter = (layerID, filterID) => {
+		setFeatureLayers((prev) => ({
+			...prev,
+			[layerID]: {
+				...prev[layerID],
 
-                filters:
-                    prev[layerID].filters.filter(
-                        f => f.id !== filterID
-                    )
-            }
-        }));
-    }
-    
-    /* Array indicating what features are in the cache */
-    // Used in the UI to indicate cached features
-    const getCachedFeatures = (boundaryKey) => {
+				filters: prev[layerID].filters.filter((f) => f.id !== filterID),
+			},
+		}));
+	};
 
-        return Array.from(cache.current.entries())
-            .filter(([cacheKey]) => {
-                const [cachedBoundary] = JSON.parse(cacheKey)
+	/* Array indicating what features are in the cache */
+	// Used in the UI to indicate cached features
+	const getCachedFeatures = (boundaryKey) => {
+		return Array.from(cache.current.entries())
+			.filter(([cacheKey]) => {
+				const [cachedBoundary] = JSON.parse(cacheKey);
 
-                return cachedBoundary === boundaryKey;
-            })
-            .map(([_, layer]) =>
-                layer.sourceKey
-            );
-    };
+				return cachedBoundary === boundaryKey;
+			})
+			.map(([_, layer]) => layer.sourceKey);
+	};
 
-    /* Clear cache */
-    // Used when loading a new boundary, data isn't left over in the cache
-    const clearCache = () => { 
-        cache.current.clear();
-    }
+	/* Clear cache */
+	// Used when loading a new boundary, data isn't left over in the cache
+	const clearCache = () => {
+		cache.current.clear();
+	};
 
-    /* Loads features by calling Overpass API */
-    const loadFeatures = async ({
-        featureKey,
-        boundaryKey,
-        featureTag,
-        featureValue,
-        featureType,
-        featureLabel,
-    }) => {
-        const layerID = crypto.randomUUID(); // Generate unique ID for layer
-        const colour = getLayerColour(featureKey);
+	/* Loads features by calling Overpass API */
+	const loadFeatures = async ({
+		featureKey,
+		boundaryKey,
+		featureTag,
+		featureValue,
+		featureType,
+		featureLabel,
+	}) => {
+		const layerID = crypto.randomUUID(); // Generate unique ID for layer
+		const colour = getLayerColour(featureKey);
 
-        const currentId = ++requestId.current;
+		const currentId = ++requestId.current;
 
-        if (featureValue === null) {
-            setStatus("idle");
-            return;
-        }
+		if (featureValue === null) {
+			setStatus('idle');
+			return;
+		}
 
-        const cacheKey = JSON.stringify([ // Store results in cache
-            boundaryKey,
-            featureTag,
-            featureValue,
-            featureType,
-            featureLabel,
-        ]);
+		const cacheKey = JSON.stringify([
+			// Store results in cache
+			boundaryKey,
+			featureTag,
+			featureValue,
+			featureType,
+			featureLabel,
+		]);
 
-        if (cache.current.has(cacheKey)) { // Check cache for stored features
-            const cached = cache.current.get(cacheKey);
+		if (cache.current.has(cacheKey)) {
+			// Check cache for stored features
+			const cached = cache.current.get(cacheKey);
 
-            // Load features from cache
-            setFeatureLayers(prev => {
-                const label = createLayerLabel(
-                    prev,
-                    cached.sourceKey,
-                    featureLabel
-                );
-                
-                return {
-                    ...prev,
-                    [layerID]: {
-                        sourceKey: cached.sourceKey,
-                        label,
-                        data: cached.data,
-                        geojson: cached.geojson,
-                        colour: cached.colour,
-                        visible: cached.visible, // will a hidden feature be loaded invisible from the cache?
-                        filters: [],
-                    }
-                };
-            });
+			// Load features from cache
+			setFeatureLayers((prev) => {
+				const label = createLayerLabel(
+					prev,
+					cached.sourceKey,
+					featureLabel
+				);
 
-            setStatus("success");
+				return {
+					...prev,
+					[layerID]: {
+						sourceKey: cached.sourceKey,
+						label,
+						data: cached.data,
+						geojson: cached.geojson,
+						colour: cached.colour,
+						visible: cached.visible, // will a hidden feature be loaded invisible from the cache?
+						filters: [],
+					},
+				};
+			});
 
-            return;
-        }
+			setStatus('success');
 
-        setFeatureLayers(prev => {
-            const next = { ...prev };
-            delete next[featureKey];
-            return next;
-        });
+			return;
+		}
 
-        setError(null);
-        setStatus("loading");
+		setFeatureLayers((prev) => {
+			const next = { ...prev };
+			delete next[featureKey];
+			return next;
+		});
 
-        try {
-            const result = await fetchMapFeature( // Fetch map feature from Overpass API
-                boundaryKey,
-                featureTag,
-                featureValue,
-                featureType,
-                featureLabel,
-            );
+		setError(null);
+		setStatus('loading');
 
-            if (currentId !== requestId.current) return;
+		try {
+			const result = await fetchMapFeature(
+				// Fetch map feature from Overpass API
+				boundaryKey,
+				featureTag,
+				featureValue,
+				featureType,
+				featureLabel
+			);
 
-            const geojson = osmtogeojson(result, { meta: true }); // Convert to geoJSON
+			if (currentId !== requestId.current) return;
 
-            cache.current.set(cacheKey, {
-                sourceKey: featureKey,
+			const geojson = osmtogeojson(result, { meta: true }); // Convert to geoJSON
 
-                query: {
-                    boundaryKey,
-                    featureTag,
-                    featureValue,
-                    featureType,
-                    featureLabel
-                },
+			cache.current.set(cacheKey, {
+				sourceKey: featureKey,
 
-                data: result,
-                geojson,
-                label: featureLabel,
-                colour,
-                visible: true,
-            });
+				query: {
+					boundaryKey,
+					featureTag,
+					featureValue,
+					featureType,
+					featureLabel,
+				},
 
-            setFeatureLayers(prev => {
-                const label = createLayerLabel(
-                    prev,
-                    featureKey,
-                    featureLabel
-                );
-                
-                return { // Create a new object for the feature
-                    ...prev,
-                    [layerID]: {
-                        sourceKey: featureKey,
-                        label,
-                        data: result,
-                        geojson,
-                        colour,
-                        visible: true,
-                        filters: []
-                    }
-                };
-            });
+				data: result,
+				geojson,
+				label: featureLabel,
+				colour,
+				visible: true,
+			});
 
-            setStatus("success");
-        } catch (err) {
-            if (currentId !== requestId.current) return;
+			setFeatureLayers((prev) => {
+				const label = createLayerLabel(prev, featureKey, featureLabel);
 
-            setFailedFeatureKey(featureKey) // pass back the feature that failed to load
+				return {
+					// Create a new object for the feature
+					...prev,
+					[layerID]: {
+						sourceKey: featureKey,
+						label,
+						data: result,
+						geojson,
+						colour,
+						visible: true,
+						filters: [],
+					},
+				};
+			});
 
-            setError(err);
-            setStatus("error");
-        }
-    };
+			setStatus('success');
+		} catch (err) {
+			if (currentId !== requestId.current) return;
 
-    /* Layer inspection and updating */
-    const updateLayer = (layerID, changes) => {
-        setFeatureLayers(prev => ({
-            ...prev,
-            [layerID]: {
-                ...prev[layerID],
-                ...changes
-            }
-        }));
-    };
+			setFailedFeatureKey(featureKey); // pass back the feature that failed to load
 
-    const exportLayers = () => {
-        return Object.entries(featureLayers).map(
-            ([id, layer]) => ({
-                id,
-                ...layer
-            })
-        )
-    }
+			setError(err);
+			setStatus('error');
+		}
+	};
 
-    const restoreLayers = (layers) => {
+	/* Layer inspection and updating */
+	const updateLayer = (layerID, changes) => {
+		setFeatureLayers((prev) => ({
+			...prev,
+			[layerID]: {
+				...prev[layerID],
+				...changes,
+			},
+		}));
+	};
 
-        if(!layers){
-            setFeatureLayers({});
-            return;
-        }
+	const exportLayers = () => {
+		return Object.entries(featureLayers).map(([id, layer]) => ({
+			id,
+			...layer,
+		}));
+	};
 
-        const restored = {};
+	const restoreLayers = (layers) => {
+		if (!layers) {
+			setFeatureLayers({});
+			return;
+		}
 
-        layers.forEach(layer => {
-            restored[layer.id] = {
-                sourceKey: layer.sourceKey,
-                label: layer.label,
-                data: layer.data,
-                geojson: layer.geojson,
-                colour: layer.colour,
-                visible: layer.visible,
-                filters: layer.filters ?? [],
-            };
-        });
+		const restored = {};
 
-        setFeatureLayers(restored);
+		layers.forEach((layer) => {
+			restored[layer.id] = {
+				sourceKey: layer.sourceKey,
+				label: layer.label,
+				data: layer.data,
+				geojson: layer.geojson,
+				colour: layer.colour,
+				visible: layer.visible,
+				filters: layer.filters ?? [],
+			};
+		});
 
-        setStatus("success");
-        setError(null);
-    }
+		setFeatureLayers(restored);
 
-    return {
-        // state
-        featureLayers,
+		setStatus('success');
+		setError(null);
+	};
 
-        // data operations
-        loadFeatures,
-        clearFeatures,
-        removeLayer,
+	return {
+		// state
+		featureLayers,
 
-        // layer editing
-        toggleLayerVisibility,
-        updateLayer,
-        addLayerFilter,
-        updateLayerFilters,
-        removeLayerFilter,
+		// data operations
+		loadFeatures,
+		clearFeatures,
+		removeLayer,
 
-        // persistence
-        exportLayers,
-        restoreLayers,
+		// layer editing
+		toggleLayerVisibility,
+		updateLayer,
+		addLayerFilter,
+		updateLayerFilters,
+		removeLayerFilter,
 
-        // cache
-        getCachedFeatures,
-        clearCache,
+		// persistence
+		exportLayers,
+		restoreLayers,
 
-        // status
-        failedFeatureKey,
-        status,
-        error,
-    };
+		// cache
+		getCachedFeatures,
+		clearCache,
+
+		// status
+		failedFeatureKey,
+		status,
+		error,
+	};
 }

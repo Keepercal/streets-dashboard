@@ -9,36 +9,36 @@
  * - "2 days ago"
  */
 export function timeAgo(timestamp) {
-    const diffMs = Date.now() - new Date(timestamp).getTime();
+	const diffMs = Date.now() - new Date(timestamp).getTime();
 
-    const minute = 60 * 1000;
-    const hour = 60 * minute;
-    const day = 24 * hour;
-    const month = 30.44 * day;
-    const year = 365.25 * day;
+	const minute = 60 * 1000;
+	const hour = 60 * minute;
+	const day = 24 * hour;
+	const month = 30.44 * day;
+	const year = 365.25 * day;
 
-    const format = (value, unit) =>
-        `${value} ${unit}${value !== 1 ? "s" : ""} ago`;
+	const format = (value, unit) =>
+		`${value} ${unit}${value !== 1 ? 's' : ''} ago`;
 
-    if (diffMs < minute) {
-        return "just now";
-    }
+	if (diffMs < minute) {
+		return 'just now';
+	}
 
-    if (diffMs < hour) {
-        return format(Math.floor(diffMs / minute), "minute");
-    }
+	if (diffMs < hour) {
+		return format(Math.floor(diffMs / minute), 'minute');
+	}
 
-    if (diffMs < day) {
-        return format(Math.floor(diffMs / hour), "hour");
-    }
+	if (diffMs < day) {
+		return format(Math.floor(diffMs / hour), 'hour');
+	}
 
-    if (diffMs < month) {
-        return format(Math.floor(diffMs / day), "day");
-    }
+	if (diffMs < month) {
+		return format(Math.floor(diffMs / day), 'day');
+	}
 
-    if (diffMs < year) {
-        return format(Math.floor(diffMs / month), "month");
-    }
+	if (diffMs < year) {
+		return format(Math.floor(diffMs / month), 'month');
+	}
 
-    return format(Math.floor(diffMs / year), "year");
+	return format(Math.floor(diffMs / year), 'year');
 }

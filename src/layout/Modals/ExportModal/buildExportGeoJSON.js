@@ -1,53 +1,42 @@
 export default function buildExportGeoJSON({
-    featureLayers,
-    layerScope,
-    featureScope,
-    selectedLayers
+	featureLayers,
+	layerScope,
+	featureScope,
+	selectedLayers,
 }) {
+	let layers = Object.entries(featureLayers);
 
-    let layers = Object.entries(featureLayers);
+	// Layer filtering
+	if (layerScope === 'visible') {
+		layers = layers.filter(([, layer]) => layer.visible);
+	}
 
-    // Layer filtering
-    if (layerScope === "visible"){
-        layers = layers.filter(
-            ([, layer]) => layer.visible
-        )
-    }
+	if (layerScope === 'selected') {
+		layers = layers.filter(([id]) => selectedLayers.includes(id));
+	}
 
-    if (layerScope === "selected"){
-        layers = layers.filter(
-            ([id]) =>
-                selectedLayers.includes(id)
-        );
-    }
+	// Feature filtering
+	const features = layers.flatMap(([layerID, layer]) => {
+		let layerFeatures = layer.geojson?.features ?? [];
 
-    // Feature filtering
-    const features = layers.flatMap(
-        ([layerID, layer]) => {
+		if (featureScope === 'filtered') {
+			layerFeatures = layerFeatures.filter(
+				(feature) => feature._matchesFilters
+			);
+		}
 
-            let layerFeatures = layer.geojson?.features ?? [];
+		return layerFeatures.map((feature) => ({
+			...feature,
 
-            if (featureScope === "filtered"){
-                layerFeatures =
-                    layerFeatures.filter(
-                        feature =>
-                            feature._matchesFilters
-                    );
-            }
+			properties: {
+				...feature.properties,
+				_layer: layerID,
+			},
+		}));
+	});
 
-            return layerFeatures.map(feature => ({
-                ...feature,
-
-                properties:{
-                    ...feature.properties,
-                    _layer: layerID
-                }
-            }));
-        }
-    );
-
-    return {
-        type: "FeatureCollection",
-        features
-    }
+	return {
+		type: 'FeatureCollection',
+		features,
+	};
 }

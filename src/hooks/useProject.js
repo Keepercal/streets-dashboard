@@ -1,6 +1,6 @@
-import { useMemo, useEffect, useState, useCallback } from "react";
-import { saveSession, loadSession } from "../services/sessionService"
-import { createProject } from "../models/project";
+import { useMemo, useEffect, useState, useCallback } from 'react';
+import { saveSession, loadSession } from '../services/sessionService';
+import { createProject } from '../models/project';
 
 /**
  * useProject
@@ -13,137 +13,112 @@ import { createProject } from "../models/project";
  * - manual save
  */
 export default function useProject({
-    projectInfo,
-    basemap,
-    displayMode,
-    boundary,
-    layers,
-    onRestore
+	projectInfo,
+	basemap,
+	displayMode,
+	boundary,
+	layers,
+	onRestore,
 }) {
+	// Prevent autosave until the initial project load is complete
+	const [hydrated, setHydrated] = useState(false);
 
-    // Prevent autosave until the initial project load is complete
-    const [hydrated, setHydrated] = useState(false);
+	// Prevent autosave while restoring a project
+	const [restoring, setRestoring] = useState(false);
 
-    // Prevent autosave while restoring a project
-    const [restoring, setRestoring] = useState(false);
+	// Create the current project as an object
+	const currentProject = useMemo(
+		() =>
+			createProject({
+				metadata: {
+					...projectInfo,
+					modified: new Date().toISOString(),
+				},
 
-    // Create the current project as an object
-    const currentProject = useMemo(() =>
-        createProject({
+				settings: {
+					basemap,
+					displayMode,
+				},
 
-            metadata: {
-                ...projectInfo,
-                modified: new Date().toISOString(),
-            },
+				boundary,
+				layers,
+			}),
+		[projectInfo, basemap, displayMode, boundary, layers]
+	);
 
-            settings: {
-                basemap,
-                displayMode,
-            },
+	// Load saved project from storage
+	const restoreSession = useCallback(() => {
+		const project = loadSession();
 
-            boundary,
-            layers,
-        }),
-        [
-            projectInfo,
-            basemap,
-            displayMode,
-            boundary,
-            layers,
-        ]);
+		// No saved project found
+		if (!project) {
+			setHydrated(true);
+			return false;
+		}
 
-    // Load saved project from storage
-    const restoreSession = useCallback(() => {
+		setRestoring(true);
 
-        const project = loadSession();
+		// Send project data back to App
+		onRestore?.(project);
 
-        // No saved project found
-        if (!project) {
-            setHydrated(true);
-            return false;
-        }
+		// Enable autosave after restore finishes
+		setTimeout(() => {
+			setRestoring(false);
+			setHydrated(true);
+		}, 0);
 
-        setRestoring(true);
+		return true;
+	}, [onRestore]);
 
-        // Send project data back to App
-        onRestore?.(project);
+	// Automatically save changes after a short delay
+	useEffect(() => {
+		if (!hydrated || restoring) return;
 
-        // Enable autosave after restore finishes
-        setTimeout(() => {
-            setRestoring(false)
-            setHydrated(true);
-        }, 0)
+		const timer = setTimeout(() => {
+			saveSession(currentProject);
+		}, 1000);
 
-        return true;
+		return () => clearTimeout(timer);
+	}, [currentProject, hydrated, restoring]);
 
-    }, [onRestore]);
+	// Manually save current project
+	const saveProject = useCallback(() => {
+		if (!hydrated || restoring) return;
 
-    // Automatically save changes after a short delay
-    useEffect(() => {
+		saveSession(currentProject);
+	}, [currentProject, hydrated, restoring]);
 
-        if (!hydrated || restoring) return;
+	// Export project as a JSON file
+	const saveProjectAs = useCallback(() => {
+		const json = JSON.stringify(currentProject, null, 2);
 
-        const timer = setTimeout(() => {
-            saveSession(currentProject);
-        }, 1000);
+		const blob = new Blob([json], { type: 'application/json' });
 
-        return () => clearTimeout(timer);
+		const url = URL.createObjectURL(blob);
 
-    }, [
-        currentProject,
-        hydrated,
-        restoring
-    ]);
+		const link = document.createElement('a');
 
-    // Manually save current project
-    const saveProject = useCallback(() => {
-        if (!hydrated || restoring) return;
+		link.href = url;
 
-        saveSession(currentProject);
-    }, [currentProject, hydrated, restoring]);
+		const filename = currentProject.metadata.filename
+			.replace(/[<>:"/\\|?*]+/g, '_')
+			.trim();
 
-    // Export project as a JSON file
-    const saveProjectAs = useCallback(() => {
+		link.download = `${filename || 'Untitled Project'}.json`;
 
-        const json = JSON.stringify(
-            currentProject,
-            null,
-            2
-        );
+		link.click();
 
-        const blob = new Blob(
-            [json],
-            { type: "application/json" }
-        );
+		URL.revokeObjectURL(url);
+	}, [currentProject]);
 
-        const url = URL.createObjectURL(blob);
+	return {
+		currentProject,
 
-        const link = document.createElement("a");
+		restoreSession,
 
-        link.href = url;
+		saveProject,
+		saveProjectAs,
 
-        const filename =
-            currentProject.metadata.filename
-                .replace(/[<>:"/\\|?*]+/g, "_")
-                .trim();
-
-        link.download = `${filename || "Untitled Project"}.json`
-
-        link.click();
-
-        URL.revokeObjectURL(url);
-
-    }, [currentProject]);
-
-
-    return {
-        currentProject,
-
-        restoreSession,
-
-        saveProject,
-        saveProjectAs,
-
-        hydrated
-    };
+		hydrated,
+	};
 }
