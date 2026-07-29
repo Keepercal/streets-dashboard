@@ -18,12 +18,11 @@ export default function RestoreSessionModal({
 			</section>
 
 			<section className="project-actions">
-				<button className="primary-btn" onClick={onRestore}>
-					Restore Session
-				</button>
-
 				<button className="primary-btn" onClick={onStartNew}>
 					Start New Session
+				</button>
+				<button className="primary-btn" onClick={onRestore}>
+					Restore Session
 				</button>
 			</section>
 		</Modal>

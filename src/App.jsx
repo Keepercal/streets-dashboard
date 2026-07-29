@@ -245,31 +245,6 @@ export default function App() {
 		setSelectedBoundaryKey(data.boundary?.selectedBoundaryKey ?? 'none');
 	}
 
-	/*
-	 * Creates a blank workspace
-	 */
-	const resetWorkspace = () => {
-		console.log('[DEBUG] Creating empty session');
-
-		setProject(null);
-		setIsDirty(false);
-
-		setSessionInfo(createSession());
-
-		clearBoundaryResults();
-		clearBoundary();
-		clearFeatures();
-		clearCache();
-
-		setSelectedBoundaryKey('none');
-
-		setBasemap('carto');
-		setDisplayMode('default');
-
-		setActiveModal(null);
-		setActiveDrawer(null);
-	};
-
 	const handleSaveAndNewSession = async () => {
 		await saveCurrentProject();
 		resetWorkspace();
@@ -304,6 +279,35 @@ export default function App() {
 	});
 
 	const { restoreSavedSession, clearSavedSession } = sessionManager;
+
+	/*
+	 * Creates a blank workspace
+	 */
+	const resetWorkspace = ({ clearSaved = true } = {}) => {
+		console.log('[DEBUG] Creating empty session');
+
+		if (clearSaved) {
+			clearSavedSession();
+		}
+
+		setProject(null);
+		setIsDirty(false);
+
+		setSessionInfo(createSession());
+
+		clearBoundaryResults();
+		clearBoundary();
+		clearFeatures();
+		clearCache();
+
+		setSelectedBoundaryKey('none');
+
+		setBasemap('carto');
+		setDisplayMode('default');
+
+		setActiveModal(null);
+		setActiveDrawer(null);
+	};
 
 	// Restore session on refresh
 	useEffect(() => {

@@ -31,10 +31,16 @@ export default function useSession({
 
 	function hasSessionData(session) {
 		if (!session?.data) return false;
-		return (
-			session.data?.boundary?.selectedBoundaryKey !== 'none' ||
-			session.data?.layers?.length > 0
-		);
+
+		const hasBoundary =
+			session.data.boundary?.selectedBoundaryKey &&
+			session.data.boundary.selectedBoundaryKey !== 'none';
+
+		const hasLayers =
+			Array.isArray(session.data.layers) &&
+			session.data.layers.length > 0;
+
+		return Boolean(hasBoundary || hasLayers);
 	}
 
 	const clearSavedSession = useCallback(() => {
@@ -104,6 +110,7 @@ export default function useSession({
 		}
 
 		const timer = setTimeout(() => {
+			console.log('[DEBUG] Autosaving:', currentSession);
 			saveSession(currentSession);
 		}, 1000);
 
