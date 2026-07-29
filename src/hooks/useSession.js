@@ -30,6 +30,7 @@ export default function useSession({
 	const [restoring, setRestoring] = useState(false);
 
 	function hasSessionData(session) {
+		if (!session?.data) return false;
 		return (
 			session.data?.boundary?.selectedBoundaryKey !== 'none' ||
 			session.data?.layers?.length > 0
@@ -41,27 +42,30 @@ export default function useSession({
 	}, []);
 
 	// Create the current session as an object
-	const currentSession = useMemo(
-		() =>
-			createSession({
-				...(sessionInfo ?? {}),
-				projectId: sessionInfo.projectId,
+	const currentSession = useMemo(() => {
+		if (!sessionInfo && !boundary && layers.length === 0) {
+			return null;
+		}
 
-				modified: new Date().toISOString(),
+		return createSession({
+			...(sessionInfo ?? {}),
 
-				data: {
-					settings: {
-						basemap,
-						displayMode,
-					},
+			projectId: sessionInfo?.projectId ?? null,
 
-					boundary,
+			modified: new Date().toISOString(),
 
-					layers,
+			data: {
+				settings: {
+					basemap,
+					displayMode,
 				},
-			}),
-		[sessionInfo, basemap, displayMode, boundary, layers]
-	);
+
+				boundary,
+
+				layers,
+			},
+		});
+	}, [sessionInfo, basemap, displayMode, boundary, layers]);
 
 	// Load saved session from storage
 	const restoreSavedSession = useCallback(() => {
@@ -95,7 +99,7 @@ export default function useSession({
 	useEffect(() => {
 		if (!hydrated || restoring) return;
 
-		if (!hasSessionData(currentSession)) {
+		if (!currentSession || !hasSessionData(currentSession)) {
 			return;
 		}
 

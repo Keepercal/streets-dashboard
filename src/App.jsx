@@ -266,8 +266,8 @@ export default function App() {
 		setBasemap('carto');
 		setDisplayMode('default');
 
-		setActiveDrawer(null);
 		setActiveModal(null);
+		setActiveDrawer(null);
 	};
 
 	const handleSaveAndNewSession = async () => {
@@ -303,14 +303,16 @@ export default function App() {
 		},
 	});
 
+	const { restoreSavedSession, clearSavedSession } = sessionManager;
+
 	// Restore session on refresh
 	useEffect(() => {
 		if (didRestore.current) return;
 
 		didRestore.current = true;
 
-		sessionManager.restoreSavedSession();
-	}, [sessionManager]);
+		restoreSavedSession();
+	}, [restoreSavedSession]);
 
 	/* FLAGS */
 	const [isDirty, setIsDirty] = useState(false);
@@ -402,15 +404,10 @@ export default function App() {
 					onStartNew={() => {
 						sessionManager.clearSavedSession();
 
-						console.log(
-							'[DEBUG] Session after clearing:',
-							localStorage.getItem('osm-project-session')
-						);
-
-						resetWorkspace();
-
 						setPendingSession(null);
 						setActiveModal(null);
+
+						resetWorkspace();
 					}}
 
 					onClose={() => {
