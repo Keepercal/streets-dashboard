@@ -78,6 +78,8 @@ export default function useProjectManager({
 		onDirtyChange(false);
 
 		console.log('[DEBUG] Project saved:', project);
+
+		return true;
 	}
 
 	/*

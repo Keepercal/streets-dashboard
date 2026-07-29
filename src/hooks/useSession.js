@@ -1,5 +1,9 @@
 import { useMemo, useEffect, useState, useCallback } from 'react';
-import { saveSession, loadSession } from '../services/sessionService';
+import {
+	saveSession,
+	loadSession,
+	clearSession,
+} from '../services/sessionService';
 import { createSession } from '../models/session';
 
 /**
@@ -25,11 +29,22 @@ export default function useSession({
 	// Prevent autosave while restoring a session
 	const [restoring, setRestoring] = useState(false);
 
+	function hasSessionData(session) {
+		return (
+			session.data?.boundary?.selectedBoundaryKey !== 'none' ||
+			session.data?.layers?.length > 0
+		);
+	}
+
+	const clearSavedSession = useCallback(() => {
+		clearSession();
+	}, []);
+
 	// Create the current session as an object
 	const currentSession = useMemo(
 		() =>
 			createSession({
-				...sessionInfo,
+				...(sessionInfo ?? {}),
 				projectId: sessionInfo.projectId,
 
 				modified: new Date().toISOString(),
@@ -53,8 +68,10 @@ export default function useSession({
 		const session = loadSession();
 
 		// No session found
-		if (!session) {
+		if (!session || !hasSessionData(session)) {
 			console.log('[DEBUG] No saved session found');
+
+			clearSession();
 
 			setHydrated(true);
 			return false;
@@ -78,6 +95,10 @@ export default function useSession({
 	useEffect(() => {
 		if (!hydrated || restoring) return;
 
+		if (!hasSessionData(currentSession)) {
+			return;
+		}
+
 		const timer = setTimeout(() => {
 			saveSession(currentSession);
 		}, 1000);
@@ -88,6 +109,10 @@ export default function useSession({
 	// Manually save current project
 	const saveCurrentSession = useCallback(() => {
 		if (!hydrated || restoring) return;
+
+		if (!hasSessionData(currentSession)) {
+			return;
+		}
 
 		saveSession(currentSession);
 	}, [currentSession, hydrated, restoring]);
@@ -118,9 +143,9 @@ export default function useSession({
 	return {
 		currentSession,
 
-		restoreSavedSession,
-
 		saveCurrentSession,
+		clearSavedSession,
+		restoreSavedSession,
 
 		hydrated,
 	};

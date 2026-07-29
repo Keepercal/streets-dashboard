@@ -7,16 +7,16 @@ import FormInput from '../components/FormInput/FormInput';
 export default function NewProjectModal({
 	isDirty,
 	onClose,
-	onCreate,
-	onSaveAndCreate,
+	onConfirm,
+	onSaveAndConfirm,
 }) {
 	return (
-		<Modal title="New Project" onClose={onClose}>
+		<Modal title="New Workspace" onClose={onClose}>
 			<section className="project-section">
 				<h3>
 					{isDirty
-						? 'Save changes before starting a new project?'
-						: 'Start a new project session?'}
+						? 'Save changes before starting a new workspace?'
+						: 'Start a new workspace?'}
 				</h3>
 				<p>
 					{isDirty
@@ -32,8 +32,8 @@ export default function NewProjectModal({
 
 				{!isDirty && (
 					<>
-						<button className="primary-btn" onClick={onCreate}>
-							Start New Session
+						<button className="primary-btn" onClick={onConfirm}>
+							Start New Workspace
 						</button>
 					</>
 				)}
@@ -42,12 +42,12 @@ export default function NewProjectModal({
 					<>
 						<button
 							className="primary-btn"
-							onClick={onSaveAndCreate}
+							onClick={onSaveAndConfirm}
 						>
 							Save & Continue
 						</button>
 
-						<button className="primary-btn" onClick={onCreate}>
+						<button className="primary-btn" onClick={onConfirm}>
 							Discard Changes
 						</button>
 					</>

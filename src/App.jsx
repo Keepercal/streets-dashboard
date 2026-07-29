@@ -40,6 +40,7 @@ import { createSession } from './models/session.js';
 import { isProjectSession } from './utils/sessionUtils';
 
 import { getProject } from './db/projectDB.js';
+import RestoreSessionModal from './layout/Modals/RestoreSessionModal/RestoreSessionModal.jsx';
 
 export default function App() {
 	const MODALS = {
@@ -47,9 +48,11 @@ export default function App() {
 		NEW_PROJECT: 'new-project',
 		SAVE_PROJECT: 'save-project',
 		OPEN_PROJECT: 'open-project',
+		RESTORE_SESSION: 'restore-session',
 	};
 
 	/* UI STATES */
+	const [pendingSession, setPendingSession] = useState(null);
 	const [activeDrawer, setActiveDrawer] = useState(null); // which drawer is open
 	const [activeLayer, setActiveLayer] = useState(null); // which layer the user is inspecting
 	const [activeModal, setActiveModal] = useState(null);
@@ -147,12 +150,10 @@ export default function App() {
 		setSelectedBoundaryKey('none');
 		clearBoundary();
 		clearFeatures();
-		//clearCache();
 	};
 
 	/* Handle renaming features */
 	const renameLayer = (layerID, newLabel) => {
-		console.log('[DEBUG] renameLayer ENTER:', layerID, newLabel);
 		updateLayer(layerID, {
 			displayName: newLabel,
 		});
@@ -245,7 +246,7 @@ export default function App() {
 	}
 
 	/*
-	 * Creates a blank session
+	 * Creates a blank workspace
 	 */
 	const resetWorkspace = () => {
 		console.log('[DEBUG] Creating empty session');
@@ -295,7 +296,11 @@ export default function App() {
 
 		layers: exportLayers(),
 
-		onRestore: restoreSession,
+		//onRestore: restoreSession,
+		onRestore: (session) => {
+			setPendingSession(session);
+			setActiveModal(MODALS.RESTORE_SESSION);
+		},
 	});
 
 	// Restore session on refresh
@@ -314,6 +319,9 @@ export default function App() {
 	const filteredLayers = useFilteredLayers(featureLayers);
 	const didRestore = useRef(false);
 
+	/*
+	 *Handles projects
+	 */
 	const {
 		project,
 		setProject,
@@ -380,16 +388,49 @@ export default function App() {
 			/>
 
 			{/* Modals */}
+			{activeModal === MODALS.RESTORE_SESSION && (
+				<RestoreSessionModal
+					onRestore={() => {
+						if (!pendingSession) return;
+
+						restoreSession(pendingSession);
+
+						setPendingSession(null);
+						setActiveModal(null);
+					}}
+
+					onStartNew={() => {
+						sessionManager.clearSavedSession();
+
+						console.log(
+							'[DEBUG] Session after clearing:',
+							localStorage.getItem('osm-project-session')
+						);
+
+						resetWorkspace();
+
+						setPendingSession(null);
+						setActiveModal(null);
+					}}
+
+					onClose={() => {
+						setPendingSession(null);
+						setActiveModal(null);
+					}}
+				/>
+			)}
+
 			{activeModal === MODALS.NEW_PROJECT && (
 				<NewProjectModal
 					isDirty={isDirty}
-					onCreate={resetWorkspace}
-					onSaveAndCreate={handleSaveAndNewSession}
+					onConfirm={resetWorkspace}
+					onSaveAndConfirm={handleSaveAndNewSession}
 					onClose={() => setActiveModal(null)}
 				/>
 			)}
 			{activeModal === MODALS.OPEN_PROJECT && (
 				<OpenProjectModal
+					isDirty={isDirty}
 					onOpen={(projectId) => {
 						openProject(projectId, restoreSession);
 						setActiveModal(null);
