@@ -8,7 +8,9 @@ export default function ManageLayersPanel({
 	featureLayers,
 	toggleLayerVisibility,
 	updateLayer,
+
 	updateLayerFilters,
+
 	removeLayer,
 	renameLayer,
 	clearFeatures,
@@ -37,7 +39,9 @@ export default function ManageLayersPanel({
 							layer={layer}
 							toggleLayerVisibility={toggleLayerVisibility}
 							updateLayer={updateLayer}
+
 							updateLayerFilters={updateLayerFilters}
+
 							removeLayer={removeLayer}
 							renameLayer={renameLayer}
 						/>

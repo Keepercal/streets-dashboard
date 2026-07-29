@@ -8,7 +8,9 @@ export default function LayerItem({
 	layer,
 	toggleLayerVisibility,
 	updateLayer,
+
 	updateLayerFilters,
+
 	removeLayer,
 	renameLayer,
 }) {

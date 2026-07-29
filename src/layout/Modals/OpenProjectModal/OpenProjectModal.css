@@ -19,7 +19,9 @@
 	border: 1px solid var(--border-colour);
 	border-radius: 10px;
 
-	background: #efefef;
+	border-left: 5px solid rgb(15, 106, 217);
+
+	background: var(--surface-colour);
 	cursor: pointer;
 	text-align: left;
 
@@ -31,8 +33,11 @@
 }
 
 .project-card:hover {
-	background: #ecf0f1;
+	background: #f1f3f4;
 	border-color: var(--accent-colour);
+
+	border-left: 5px solid rgb(15, 106, 217);
+
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 	transform: translateY(-1px);
 }

@@ -75,7 +75,7 @@ export default function App() {
 		loadBoundary,
 		clearBoundary,
 
-		exportBoundary,
+		//exportBoundary,
 		restoreBoundary,
 
 		// status
@@ -98,9 +98,7 @@ export default function App() {
 		// layer editing
 		toggleLayerVisibility,
 		updateLayer,
-		addLayerFilter,
 		updateLayerFilters,
-		removeLayerFilter,
 
 		// persistence
 		exportLayers,

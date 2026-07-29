@@ -98,43 +98,19 @@ export default function useMapFeatures({ onChange = {} }) {
 		return count === 0 ? featureLabel : `${featureLabel} (${count + 1})`;
 	};
 
-	/* Apply filter to layer */
-	const addLayerFilter = (layerID, filter) => {
-		setFeatureLayers((prev) => ({
-			...prev,
-			[layerID]: {
-				...prev[layerID],
-
-				filters: [...prev[layerID].filters, filter],
-			},
-		}));
-
-		markDirty();
-	};
-
 	/* Update layer filter */
 	const updateLayerFilters = (layerID, filters) => {
-		setFeatureLayers((prev) => ({
-			...prev,
-			[layerID]: {
-				...prev[layerID],
-				filters,
-			},
-		}));
+		setFeatureLayers((prev) => {
+			const next = {
+				...prev,
+				[layerID]: {
+					...prev[layerID],
+					filters,
+				},
+			};
 
-		markDirty();
-	};
-
-	/* Remove filter from layer */
-	const removeLayerFilter = (layerID, filterID) => {
-		setFeatureLayers((prev) => ({
-			...prev,
-			[layerID]: {
-				...prev[layerID],
-
-				filters: prev[layerID].filters.filter((f) => f.id !== filterID),
-			},
-		}));
+			return next;
+		});
 
 		markDirty();
 	};
@@ -346,9 +322,7 @@ export default function useMapFeatures({ onChange = {} }) {
 		// layer editing
 		toggleLayerVisibility,
 		updateLayer,
-		addLayerFilter,
 		updateLayerFilters,
-		removeLayerFilter,
 
 		// persistence
 		exportLayers,
