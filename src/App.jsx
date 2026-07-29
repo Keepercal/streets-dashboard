@@ -173,12 +173,14 @@ export default function App() {
 		featureKey,
 		featureTag,
 		featureValue,
+		featureType,
 		featureLabel
 	) => {
 		console.log('[DEBUG] handleAddLayer ENTER:', {
 			featureKey,
 			featureTag,
 			featureValue,
+			featureType,
 			featureLabel,
 			selectedBoundaryKey,
 		});
@@ -188,6 +190,7 @@ export default function App() {
 			boundaryKey: selectedBoundaryKey,
 			featureTag,
 			featureValue,
+			featureType,
 			featureLabel,
 		});
 

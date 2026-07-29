@@ -14,7 +14,7 @@
 	align-items: flex-start;
 	justify-content: center;
 
-	padding: 1rem;
+	padding: 0.75rem;
 
 	border: 1px solid var(--border-colour);
 	border-radius: 10px;
