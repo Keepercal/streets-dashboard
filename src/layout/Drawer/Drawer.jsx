@@ -30,7 +30,7 @@ function Drawer({
 	displayMode,
 	setDisplayMode,
 
-	handleClearBoundaryResults,
+	clearBoundaryResults,
 	handleClearBoundary,
 	removeLayer,
 	clearFeatures,
@@ -62,7 +62,7 @@ function Drawer({
 					<BoundaryPanel
 						hasBoundary={hasBoundary}
 						loadBoundaryResults={loadBoundaryResults}
-						handleClearBoundaryResults={handleClearBoundaryResults}
+						clearBoundaryResults={clearBoundaryResults}
 						handleClearBoundary={handleClearBoundary}
 						clearFeatures={clearFeatures}
 

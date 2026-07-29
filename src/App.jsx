@@ -32,14 +32,14 @@ import useMapFeatures from './hooks/useMapFeatures.js';
 import useFilteredLayers from './hooks/useFilteredLayers.js';
 import useStatusPopup from './hooks/useStatusPopup.js';
 import useSession from './hooks/useSession.js';
+import useProjectManager from './hooks/useProjectManager.js';
 
 /* Misc imports */
 import { FEATURE_OPTIONS } from './config/featureOptions.js';
-import { createProject } from './models/project';
 import { createSession } from './models/session.js';
 import { isProjectSession } from './utils/sessionUtils';
 
-import { saveProject as saveProjectToDB, getProject } from './db/projectDB.js';
+import { getProject } from './db/projectDB.js';
 
 export default function App() {
 	const MODALS = {
@@ -59,7 +59,6 @@ export default function App() {
 
 	/* DATA STATES */
 	const [sessionInfo, setSessionInfo] = useState(createSession());
-	const [project, setProject] = useState(null);
 	const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
 
 	const { loadBoundaryResults, boundaryResults, clearBoundaryResults } =
@@ -144,13 +143,6 @@ export default function App() {
 	/**
 	 * Handle resetting boundary and wiping features
 	 */
-	const handleClearBoundaryResults = () => {
-		clearBoundaryResults();
-	};
-
-	/**
-	 * Handle resetting boundary and wiping features
-	 */
 	const handleClearBoundary = () => {
 		setSelectedBoundaryKey('none');
 		clearBoundary();
@@ -207,9 +199,9 @@ export default function App() {
 	);
 
 	/*
-	 * Loads a restored project back onto the map and configures the application settings
+	 * Restores a saved session, including the project, map settings, boundaries, and layers.
 	 */
-	function restoreSession(session) {
+	async function restoreSession(session) {
 		if (!session) return;
 
 		console.log('[DEBUG] Restoring session:', session);
@@ -225,23 +217,37 @@ export default function App() {
 
 		setSessionInfo(session);
 
+		if (session.projectId) {
+			const project = await getProject(session.projectId);
+
+			if (project) {
+				setProject(project);
+			}
+		}
+
+		restoreWorkspaceSettings(session.data);
+
 		const data = session.data ?? {};
 
-		setBasemap(data.settings?.basemap ?? 'carto');
-
-		setDisplayMode(data.settings?.displayMode ?? 'default');
-
-		setSelectedBoundaryKey(data.boundary?.selectedBoundaryKey ?? 'none');
-
 		restoreBoundary(data.boundary);
-
 		restoreLayers(data.layers ?? []);
+
+		setIsDirty(false);
+	}
+
+	/*
+	 * Helper to restore workspace settings
+	 */
+	function restoreWorkspaceSettings(data) {
+		setBasemap(data.settings?.basemap ?? 'carto');
+		setDisplayMode(data.settings?.displayMode ?? 'default');
+		setSelectedBoundaryKey(data.boundary?.selectedBoundaryKey ?? 'none');
 	}
 
 	/*
 	 * Creates a blank session
 	 */
-	const handleNewSession = () => {
+	const resetWorkspace = () => {
 		console.log('[DEBUG] Creating empty session');
 
 		setProject(null);
@@ -263,139 +269,17 @@ export default function App() {
 		setActiveModal(null);
 	};
 
-	async function handleOpenProject(projectId) {
-		const project = await getProject(projectId);
-
-		if (!project) {
-			console.error('Project not found');
-			return;
-		}
-
-		console.log('[DEBUG] Opening project:', project);
-
-		setProject(project);
-
-		restoreSession({
-			projectId: project.metadata.id,
-			data: {
-				settings: project.settings,
-				boundary: project.boundary,
-				layers: project.layers,
-			},
-		});
-
-		setIsDirty(false);
-	}
-
-	/*
-	 * Saves the current project
-	 */
-	async function saveCurrentProject() {
-		if (!project) {
-			console.log('[DEBUG] No existing project, opening Save As');
-			setActiveModal(MODALS.SAVE_PROJECT);
-			return;
-		}
-
-		const updatedProject = {
-			...project,
-
-			metadata: {
-				...project.metadata,
-				modified: new Date().toISOString(),
-			},
-
-			settings: {
-				basemap,
-				displayMode,
-			},
-
-			boundary: {
-				selectedBoundaryKey,
-				data: boundaryData,
-				geojson: boundaryGeojson,
-			},
-
-			layers: exportLayers(),
-		};
-
-		await saveProjectToDB(updatedProject);
-
-		console.log('[DEBUG] Saving project', updatedProject);
-
-		setProject(updatedProject);
-		setIsDirty(false);
-
-		console.log('[DEBUG] Project saved:', project);
-	}
-
-	/*
-	 * Creates a brand new project
-	 */
-	async function saveProjectAs(name, description) {
-		const newProject = createProject({
-			metadata: {
-				name,
-				description,
-			},
-
-			settings: {
-				basemap,
-				displayMode,
-			},
-
-			boundary: {
-				selectedBoundaryKey,
-				data: boundaryData,
-				geojson: boundaryGeojson,
-			},
-
-			layers: exportLayers(),
-		});
-
-		await saveProjectToDB(newProject);
-
-		console.log('[DEBUG] Saving project', newProject);
-
-		setProject(newProject);
-
-		// Link the current session to this project
-		setSessionInfo((prev) => ({
-			...prev,
-			projectId: newProject.metadata.id,
-			modified: new Date().toISOString(),
-		}));
-
-		setIsDirty(false);
-
-		console.log('[DEBUG] Project saved:', project);
-	}
-
 	const handleSaveAndNewSession = async () => {
 		await saveCurrentProject();
-		handleNewSession();
+		resetWorkspace();
 	};
 
 	function handleProjectDeleted(id) {
 		if (project?.metadata.id !== id) return;
 
-		console.log('[DEBUG] Deleted active project, clearing session');
+		console.log('[DEBUG] Deleted active project');
 
-		setProject(null);
-
-		setSessionInfo(createSession());
-
-		clearBoundaryResults();
-		clearBoundary();
-		clearFeatures();
-		clearCache();
-
-		setSelectedBoundaryKey('none');
-
-		setBasemap('carto');
-		setDisplayMode('default');
-
-		setIsDirty(false);
+		resetWorkspace();
 	}
 
 	/*
@@ -420,7 +304,7 @@ export default function App() {
 
 		didRestore.current = true;
 
-		sessionManager.restoreSession();
+		sessionManager.restoreSavedSession();
 	}, [sessionManager]);
 
 	/* FLAGS */
@@ -429,6 +313,42 @@ export default function App() {
 	const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if features exist
 	const filteredLayers = useFilteredLayers(featureLayers);
 	const didRestore = useRef(false);
+
+	const {
+		project,
+		setProject,
+
+		openProject,
+		saveCurrentProject,
+		saveProjectAs,
+	} = useProjectManager({
+		workspace: {
+			basemap,
+			displayMode,
+
+			selectedBoundaryKey,
+			boundaryData,
+			boundaryGeojson,
+
+			exportLayers,
+		},
+
+		session: {
+			sessionInfo,
+			setSessionInfo,
+		},
+
+		restore: {
+			restoreSession,
+			restoreBoundary,
+			restoreLayers,
+		},
+
+		resetWorkspace: resetWorkspace,
+
+		onDirtyChange: setIsDirty,
+		onSaveAsRequested: () => setActiveModal(MODALS.SAVE_PROJECT),
+	});
 
 	return (
 		<div className="App">
@@ -463,7 +383,7 @@ export default function App() {
 			{activeModal === MODALS.NEW_PROJECT && (
 				<NewProjectModal
 					isDirty={isDirty}
-					onCreate={handleNewSession}
+					onCreate={resetWorkspace}
 					onSaveAndCreate={handleSaveAndNewSession}
 					onClose={() => setActiveModal(null)}
 				/>
@@ -471,7 +391,7 @@ export default function App() {
 			{activeModal === MODALS.OPEN_PROJECT && (
 				<OpenProjectModal
 					onOpen={(projectId) => {
-						handleOpenProject(projectId);
+						openProject(projectId, restoreSession);
 						setActiveModal(null);
 					}}
 
@@ -550,7 +470,7 @@ export default function App() {
 					displayMode={displayMode}
 					setDisplayMode={setDisplayMode}
 
-					handleClearBoundaryResults={handleClearBoundaryResults}
+					clearBoundaryResults={clearBoundaryResults}
 					handleClearBoundary={handleClearBoundary}
 					removeLayer={removeLayer}
 					clearFeatures={clearFeatures}

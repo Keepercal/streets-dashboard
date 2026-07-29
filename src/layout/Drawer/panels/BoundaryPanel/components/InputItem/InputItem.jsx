@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 export default function InputItem({
 	onSearch,
-	handleClearBoundaryResults,
+	clearBoundaryResults,
 	setHasSearched,
 }) {
 	const [boundaryName, setBoundaryName] = useState('');
@@ -20,7 +20,7 @@ export default function InputItem({
 	};
 
 	const clearResults = () => {
-		handleClearBoundaryResults();
+		clearBoundaryResults();
 		setHasSearched(false);
 		setBoundaryName('');
 	};

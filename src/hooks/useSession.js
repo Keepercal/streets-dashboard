@@ -49,7 +49,7 @@ export default function useSession({
 	);
 
 	// Load saved session from storage
-	const restoreSession = useCallback(() => {
+	const restoreSavedSession = useCallback(() => {
 		const session = loadSession();
 
 		// No session found
@@ -118,10 +118,9 @@ export default function useSession({
 	return {
 		currentSession,
 
-		restoreSession,
+		restoreSavedSession,
 
 		saveCurrentSession,
-		//saveProjectAs,
 
 		hydrated,
 	};

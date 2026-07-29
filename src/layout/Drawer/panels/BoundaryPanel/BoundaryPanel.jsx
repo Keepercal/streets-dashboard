@@ -21,7 +21,7 @@ import DeleteButton from '../../../../components/DeleteButton/DeleteButton.jsx';
 const BoundaryPanel = ({
 	hasBoundary,
 	loadBoundaryResults,
-	handleClearBoundaryResults,
+	clearBoundaryResults,
 	handleClearBoundary,
 	clearFeatures,
 
@@ -44,7 +44,7 @@ const BoundaryPanel = ({
 					onSearch={loadBoundaryResults}
 					setHasSearched={setHasSearched}
 
-					handleClearBoundaryResults={handleClearBoundaryResults}
+					clearBoundaryResults={clearBoundaryResults}
 					clearFeatures={clearFeatures}
 				/>
 			</div>
