@@ -22,7 +22,7 @@ import BASEMAPS from './config/basemaps';
  * - Zoom tracking
  */
 
-function Map({ boundary, featureLayers, displayMode, basemap }) {
+function Map({ boundary, boundaryKey, featureLayers, displayMode, basemap }) {
 	//const position = [54.0182, -2.5471]; // Bristol
 	const position = [54.0182, -2.5471]; // UK
 	//const position = [0, 0]; // Globe
@@ -34,6 +34,7 @@ function Map({ boundary, featureLayers, displayMode, basemap }) {
 	return (
 		<>
 			<MapContainer
+				key={boundaryKey}
 				center={position}
 				//zoom={13} // Bristol
 				zoom={6} // UK

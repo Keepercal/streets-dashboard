@@ -17,7 +17,14 @@ export default function OpenProjectModal({
 
 	async function loadProjects() {
 		const list = await getProjects();
-		setProjects(list);
+
+		const sorted = list.sort((a, b) => {
+			return (
+				new Date(b.metadata.modified) - new Date(a.metadata.modified)
+			);
+		});
+
+		setProjects(sorted);
 	}
 	useEffect(() => {
 		loadProjects();
@@ -33,42 +40,45 @@ export default function OpenProjectModal({
 
 	return (
 		<Modal title="Open project" onClose={onClose}>
-			{projects.map((project) => (
-				<div key={project.metadata.id} className="project-item">
-					<button
-						className="project-card"
-						onClick={() => onOpen(project.metadata.id)}
-					>
-						<div className="project-card-content">
-							<h3>{project.metadata.name}</h3>
+			<div className="project-list">
+				{projects.map((project) => (
+					<div key={project.metadata.id} className="project-item">
+						<button
+							className="project-card"
+							onClick={() => onOpen(project.metadata.id)}
+						>
+							<div className="project-card-content">
+								<h3>{project.metadata.name}</h3>
 
-							<div className="project-meta">
-								<span>
-									{project?.boundary.data.elements?.[0]?.tags
-										?.name ?? 'None'}
+								<div className="project-meta">
+									<span>
+										{project?.boundary.data.elements?.[0]
+											?.tags?.name ?? 'None'}
+									</span>
+								</div>
+
+								{project.metadata.description && (
+									<p className="project-description">
+										{project.metadata.description}
+									</p>
+								)}
+
+								<span className="project-updated">
+									<strong>Last modified: </strong>
+									{timeAgo(project?.metadata.modified)}
 								</span>
 							</div>
-
-							{project.metadata.description && (
-								<p className="project-description">
-									{project.metadata.description}
-								</p>
-							)}
-
-							<span className="project-updated">
-								{timeAgo(project?.metadata.modified)}
-							</span>
-						</div>
-					</button>
-					<button
-						className="project-card-delete"
-						onClick={() => handleDelete(project.metadata.id)}
-						aria-label={`Delete ${project.metadata.name}`}
-					>
-						<Trash2 size={22} />
-					</button>
-				</div>
-			))}
+						</button>
+						<button
+							className="project-card-delete"
+							onClick={() => handleDelete(project.metadata.id)}
+							aria-label={`Delete ${project.metadata.name}`}
+						>
+							<Trash2 size={22} />
+						</button>
+					</div>
+				))}
+			</div>
 		</Modal>
 	);
 }

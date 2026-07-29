@@ -5,6 +5,23 @@
 	margin-bottom: 0.75rem;
 }
 
+.project-list {
+	max-height: 500px;
+	overflow-y: auto;
+
+	padding-right: 0.5rem;
+}
+
+.project-list::after {
+	content: '';
+	position: sticky;
+	bottom: 0;
+	display: block;
+	height: 20px;
+	background: linear-gradient(transparent, rgba(255, 255, 255, 0.95));
+	pointer-events: none;
+}
+
 /* Main project selection button */
 .project-card {
 	flex: 1;

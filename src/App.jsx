@@ -371,6 +371,11 @@ export default function App() {
 		console.log('[DEBUG] Project saved:', project);
 	}
 
+	const handleSaveAndNewSession = async () => {
+		await saveCurrentProject();
+		handleNewSession();
+	};
+
 	function handleProjectDeleted(id) {
 		if (project?.metadata.id !== id) return;
 
@@ -457,7 +462,9 @@ export default function App() {
 			{/* Modals */}
 			{activeModal === MODALS.NEW_PROJECT && (
 				<NewProjectModal
+					isDirty={isDirty}
 					onCreate={handleNewSession}
+					onSaveAndCreate={handleSaveAndNewSession}
 					onClose={() => setActiveModal(null)}
 				/>
 			)}
@@ -554,8 +561,14 @@ export default function App() {
 					{hasFeatures && displayMode === 'lastEdited' && <Legend />}
 
 					<Map
+						// boundary
 						boundary={boundaryGeojson}
+						boundaryKey={selectedBoundaryKey}
+
+						// features
 						featureLayers={filteredLayers}
+
+						// display settings
 						displayMode={displayMode}
 						basemap={basemap}
 					/>
