@@ -41,14 +41,16 @@ export default function NewProjectModal({
 				{isDirty && (
 					<>
 						<button
+							className="primary-btn-discard"
+							onClick={onConfirm}
+						>
+							Discard Changes
+						</button>
+						<button
 							className="primary-btn"
 							onClick={onSaveAndConfirm}
 						>
 							Save & Continue
-						</button>
-
-						<button className="primary-btn" onClick={onConfirm}>
-							Discard Changes
 						</button>
 					</>
 				)}

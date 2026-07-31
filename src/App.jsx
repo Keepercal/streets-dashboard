@@ -283,10 +283,10 @@ export default function App() {
 	/*
 	 * Creates a blank workspace
 	 */
-	const resetWorkspace = ({ clearSaved = true } = {}) => {
-		console.log('[DEBUG] Creating empty session');
+	const resetWorkspace = ({ preserveAutosave = false } = {}) => {
+		console.log('[DEBUG] Resetting workspace');
 
-		if (clearSaved) {
+		if (!preserveAutosave) {
 			clearSavedSession();
 		}
 

@@ -7,8 +7,8 @@ export const menus = [
 		title: 'File',
 		items: [
 			{
-				id: 'new-project',
-				label: 'New Session',
+				id: 'new-workspace',
+				label: 'New Workspace',
 				icon: CirclePlus,
 				modal: 'new-project',
 				action: 'modal',

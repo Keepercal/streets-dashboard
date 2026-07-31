@@ -18,7 +18,7 @@ export default function RestoreSessionModal({
 			</section>
 
 			<section className="project-actions">
-				<button className="primary-btn" onClick={onStartNew}>
+				<button className="secondary-btn" onClick={onStartNew}>
 					Start New Session
 				</button>
 				<button className="primary-btn" onClick={onRestore}>
