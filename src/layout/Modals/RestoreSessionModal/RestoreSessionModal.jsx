@@ -10,19 +10,20 @@ export default function RestoreSessionModal({
 	onClose,
 }) {
 	return (
-		<Modal title="New Workspace" onClose={onClose}>
+		<Modal title="Restore Workspace?" onClose={onClose}>
 			<section className="project-section">
 				<h3>
-					A previous session was found. Would you like to restore it?
+					A previous workspace with data was found. Would you like to
+					restore it?
 				</h3>
 			</section>
 
 			<section className="project-actions">
-				<button className="secondary-btn" onClick={onStartNew}>
-					Start New Session
+				<button className="secondary-btn warning" onClick={onStartNew}>
+					Start New Workspace
 				</button>
 				<button className="primary-btn" onClick={onRestore}>
-					Restore Session
+					Restore Workspace
 				</button>
 			</section>
 		</Modal>

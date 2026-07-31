@@ -142,6 +142,14 @@ export default function useMapFeatures({ onChange = {} }) {
 		featureType,
 		featureLabel,
 	}) => {
+		console.log('[DEBUG] handleAddLayer ENTER:', {
+			featureKey,
+			featureTag,
+			featureValue,
+			featureType,
+			featureLabel,
+		});
+
 		const layerID = crypto.randomUUID(); // Generate unique ID for layer
 		const colour = getLayerColour(featureKey);
 

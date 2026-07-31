@@ -6,17 +6,20 @@ export default function FormInput({
 	value,
 	onChange,
 	placeholder,
+	error,
 }) {
 	return (
 		<div className="form-input">
 			<label>{label}</label>
 
 			{type === 'textarea' ? (
-				<textarea
-					value={value}
-					onChange={onChange}
-					placeholder={placeholder}
-				/>
+				<>
+					<textarea
+						value={value}
+						onChange={onChange}
+						placeholder={placeholder}
+					/>
+				</>
 			) : (
 				<input
 					type={type}
@@ -25,6 +28,8 @@ export default function FormInput({
 					placeholder={placeholder}
 				/>
 			)}
+
+			{error && <div className="field-error">{error}</div>}
 		</div>
 	);
 }

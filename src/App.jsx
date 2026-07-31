@@ -18,7 +18,7 @@ import Drawer from './layout/Drawer/Drawer';
 /* Popups/Panels */
 import StatusPopup from './layout/Popups/StatusPopup/StatusPopup.jsx';
 import ExportModal from './layout/Modals/ExportModal/ExportModal.jsx';
-import NewProjectModal from './layout/Modals/NewProjectModal/NewProjectModal.jsx';
+import UnsavedChangesModal from './layout/Modals/UnsavedChangesModal/UnsavedChangesModal.jsx';
 import OpenProjectModal from './layout/Modals/OpenProjectModal/OpenProjectModal.jsx';
 import SaveModal from './layout/Modals/SaveModal/SaveModal.jsx';
 
@@ -26,8 +26,7 @@ import SaveModal from './layout/Modals/SaveModal/SaveModal.jsx';
 import Legend from './components/Legend/Legend.jsx';
 
 /* Hooks */
-import useBoundarySearch from './hooks/useBoundarySearch.js';
-import useBoundaryData from './hooks/useBoundaryData.js';
+import useBoundaryManager from './hooks/useBoundaryManager.js';
 import useMapFeatures from './hooks/useMapFeatures.js';
 import useFilteredLayers from './hooks/useFilteredLayers.js';
 import useStatusPopup from './hooks/useStatusPopup.js';
@@ -45,7 +44,7 @@ import RestoreSessionModal from './layout/Modals/RestoreSessionModal/RestoreSess
 export default function App() {
 	const MODALS = {
 		EXPORT: 'export',
-		NEW_PROJECT: 'new-project',
+		UNSAVED_CHANGES: 'unsaved-changes',
 		SAVE_PROJECT: 'save-project',
 		OPEN_PROJECT: 'open-project',
 		RESTORE_SESSION: 'restore-session',
@@ -53,6 +52,8 @@ export default function App() {
 
 	/* UI STATES */
 	const [pendingSession, setPendingSession] = useState(null);
+	const [pendingAction, setPendingAction] = useState(null);
+
 	const [activeDrawer, setActiveDrawer] = useState(null); // which drawer is open
 	const [activeLayer, setActiveLayer] = useState(null); // which layer the user is inspecting
 	const [activeModal, setActiveModal] = useState(null);
@@ -64,30 +65,32 @@ export default function App() {
 	const [sessionInfo, setSessionInfo] = useState(createSession());
 	const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
 
-	const { loadBoundaryResults, boundaryResults, clearBoundaryResults } =
-		useBoundarySearch();
-
+	/* Manages states for boundaries */
 	const {
 		// boundary data
 		boundaryData,
 		boundaryGeojson,
-		boundaryName = boundaryData?.elements?.[0]?.tags?.name ?? 'None',
+		boundaryName = boundaryData?.elements?.[0]?.tags?.name ?? 'None', // human readable name
+
+		// boundary
+		boundaryResults,
+		loadBoundaryResults,
+		clearBoundaryResults,
 
 		// boundary handling
 		loadBoundary,
 		clearBoundary,
-
-		//exportBoundary,
 		restoreBoundary,
+		//exportBoundary,
 
 		// status
 		status: boundaryStatus,
 		error: boundaryError,
-	} = useBoundaryData({
+	} = useBoundaryManager({
 		onChange: () => setIsDirty(true),
 	});
 
-	/* Hook in feature data */
+	/* Manages states for data displayed on map */
 	const {
 		//state
 		featureLayers,
@@ -121,6 +124,7 @@ export default function App() {
 	const { statusPopup, dismissPopup } = useStatusPopup({
 		boundaryStatus,
 		boundaryError,
+
 		featureStatus,
 		featureError,
 		failedFeatureKey,
@@ -169,14 +173,9 @@ export default function App() {
 		featureType,
 		featureLabel
 	) => {
-		console.log('[DEBUG] handleAddLayer ENTER:', {
-			featureKey,
-			featureTag,
-			featureValue,
-			featureType,
-			featureLabel,
-			selectedBoundaryKey,
-		});
+		console.log(
+			`Calling loadFeatures with boundary key: ${selectedBoundaryKey}`
+		);
 
 		loadFeatures({
 			featureKey,
@@ -245,9 +244,49 @@ export default function App() {
 		setSelectedBoundaryKey(data.boundary?.selectedBoundaryKey ?? 'none');
 	}
 
-	const handleSaveAndNewSession = async () => {
+	function confirmUnsavedChanges(action) {
+		if (!isDirty) {
+			action();
+			return;
+		}
+
+		setPendingAction(() => action);
+		setActiveModal(MODALS.UNSAVED_CHANGES);
+	}
+
+	const handleNewWorkspace = () => {
+		confirmUnsavedChanges(resetWorkspace);
+	};
+
+	const handleOpenProject = (projectId) => {
+		confirmUnsavedChanges(() => {
+			openProject(projectId, restoreSession);
+			setActiveModal(null);
+		});
+		if (!isDirty) {
+			setActiveModal(null);
+		}
+	};
+
+	const handleSaveAndContinue = async () => {
 		await saveCurrentProject();
-		resetWorkspace();
+
+		await pendingAction?.();
+
+		setPendingAction(null);
+		setActiveModal(null);
+	};
+
+	const handleDiscardAndContinue = async () => {
+		await pendingAction?.();
+
+		setPendingAction(null);
+		setActiveModal(null);
+	};
+
+	const handleCancel = () => {
+		setPendingAction(null);
+		setActiveModal(null);
 	};
 
 	function handleProjectDeleted(id) {
@@ -421,21 +460,17 @@ export default function App() {
 				/>
 			)}
 
-			{activeModal === MODALS.NEW_PROJECT && (
-				<NewProjectModal
-					isDirty={isDirty}
-					onConfirm={resetWorkspace}
-					onSaveAndConfirm={handleSaveAndNewSession}
-					onClose={() => setActiveModal(null)}
+			{activeModal === MODALS.UNSAVED_CHANGES && (
+				<UnsavedChangesModal
+					onSave={handleSaveAndContinue}
+					onDiscard={handleDiscardAndContinue}
+					onClose={handleCancel}
 				/>
 			)}
 			{activeModal === MODALS.OPEN_PROJECT && (
 				<OpenProjectModal
 					isDirty={isDirty}
-					onOpen={(projectId) => {
-						openProject(projectId, restoreSession);
-						setActiveModal(null);
-					}}
+					onOpen={handleOpenProject}
 
 					onClose={() => setActiveModal(null)}
 
@@ -464,6 +499,7 @@ export default function App() {
 			<header className="app-header">
 				<Toolbar
 					onOpenModal={setActiveModal}
+					onNewWorkspace={handleNewWorkspace}
 					canExport={hasFeatures}
 					canSave={hasBoundary}
 					onSave={saveCurrentProject}

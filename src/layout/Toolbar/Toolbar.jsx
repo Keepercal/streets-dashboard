@@ -17,6 +17,7 @@ import { menus } from './config/menus';
 
 export default function Toolbar({
 	onOpenModal,
+	onNewWorkspace,
 	canExport,
 	canSave,
 	onSave,
@@ -32,11 +33,18 @@ export default function Toolbar({
 			case 'save':
 				onSave();
 				break;
+
+			case 'newWorkspace':
+				onNewWorkspace();
+				break;
+
+			case 'openProject':
+				onOpenModal('open-project');
+				break;
+
 			case 'modal':
 				onOpenModal(item.modal);
 				break;
-			default:
-				console.warn(`Unknown action: ${item.action}`);
 		}
 
 		setOpenMenu(null);

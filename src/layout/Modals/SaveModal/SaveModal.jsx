@@ -9,9 +9,18 @@ export default function SaveModal({ onClose, onSaveAs }) {
 	const [projectName, setProjectName] = useState('');
 	const [projectDescription, setProjectDescription] = useState('');
 
+	const [hasTitle, setHasTitle] = useState(true);
+
 	const handleCreate = () => {
+		if (!projectName) {
+			setHasTitle(false);
+			return;
+		}
+
 		const name = projectName.trim() || 'Untitled Project';
 		const description = projectDescription || '';
+
+		setHasTitle(true);
 
 		onSaveAs(name, description);
 		onClose();
@@ -24,10 +33,15 @@ export default function SaveModal({ onClose, onSaveAs }) {
 
 				<div className="project-metadata">
 					<FormInput
-						label="Project Name"
+						label="Project Name (required)"
 						value={projectName}
 						onChange={(e) => setProjectName(e.target.value)}
 						placeholder="Untitled Project"
+						error={
+							!hasTitle
+								? 'Please enter a name before saving your project'
+								: ''
+						}
 					/>
 
 					<FormInput

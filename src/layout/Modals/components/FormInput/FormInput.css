@@ -52,3 +52,9 @@
 .form-input textarea::placeholder {
 	color: #999;
 }
+
+.field-error {
+	color: #d32f2f;
+	font-size: 0.875rem;
+	margin-top: 0.25rem;
+}
