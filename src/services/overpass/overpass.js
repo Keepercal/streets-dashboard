@@ -25,8 +25,14 @@ async function callOverpass(query) {
  * - Throws consistent errors for HTTP failures
  * - Validates payload shape
  */
-async function handleOverpassResponse(res, retryFn) {
+async function handleOverpassResponse(res, retryFn, retries) {
 	if (res.status === 504) {
+		if (retries <= 0) {
+			throw new Error('Overpass timed out after multiple retries');
+		}
+
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+
 		return retryFn();
 	}
 
@@ -56,7 +62,7 @@ async function handleOverpassResponse(res, retryFn) {
  * -------------
  * Fetches a boundary relation from Overpass by name.
  */
-export async function fetchBoundary(boundaryID, boundaryType) {
+export async function fetchBoundary(boundaryID, boundaryType, retries = 3) {
 	if (!boundaryID || boundaryID === 'none') return null;
 
 	console.log('[DEBUG] fetchBoundary ENTER:', {
@@ -74,8 +80,10 @@ export async function fetchBoundary(boundaryID, boundaryType) {
 
 	const res = await callOverpass(query);
 
-	return handleOverpassResponse(res, () =>
-		fetchBoundary(boundaryID, boundaryType)
+	return handleOverpassResponse(
+		res,
+		() => fetchBoundary(boundaryID, boundaryType, retries - 1),
+		retries
 	);
 }
 

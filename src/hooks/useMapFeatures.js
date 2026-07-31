@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import osmtogeojson from 'osmtogeojson';
 
 import { fetchMapFeature } from '../services/overpass/overpass';
@@ -13,7 +13,7 @@ import { fetchMapFeature } from '../services/overpass/overpass';
  * - request cancellation
  * - GeoJSON conversion
  */
-export default function useMapFeatures({ onChange = {} }) {
+export default function useMapFeatures({ onChange = () => {} } = {}) {
 	const [featureLayers, setFeatureLayers] = useState({});
 
 	/* Status popup handling */
@@ -31,11 +31,45 @@ export default function useMapFeatures({ onChange = {} }) {
 		onChange?.();
 	}
 
+	const buildLayer = useCallback(
+		({
+			sourceKey,
+			label,
+			data,
+			geojson,
+			colour,
+			visible = true,
+			filters = [],
+		}) => ({
+			sourceKey,
+			label,
+			data,
+			geojson,
+			colour,
+			visible,
+			filters,
+		}),
+		[]
+	);
+
+	function patchLayer(layerID, changes) {
+		setFeatureLayers((prev) => ({
+			...prev,
+			[layerID]: {
+				...prev[layerID],
+				...changes,
+			},
+		}));
+
+		markDirty();
+	}
+
 	/* Remove all features from map */
 	const clearFeatures = () => {
 		console.log('[DEBUG] clearing all map features');
 		setFeatureLayers({});
 
+		markDirty();
 		setError(null);
 		setStatus('idle');
 	};
@@ -58,7 +92,6 @@ export default function useMapFeatures({ onChange = {} }) {
 
 	/* Show or hide features on the map */
 	const toggleLayerVisibility = (layerID) => {
-		console.log('[DEBUG] toggleLayerVisibility ENTER:', layerID);
 		setFeatureLayers((prev) => {
 			const layer = prev[layerID];
 
@@ -67,8 +100,8 @@ export default function useMapFeatures({ onChange = {} }) {
 			return {
 				...prev,
 				[layerID]: {
-					...prev[layerID],
-					visible: !prev[layerID].visible,
+					...layer,
+					visible: !layer.visible,
 				},
 			};
 		});
@@ -78,6 +111,8 @@ export default function useMapFeatures({ onChange = {} }) {
 
 	/* Generate a colour for feature data, colour will be consistent across projects */
 	function getLayerColour(key) {
+		key = String(key ?? '');
+
 		let hash = 0;
 
 		for (let i = 0; i < key.length; i++) {
@@ -90,30 +125,26 @@ export default function useMapFeatures({ onChange = {} }) {
 	}
 
 	/* Create label for each layer with an indicator for if it's a duplicate */
-	const createLayerLabel = (layers, featureKey, featureLabel) => {
-		const count = Object.values(layers).filter(
-			(layer) => layer.sourceKey === featureKey
-		).length;
+	const generateLayerLabel = (layers, featureKey, featureLabel) => {
+		let count = 0;
+
+		for (const id in layers) {
+			if (layers[id].sourceKey === featureKey) {
+				count++;
+			}
+		}
 
 		return count === 0 ? featureLabel : `${featureLabel} (${count + 1})`;
 	};
 
 	/* Update layer filter */
 	const updateLayerFilters = (layerID, filters) => {
-		setFeatureLayers((prev) => {
-			const next = {
-				...prev,
-				[layerID]: {
-					...prev[layerID],
-					filters,
-				},
-			};
-
-			return next;
-		});
-
-		markDirty();
+		patchLayer(layerID, { filters });
 	};
+
+	function cacheLayer(cacheKey, layer) {
+		cache.current.set(cacheKey, layer);
+	}
 
 	/* Array indicating what features are in the cache */
 	// Used in the UI to indicate cached features
@@ -126,6 +157,33 @@ export default function useMapFeatures({ onChange = {} }) {
 			})
 			.map(([_, layer]) => layer.sourceKey);
 	};
+
+	function loadCachedLayer(cacheKey, layerID, featureLabel) {
+		// Check cache for stored features
+		const cached = cache.current.get(cacheKey);
+
+		if (!cached) return false;
+
+		// Load features from cache
+		setFeatureLayers((prev) => {
+			const label = generateLayerLabel(
+				prev,
+				cached.sourceKey,
+				featureLabel
+			);
+
+			return {
+				...prev,
+				[layerID]: buildLayer({
+					...cached,
+					label,
+					filters: [],
+				}),
+			};
+		});
+
+		setStatus('success');
+	}
 
 	/* Clear cache */
 	// Used when loading a new boundary, data isn't left over in the cache
@@ -150,7 +208,19 @@ export default function useMapFeatures({ onChange = {} }) {
 			featureLabel,
 		});
 
+		if (!featureKey || !boundaryKey || !featureTag) {
+			throw new Error('Missing required feature parameters');
+		}
+
 		const layerID = crypto.randomUUID(); // Generate unique ID for layer
+
+		console.log({
+			featureKey,
+			type: typeof featureKey,
+			boundaryKey,
+			featureTag,
+		});
+
 		const colour = getLayerColour(featureKey);
 
 		const currentId = ++requestId.current;
@@ -170,33 +240,7 @@ export default function useMapFeatures({ onChange = {} }) {
 		]);
 
 		if (cache.current.has(cacheKey)) {
-			// Check cache for stored features
-			const cached = cache.current.get(cacheKey);
-
-			// Load features from cache
-			setFeatureLayers((prev) => {
-				const label = createLayerLabel(
-					prev,
-					cached.sourceKey,
-					featureLabel
-				);
-
-				return {
-					...prev,
-					[layerID]: {
-						sourceKey: cached.sourceKey,
-						label,
-						data: cached.data,
-						geojson: cached.geojson,
-						colour: cached.colour,
-						visible: cached.visible, // will a hidden feature be loaded invisible from the cache?
-						filters: [],
-					},
-				};
-			});
-
-			setStatus('success');
-
+			loadCachedLayer(cacheKey, layerID, featureLabel);
 			return;
 		}
 
@@ -207,11 +251,12 @@ export default function useMapFeatures({ onChange = {} }) {
 		});
 
 		setError(null);
+		setFailedFeatureKey(null);
 		setStatus('loading');
 
 		try {
+			// Fetch map feature from Overpass API
 			const result = await fetchMapFeature(
-				// Fetch map feature from Overpass API
 				boundaryKey,
 				featureTag,
 				featureValue,
@@ -221,11 +266,15 @@ export default function useMapFeatures({ onChange = {} }) {
 
 			if (currentId !== requestId.current) return;
 
-			const geojson = osmtogeojson(result, { meta: true }); // Convert to geoJSON
+			const geojson = osmtogeojson(result, {
+				meta: true,
+			}); // Convert to geoJSON
 
-			cache.current.set(cacheKey, {
+			cacheLayer(cacheKey, {
 				sourceKey: featureKey,
-
+				data: result,
+				geojson,
+				colour,
 				query: {
 					boundaryKey,
 					featureTag,
@@ -233,29 +282,25 @@ export default function useMapFeatures({ onChange = {} }) {
 					featureType,
 					featureLabel,
 				},
-
-				data: result,
-				geojson,
-				label: featureLabel,
-				colour,
-				visible: true,
 			});
 
 			setFeatureLayers((prev) => {
-				const label = createLayerLabel(prev, featureKey, featureLabel);
+				const label = generateLayerLabel(
+					prev,
+					featureKey,
+					featureLabel
+				);
 
 				return {
 					// Create a new object for the feature
 					...prev,
-					[layerID]: {
+					[layerID]: buildLayer({
 						sourceKey: featureKey,
 						label,
 						data: result,
 						geojson,
 						colour,
-						visible: true,
-						filters: [],
-					},
+					}),
 				};
 			});
 
@@ -273,15 +318,7 @@ export default function useMapFeatures({ onChange = {} }) {
 
 	/* Layer inspection and updating */
 	const updateLayer = (layerID, changes) => {
-		setFeatureLayers((prev) => ({
-			...prev,
-			[layerID]: {
-				...prev[layerID],
-				...changes,
-			},
-		}));
-
-		markDirty();
+		patchLayer(layerID, changes);
 	};
 
 	const exportLayers = () => {
@@ -300,15 +337,10 @@ export default function useMapFeatures({ onChange = {} }) {
 		const restored = {};
 
 		layers.forEach((layer) => {
-			restored[layer.id] = {
-				sourceKey: layer.sourceKey,
-				label: layer.label,
-				data: layer.data,
-				geojson: layer.geojson,
-				colour: layer.colour,
-				visible: layer.visible,
+			restored[layer.id] = buildLayer({
+				...layer,
 				filters: layer.filters ?? [],
-			};
+			});
 		});
 
 		setFeatureLayers(restored);

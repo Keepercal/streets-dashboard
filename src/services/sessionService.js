@@ -4,7 +4,6 @@ const SESSION_KEY = 'osm-project-session';
  * Save project to local storage
  */
 export function saveSession(project) {
-	console.log('[DEBUG] Saving session:', project);
 	localStorage.setItem(SESSION_KEY, JSON.stringify(project));
 }
 

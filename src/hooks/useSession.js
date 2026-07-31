@@ -110,7 +110,6 @@ export default function useSession({
 		}
 
 		const timer = setTimeout(() => {
-			console.log('[DEBUG] Autosaving:', currentSession);
 			saveSession(currentSession);
 		}, 1000);
 

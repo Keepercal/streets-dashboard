@@ -1,6 +1,7 @@
 import './LayerItem.css';
 import { Eye, EyeOff, Trash2, Palette, Check, Pencil } from 'lucide-react';
-import { useState } from 'react';
+import debounce from 'lodash.debounce';
+import { useState, useMemo } from 'react';
 import LayerFilters from './LayerFilters/LayerFilters';
 
 export default function LayerItem({
@@ -16,6 +17,7 @@ export default function LayerItem({
 }) {
 	const [editing, setEditing] = useState(false);
 	const [name, setName] = useState('');
+	const [colour, setColour] = useState(layer.colour ?? '#3388ff');
 	const [showFilters, setShowFilters] = useState(false);
 
 	const hasFilters = layer.filters?.length > 0;
@@ -35,6 +37,14 @@ export default function LayerItem({
 		setEditing(false);
 		setName('');
 	};
+
+	const debouncedUpdate = useMemo(
+		() =>
+			debounce((colour) => {
+				updateLayer(layerID, { colour });
+			}, 100),
+		[layerID, updateLayer]
+	);
 
 	return (
 		<>
@@ -118,13 +128,16 @@ export default function LayerItem({
 						>
 							<input
 								type="color"
-								value={layer.colour ?? '#3388ff'}
-								onChange={(event) =>
+								value={colour}
+								onChange={(e) => {
+									setColour(e.target.value);
+									debouncedUpdate(e.target.value);
+								}}
+								onBlur={() =>
 									updateLayer(layerID, {
-										colour: event.target.value,
+										colour,
 									})
 								}
-								onBlur={(event) => event.target.blur()}
 							/>
 						</div>
 

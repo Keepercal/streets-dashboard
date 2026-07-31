@@ -558,7 +558,7 @@ export const FEATURE_MAP = {
 		},
 		pitch: {
 			tag: 'leisure',
-			label: 'Sports Pitches',
+			label: 'Pitches',
 			type: 'way',
 		},
 		track: {
