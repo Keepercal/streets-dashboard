@@ -32,6 +32,7 @@ import useFilteredLayers from './hooks/useFilteredLayers.js';
 import useStatusPopup from './hooks/useStatusPopup.js';
 import useSession from './hooks/useSession.js';
 import useProjectManager from './hooks/useProjectManager.js';
+import useUnsavedChanges from './hooks/useUnsavedChanges.js';
 
 /* Misc imports */
 import { FEATURE_OPTIONS } from './config/featureOptions.js';
@@ -44,15 +45,14 @@ import RestoreSessionModal from './layout/Modals/RestoreSessionModal/RestoreSess
 export default function App() {
 	const MODALS = {
 		EXPORT: 'export',
-		UNSAVED_CHANGES: 'unsaved-changes',
-		SAVE_PROJECT: 'save-project',
-		OPEN_PROJECT: 'open-project',
-		RESTORE_SESSION: 'restore-session',
+		UNSAVED_CHANGES: 'unsavedChanges',
+		SAVE_PROJECT: 'saveProject',
+		OPEN_PROJECT: 'openProject',
+		RESTORE_SESSION: 'restoreSession',
 	};
 
 	/* UI STATES */
 	const [pendingSession, setPendingSession] = useState(null);
-	const [pendingAction, setPendingAction] = useState(null);
 
 	const [activeDrawer, setActiveDrawer] = useState(null); // which drawer is open
 	const [activeLayer, setActiveLayer] = useState(null); // which layer the user is inspecting
@@ -244,16 +244,6 @@ export default function App() {
 		setSelectedBoundaryKey(data.boundary?.selectedBoundaryKey ?? 'none');
 	}
 
-	function confirmUnsavedChanges(action) {
-		if (!isDirty) {
-			action();
-			return;
-		}
-
-		setPendingAction(() => action);
-		setActiveModal(MODALS.UNSAVED_CHANGES);
-	}
-
 	const handleNewWorkspace = () => {
 		confirmUnsavedChanges(resetWorkspace);
 	};
@@ -263,30 +253,6 @@ export default function App() {
 			openProject(projectId, restoreSession);
 			setActiveModal(null);
 		});
-		if (!isDirty) {
-			setActiveModal(null);
-		}
-	};
-
-	const handleSaveAndContinue = async () => {
-		await saveCurrentProject();
-
-		await pendingAction?.();
-
-		setPendingAction(null);
-		setActiveModal(null);
-	};
-
-	const handleDiscardAndContinue = async () => {
-		await pendingAction?.();
-
-		setPendingAction(null);
-		setActiveModal(null);
-	};
-
-	const handleCancel = () => {
-		setPendingAction(null);
-		setActiveModal(null);
 	};
 
 	function handleProjectDeleted(id) {
@@ -401,6 +367,18 @@ export default function App() {
 
 		onDirtyChange: setIsDirty,
 		onSaveAsRequested: () => setActiveModal(MODALS.SAVE_PROJECT),
+	});
+
+	const {
+		confirmUnsavedChanges,
+		handleSaveAndContinue,
+		handleDiscardAndContinue,
+		handleCancel,
+	} = useUnsavedChanges({
+		isDirty,
+		setActiveModal,
+		modalKey: MODALS.UNSAVED_CHANGES,
+		saveCurrentProject,
 	});
 
 	return (

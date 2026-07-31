@@ -39,7 +39,7 @@ export default function Toolbar({
 				break;
 
 			case 'openProject':
-				onOpenModal('open-project');
+				onOpenModal('openProject');
 				break;
 
 			case 'modal':
