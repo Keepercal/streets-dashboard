@@ -2,7 +2,6 @@ import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import { useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import './Map.css';
-import App from '../../App';
 
 import BoundaryLayer from './layers/BoundaryLayer';
 import FeatureLayer from './layers/FeatureLayer';
@@ -42,7 +41,7 @@ function Map({ boundary, boundaryKey, featureLayers, displayMode, basemap }) {
 				zoomControl={false}
 				style={{ height: '100vh', width: '100%' }}
 			>
-				<ZoomControl position="bottomright" />
+				<ZoomControl position="topright" />
 
 				{/* Track zoom level */}
 				<ZoomTracker onZoom={setZoom} />

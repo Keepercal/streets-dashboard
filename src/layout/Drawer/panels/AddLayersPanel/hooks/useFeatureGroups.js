@@ -20,6 +20,9 @@ export default function useFeatureGroups(featureOptions) {
 					...feature,
 				});
 
+				// Sort the group
+				groups[group].sort((a, b) => a.key.localeCompare(b.label));
+
 				return groups;
 			},
 			{}

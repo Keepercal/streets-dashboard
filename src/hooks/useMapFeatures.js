@@ -65,15 +65,18 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 	}
 
 	/* Remove all features from map */
-	const clearFeatures = () => {
+	const clearFeatures = ({ markDirty = true } = {}) => {
 		console.log('[DEBUG] clearing all map features');
+
 		setFeatureLayers({});
 
-		markDirty();
+		if (markDirty) {
+			onChange?.();
+		}
+
 		setError(null);
 		setStatus('idle');
 	};
-
 	/* Remove a single feature */
 	const removeLayer = (layerID) => {
 		console.log('[DEBUG] removing feature:', { layerID });

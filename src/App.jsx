@@ -5,7 +5,6 @@
  * npm run deploy: Builds and deploys to GitHub Pages
  */
 
-import { createRoot } from 'react-dom/client';
 import { useMemo, useEffect, useState, useRef } from 'react';
 import './App.css';
 
@@ -53,6 +52,7 @@ export default function App() {
 
 	/* UI STATES */
 	const [pendingSession, setPendingSession] = useState(null);
+	const didRestore = useRef(false);
 
 	const [activeDrawer, setActiveDrawer] = useState(null); // which drawer is open
 	const [activeLayer, setActiveLayer] = useState(null); // which layer the user is inspecting
@@ -296,7 +296,6 @@ export default function App() {
 		}
 
 		setProject(null);
-		setIsDirty(false);
 
 		setSessionInfo(createSession());
 
@@ -312,6 +311,7 @@ export default function App() {
 
 		setActiveModal(null);
 		setActiveDrawer(null);
+		setIsDirty(false);
 	};
 
 	// Restore session on refresh
@@ -328,7 +328,6 @@ export default function App() {
 	const hasBoundary = Object.keys(boundaryData ?? {}).length > 0; // Flag to check if boundary exists
 	const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if features exist
 	const filteredLayers = useFilteredLayers(featureLayers);
-	const didRestore = useRef(false);
 
 	/*
 	 *Handles projects
@@ -389,6 +388,7 @@ export default function App() {
 				type={statusPopup.type}
 				title={statusPopup.title}
 				message={statusPopup.message}
+				drawerOpen={activeDrawer !== null}
 				onClose={() => {
 					console.log('[DEBUG] Popup closed:', statusPopup);
 
@@ -553,5 +553,3 @@ export default function App() {
 		</div>
 	);
 }
-
-createRoot(document.getElementById('root')).render(<App />);

@@ -13,8 +13,12 @@ export default function useStatusPopup({
 	 * Reset status popup dismissal when loading starts
 	 */
 	useEffect(() => {
-		if (boundaryStatus === 'loading' || featureStatus === 'loading') {
-			console.log('[DEBUG] Loading started → resetting statusDismissed');
+		if (
+			boundaryStatus === 'loading' ||
+			featureStatus === 'loading' ||
+			boundaryStatus === 'error' ||
+			featureStatus === 'error'
+		) {
 			setDismissed(false);
 		}
 	}, [boundaryStatus, featureStatus]);
@@ -97,6 +101,18 @@ export default function useStatusPopup({
 		featureError,
 		failedFeatureKey,
 	]);
+
+	useEffect(() => {
+		if (!statusPopup.trigger || statusPopup.type !== 'error') {
+			return;
+		}
+
+		const timer = setTimeout(() => {
+			setDismissed(true);
+		}, 5000);
+
+		return () => clearTimeout(timer);
+	}, [statusPopup.trigger, statusPopup.type]);
 
 	return {
 		statusPopup,

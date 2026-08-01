@@ -97,7 +97,6 @@ export default function useBoundaryManager({ onChange = {} }) {
 			setBoundaryGeojson(geojson);
 
 			setStatus('success');
-			markDirty();
 		} catch (err) {
 			if (currentId !== requestId.current) return;
 
