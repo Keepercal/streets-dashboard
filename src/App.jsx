@@ -14,12 +14,13 @@ import Toolbar from './layout/Toolbar/Toolbar';
 import Sidebar from './layout/Sidebar/Sidebar';
 import Drawer from './layout/Drawer/Drawer';
 
-/* Popups/Panels */
+/* Popups/Modals */
 import StatusPopup from './layout/Popups/StatusPopup/StatusPopup.jsx';
-import ExportModal from './layout/Modals/ExportModal/ExportModal.jsx';
-import UnsavedChangesModal from './layout/Modals/UnsavedChangesModal/UnsavedChangesModal.jsx';
-import OpenProjectModal from './layout/Modals/OpenProjectModal/OpenProjectModal.jsx';
-import SaveModal from './layout/Modals/SaveModal/SaveModal.jsx';
+
+import ExportModal from './layout/Modal/ExportModal/ExportModal.jsx';
+import UnsavedChangesModal from './layout/Modal/UnsavedChangesModal/UnsavedChangesModal.jsx';
+import OpenProjectModal from './layout/Modal/OpenProjectModal/OpenProjectModal.jsx';
+import SaveModal from './layout/Modal/SaveModal/SaveModal.jsx';
 
 /* Map related components */
 import Legend from './components/Legend/Legend.jsx';
@@ -39,7 +40,7 @@ import { createSession } from './models/session.js';
 import { isProjectSession } from './utils/sessionUtils';
 
 import { getProject } from './db/projectDB.js';
-import RestoreSessionModal from './layout/Modals/RestoreSessionModal/RestoreSessionModal.jsx';
+import RestoreSessionModal from './layout/Modal/RestoreSessionModal/RestoreSessionModal.jsx';
 
 export default function App() {
 	const MODALS = {
@@ -121,7 +122,7 @@ export default function App() {
 		onChange: () => setIsDirty(true),
 	});
 
-	const { statusPopup, dismissPopup } = useStatusPopup({
+	const { statusPopup /*dismissPopup*/ } = useStatusPopup({
 		boundaryStatus,
 		boundaryError,
 
@@ -189,6 +190,9 @@ export default function App() {
 		setIsDirty(true);
 	};
 
+	/*
+	 * Memorises the current boundary
+	 */
 	const boundaryState = useMemo(
 		() => ({
 			selectedBoundaryKey,
@@ -217,6 +221,7 @@ export default function App() {
 
 		setSessionInfo(session);
 
+		// If the session matches the ID of a project
 		if (session.projectId) {
 			const project = await getProject(session.projectId);
 
@@ -225,12 +230,12 @@ export default function App() {
 			}
 		}
 
-		restoreWorkspaceSettings(session.data);
+		const sessionData = session.data ?? {};
 
-		const data = session.data ?? {};
+		restoreWorkspaceSettings(sessionData);
 
-		restoreBoundary(data.boundary);
-		restoreLayers(data.layers ?? []);
+		restoreBoundary(sessionData.boundary);
+		restoreLayers(sessionData.layers ?? []);
 
 		setIsDirty(false);
 	}
@@ -238,10 +243,12 @@ export default function App() {
 	/*
 	 * Helper to restore workspace settings
 	 */
-	function restoreWorkspaceSettings(data) {
-		setBasemap(data.settings?.basemap ?? 'carto');
-		setDisplayMode(data.settings?.displayMode ?? 'default');
-		setSelectedBoundaryKey(data.boundary?.selectedBoundaryKey ?? 'none');
+	function restoreWorkspaceSettings(sessionData) {
+		setBasemap(sessionData.settings?.basemap ?? 'carto');
+		setDisplayMode(sessionData.settings?.displayMode ?? 'default');
+		setSelectedBoundaryKey(
+			sessionData.boundary?.selectedBoundaryKey ?? 'none'
+		);
 	}
 
 	const handleNewWorkspace = () => {
@@ -264,7 +271,7 @@ export default function App() {
 	}
 
 	/*
-	 *Handles sessions
+	 *	Handles the management of the current working session
 	 */
 	const sessionManager = useSession({
 		sessionInfo,
@@ -276,7 +283,6 @@ export default function App() {
 
 		layers: exportLayers(),
 
-		//onRestore: restoreSession,
 		onRestore: (session) => {
 			setPendingSession(session);
 			setActiveModal(MODALS.RESTORE_SESSION);
@@ -292,11 +298,11 @@ export default function App() {
 		console.log('[DEBUG] Resetting workspace');
 
 		if (!preserveAutosave) {
-			clearSavedSession();
+			clearSavedSession(); // If resetting the session should keep the autosave for any reason
 		}
 
+		// clear states
 		setProject(null);
-
 		setSessionInfo(createSession());
 
 		clearBoundaryResults();
@@ -314,7 +320,29 @@ export default function App() {
 		setIsDirty(false);
 	};
 
-	// Restore session on refresh
+	/*function handlePopupClose() {
+		console.log('[DEBUG] Popup closed:', statusPopup);
+
+		dismissPopup();
+
+		if (statusPopup.source === 'boundary') {
+			console.log('[DEBUG] Resetting boundary state');
+			handleClearBoundary();
+		}
+
+		if (statusPopup.source === 'feature') {
+			const failedKey = statusPopup.featureKey;
+			console.log('[DEBUG] Removing failed feature');
+
+			if (failedKey) {
+				removeLayer(failedKey);
+			}
+		}
+	}*/
+
+	/*
+	 * Restore session on refresh or open
+	 */
 	useEffect(() => {
 		if (didRestore.current) return;
 
@@ -368,6 +396,9 @@ export default function App() {
 		onSaveAsRequested: () => setActiveModal(MODALS.SAVE_PROJECT),
 	});
 
+	/*
+	 * Hook for managing any unsaved changes changes within the session
+	 */
 	const {
 		confirmUnsavedChanges,
 		handleSaveAndContinue,
@@ -389,25 +420,7 @@ export default function App() {
 				title={statusPopup.title}
 				message={statusPopup.message}
 				drawerOpen={activeDrawer !== null}
-				onClose={() => {
-					console.log('[DEBUG] Popup closed:', statusPopup);
-
-					dismissPopup();
-
-					if (statusPopup.source === 'boundary') {
-						console.log('[DEBUG] Resetting boundary state');
-						handleClearBoundary();
-					}
-
-					if (statusPopup.source === 'feature') {
-						const failedKey = statusPopup.featureKey;
-						console.log('[DEBUG] Removing failed feature');
-
-						if (failedKey) {
-							removeLayer(failedKey);
-						}
-					}
-				}}
+				//onClose={handlePopupClose}
 			/>
 
 			{/* Modals */}

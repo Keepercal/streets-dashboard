@@ -4,7 +4,7 @@ export default function Popup({
 	title,
 	type,
 	children,
-	onClose,
+	//onClose,
 	drawerOpen,
 	className = '',
 }) {
@@ -15,9 +15,9 @@ export default function Popup({
 			<div className="popup-header">
 				<h3 className={`popup-title ${type || ''}`}>{title}</h3>
 
-				<button className="popup-close" onClick={onClose}>
+				{/*<button className="popup-close" onClick={onClose}>
 					×
-				</button>
+				</button>*/}
 			</div>
 
 			<div className="popup-content">{children}</div>
