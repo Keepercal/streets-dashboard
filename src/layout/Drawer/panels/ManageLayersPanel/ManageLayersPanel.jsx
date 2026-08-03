@@ -13,7 +13,7 @@ export default function ManageLayersPanel({
 
 	removeLayer,
 	renameLayer,
-	clearFeatures,
+	clearLayers,
 }) {
 	const hasLayers = Object.keys(featureLayers).length > 0;
 
@@ -22,7 +22,7 @@ export default function ManageLayersPanel({
 			<DeleteButton
 				icon={<Trash2 size={18} />}
 				label="Delete All Layers"
-				onClick={clearFeatures}
+				onClick={clearLayers}
 				disabled={!hasLayers}
 			/>
 			{!hasLayers ? (

@@ -33,7 +33,7 @@ function Drawer({
 	clearBoundaryResults,
 	handleClearBoundary,
 	removeLayer,
-	clearFeatures,
+	clearLayers,
 	cachedFeatures,
 }) {
 	const DRAWER_TITLES = {
@@ -64,7 +64,7 @@ function Drawer({
 						loadBoundaryResults={loadBoundaryResults}
 						clearBoundaryResults={clearBoundaryResults}
 						handleClearBoundary={handleClearBoundary}
-						clearFeatures={clearFeatures}
+						clearLayers={clearLayers}
 
 						boundaryResults={boundaryResults}
 						selectedBoundaryKey={selectedBoundaryKey}
@@ -90,7 +90,7 @@ function Drawer({
 
 						removeLayer={removeLayer}
 						renameLayer={renameLayer}
-						clearFeatures={clearFeatures}
+						clearLayers={clearLayers}
 					/>
 				)}
 

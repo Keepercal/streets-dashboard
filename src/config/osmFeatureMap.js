@@ -5,6 +5,11 @@ export const FEATURE_MAP = {
 			label: 'Local Cycling Network',
 			type: 'relation',
 		},
+		lwn: {
+			tag: 'network',
+			label: 'Local Walking Network',
+			type: 'relation',
+		},
 		ncn: {
 			tag: 'network',
 			label: 'National Cycling Network',

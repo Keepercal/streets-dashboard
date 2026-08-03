@@ -6,16 +6,16 @@ import generateLayerColour from '../utils/generateLayerColour';
 import countFeatures from '../utils/countFeatures';
 
 /**
- * useMapFeatures
+ * useLayer
  * ------------
- * Fetches OSM map features for a selected boundary and filter.
+ * Manages loading and display of layers within the application
  *
  * Includes:
  * - request deduplication via cache
  * - request cancellation
  * - GeoJSON conversion
  */
-export default function useMapFeatures({ onChange = () => {} } = {}) {
+export default function useLayerManager({ onChange = () => {} } = {}) {
 	const [featureLayers, setFeatureLayers] = useState({});
 
 	/* Status popup handling */
@@ -33,6 +33,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		onChange?.();
 	}
 
+	/* Takes an object of layer properties and returns a new object */
 	const buildLayer = useCallback(
 		({
 			sourceKey,
@@ -54,6 +55,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		[]
 	);
 
+	/* Update layer and mark as changed */
 	function patchLayer(layerID, changes) {
 		setFeatureLayers((prev) => ({
 			...prev,
@@ -67,7 +69,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 	}
 
 	/* Remove all features from map */
-	const clearFeatures = ({ markDirty = true } = {}) => {
+	const clearLayers = ({ markDirty = true } = {}) => {
 		console.log('[DEBUG] clearing all map features');
 
 		setFeatureLayers({});
@@ -79,6 +81,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		setError(null);
 		setStatus('idle');
 	};
+
 	/* Remove a single feature */
 	const removeLayer = (layerID) => {
 		console.log('[DEBUG] removing feature:', { layerID });
@@ -132,6 +135,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		patchLayer(layerID, { filters });
 	};
 
+	/* Cache a given layer */
 	function cacheLayer(cacheKey, layer) {
 		cache.current.set(cacheKey, layer);
 	}
@@ -148,6 +152,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 			.map(([_, layer]) => layer.sourceKey);
 	};
 
+	/* Load a layer from the cache */
 	function loadCachedLayer(cacheKey, layerID, featureLabel) {
 		// Check cache for stored features
 		const cached = cache.current.get(cacheKey);
@@ -192,7 +197,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		featureType,
 		featureLabel,
 	}) {
-		// Fetch map feature from Overpass API
+		// Fetch OSM feature from Overpass API
 		const payload = await fetchOSMFeature(
 			boundaryKey,
 			featureTag,
@@ -200,12 +205,14 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 			featureType
 		);
 
+		// Convert the payload into a GeoJSON format
 		const geojson = osmtogeojson(payload, {
 			meta: true,
 		}); // Convert to geoJSON
 
-		const colour = generateLayerColour(featureKey);
+		const colour = generateLayerColour(featureKey); // Assign colour
 
+		// Count the number of features within the the payload
 		const { totalCount } = countFeatures({
 			temp: {
 				data: payload,
@@ -231,6 +238,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		};
 	}
 
+	/* Take prepared layer, store in cache, update state */
 	function commitLayer(preparedLayer) {
 		const {
 			layerID,
@@ -271,7 +279,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		markDirty();
 	}
 
-	/* Loads features by calling Overpass API */
+	/* Orchestrate loading a new map layer */
 	const loadLayer = async ({
 		featureKey,
 		boundaryKey,
@@ -280,7 +288,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		featureType,
 		featureLabel,
 	}) => {
-		console.log('[DEBUG] handleAddLayer ENTER:', {
+		console.log('[DEBUG] loadLayer ENTER:', {
 			featureKey,
 			featureTag,
 			featureValue,
@@ -299,8 +307,8 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 			return;
 		}
 
+		// Create a cache key for the layer
 		const cacheKey = JSON.stringify([
-			// Store payload in cache
 			boundaryKey,
 			featureTag,
 			featureValue,
@@ -308,6 +316,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 			featureLabel,
 		]);
 
+		// Check layer to see if copy stored in cache
 		if (cache.current.has(cacheKey)) {
 			loadCachedLayer(cacheKey, layerID, featureLabel);
 			return;
@@ -397,7 +406,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		// data operations
 		loadLayer,
 		commitLayer,
-		clearFeatures,
+		clearLayers,
 		removeLayer,
 
 		// layer editing

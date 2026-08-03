@@ -5,7 +5,7 @@ const BoundaryOption = ({
 	boundaryResults,
 	selectedBoundaryKey,
 	onSelectBoundary,
-	clearFeatures,
+	clearLayers,
 }) => {
 	return boundaryResults?.length > 0 ? (
 		boundaryResults?.map((result) => (
@@ -16,7 +16,7 @@ const BoundaryOption = ({
 				}`}
 				onClick={() => {
 					onSelectBoundary(result);
-					clearFeatures();
+					clearLayers();
 				}}
 			>
 				{result.display_name}

@@ -28,7 +28,7 @@ import Legend from './components/Legend/Legend.jsx';
 
 /* Hooks */
 import useBoundaryManager from './hooks/useBoundaryManager.js';
-import useMapFeatures from './hooks/useMapFeatures.js';
+import useLayerManager from './hooks/useLayerManager.js';
 import useFilteredLayers from './hooks/useFilteredLayers.js';
 import useStatusPopup from './hooks/useStatusPopup.js';
 import useSession from './hooks/useSession.js';
@@ -105,7 +105,7 @@ export default function App() {
 		// data operations
 		loadLayer,
 		commitLayer,
-		clearFeatures,
+		clearLayers,
 		removeLayer,
 
 		// layer editing
@@ -126,7 +126,7 @@ export default function App() {
 		clearStatus,
 		status: featureStatus,
 		error: featureError,
-	} = useMapFeatures({
+	} = useLayerManager({
 		onChange: () => setIsDirty(true),
 	});
 
@@ -162,7 +162,7 @@ export default function App() {
 	const handleClearBoundary = () => {
 		setSelectedBoundaryKey('none');
 		clearBoundary();
-		clearFeatures();
+		clearLayers();
 	};
 
 	/* Handle renaming features */
@@ -325,7 +325,7 @@ export default function App() {
 
 		clearBoundaryResults();
 		clearBoundary();
-		clearFeatures();
+		clearLayers();
 		clearCache();
 
 		setSelectedBoundaryKey('none');
@@ -558,7 +558,7 @@ export default function App() {
 					clearBoundaryResults={clearBoundaryResults}
 					handleClearBoundary={handleClearBoundary}
 					removeLayer={removeLayer}
-					clearFeatures={clearFeatures}
+					clearLayers={clearLayers}
 					cachedFeatures={getCachedFeatures(selectedBoundaryKey)}
 				/>
 

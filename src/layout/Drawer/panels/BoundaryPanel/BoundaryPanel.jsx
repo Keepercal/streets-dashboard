@@ -23,7 +23,7 @@ const BoundaryPanel = ({
 	loadBoundaryResults,
 	clearBoundaryResults,
 	handleClearBoundary,
-	clearFeatures,
+	clearLayers,
 
 	boundaryResults,
 	selectedBoundaryKey,
@@ -45,7 +45,7 @@ const BoundaryPanel = ({
 					setHasSearched={setHasSearched}
 
 					clearBoundaryResults={clearBoundaryResults}
-					clearFeatures={clearFeatures}
+					clearLayers={clearLayers}
 				/>
 			</div>
 
@@ -56,7 +56,7 @@ const BoundaryPanel = ({
 							boundaryResults={boundaryResults}
 							onSelectBoundary={onSelectBoundary}
 							selectedBoundaryKey={selectedBoundaryKey}
-							clearFeatures={clearFeatures}
+							clearLayers={clearLayers}
 						/>
 					</div>
 				) : null}
