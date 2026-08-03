@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import osmtogeojson from 'osmtogeojson';
 
-import { fetchBoundary } from '../services/overpass/overpass';
+import { fetchOSMBoundary } from '../services/overpass/overpass';
 import searchBoundaries from '../services/nominatim/searchBoundaries';
 
 /**
@@ -83,7 +83,7 @@ export default function useBoundaryManager({ onChange = {} }) {
 		setStatus('loading');
 
 		try {
-			const result = await fetchBoundary(
+			const result = await fetchOSMBoundary(
 				// Fetch boundary from Overpass API
 				boundaryID,
 				boundaryType

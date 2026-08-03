@@ -10,7 +10,7 @@ export default function RestoreSessionModal({
 	onClose,
 }) {
 	return (
-		<Modal title="Restore Workspace?" onClose={onClose}>
+		<Modal title="Restore Workspace?" onClose={onClose} canClose={false}>
 			<section className="project-section">
 				<h3>
 					A previous workspace with data was found. Would you like to

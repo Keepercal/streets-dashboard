@@ -21,6 +21,7 @@ import ExportModal from './layout/Modal/ExportModal/ExportModal.jsx';
 import UnsavedChangesModal from './layout/Modal/UnsavedChangesModal/UnsavedChangesModal.jsx';
 import OpenProjectModal from './layout/Modal/OpenProjectModal/OpenProjectModal.jsx';
 import SaveModal from './layout/Modal/SaveModal/SaveModal.jsx';
+import LargeDatasetModal from './layout/Modal//LargeDatasetModal/LargeDatasetModal.jsx';
 
 /* Map related components */
 import Legend from './components/Legend/Legend.jsx';
@@ -37,10 +38,11 @@ import useUnsavedChanges from './hooks/useUnsavedChanges.js';
 /* Misc imports */
 import { FEATURE_OPTIONS } from './config/featureOptions.js';
 import { createSession } from './models/session.js';
-import { isProjectSession } from './utils/sessionUtils';
+//import { isProjectSession } from './utils/sessionUtils';
 
 import { getProject } from './db/projectDB.js';
 import RestoreSessionModal from './layout/Modal/RestoreSessionModal/RestoreSessionModal.jsx';
+import { TrendingUpIcon } from 'lucide-react';
 
 export default function App() {
 	const MODALS = {
@@ -49,7 +51,10 @@ export default function App() {
 		SAVE_PROJECT: 'saveProject',
 		OPEN_PROJECT: 'openProject',
 		RESTORE_SESSION: 'restoreSession',
+		LARGE_DATASET: 'largeDataset',
 	};
+
+	const LARGE_DATASET_LIMIT = 5000;
 
 	/* UI STATES */
 	const [pendingSession, setPendingSession] = useState(null);
@@ -65,6 +70,7 @@ export default function App() {
 	/* DATA STATES */
 	const [sessionInfo, setSessionInfo] = useState(createSession());
 	const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
+	const [pendingLayer, setPendingLayer] = useState(null);
 
 	/* Manages states for boundaries */
 	const {
@@ -97,7 +103,8 @@ export default function App() {
 		featureLayers,
 
 		// data operations
-		loadFeatures,
+		loadLayer,
+		commitLayer,
 		clearFeatures,
 		removeLayer,
 
@@ -116,6 +123,7 @@ export default function App() {
 
 		// status
 		failedFeatureKey,
+		clearStatus,
 		status: featureStatus,
 		error: featureError,
 	} = useMapFeatures({
@@ -167,7 +175,7 @@ export default function App() {
 	/*
 	 * Handle feature adding to project
 	 */
-	const handleAddLayer = (
+	const handleAddLayer = async (
 		featureKey,
 		featureTag,
 		featureValue,
@@ -175,10 +183,10 @@ export default function App() {
 		featureLabel
 	) => {
 		console.log(
-			`Calling loadFeatures with boundary key: ${selectedBoundaryKey}`
+			`Calling loadLayer with boundary key: ${selectedBoundaryKey}`
 		);
 
-		loadFeatures({
+		const preparedLayer = await loadLayer({
 			featureKey,
 			boundaryKey: selectedBoundaryKey,
 			featureTag,
@@ -186,6 +194,16 @@ export default function App() {
 			featureType,
 			featureLabel,
 		});
+
+		if (!preparedLayer) return;
+
+		if (preparedLayer.totalCount > LARGE_DATASET_LIMIT) {
+			setPendingLayer(preparedLayer);
+			setActiveModal(MODALS.LARGE_DATASET);
+			return;
+		}
+
+		commitLayer(preparedLayer);
 
 		setIsDirty(true);
 	};
@@ -320,26 +338,6 @@ export default function App() {
 		setIsDirty(false);
 	};
 
-	/*function handlePopupClose() {
-		console.log('[DEBUG] Popup closed:', statusPopup);
-
-		dismissPopup();
-
-		if (statusPopup.source === 'boundary') {
-			console.log('[DEBUG] Resetting boundary state');
-			handleClearBoundary();
-		}
-
-		if (statusPopup.source === 'feature') {
-			const failedKey = statusPopup.featureKey;
-			console.log('[DEBUG] Removing failed feature');
-
-			if (failedKey) {
-				removeLayer(failedKey);
-			}
-		}
-	}*/
-
 	/*
 	 * Restore session on refresh or open
 	 */
@@ -420,7 +418,6 @@ export default function App() {
 				title={statusPopup.title}
 				message={statusPopup.message}
 				drawerOpen={activeDrawer !== null}
-				//onClose={handlePopupClose}
 			/>
 
 			{/* Modals */}
@@ -456,6 +453,7 @@ export default function App() {
 					onSave={handleSaveAndContinue}
 					onDiscard={handleDiscardAndContinue}
 					onClose={handleCancel}
+					canClose={false}
 				/>
 			)}
 			{activeModal === MODALS.OPEN_PROJECT && (
@@ -483,6 +481,24 @@ export default function App() {
 				<ExportModal
 					featureLayers={filteredLayers}
 					onClose={() => setActiveModal(null)}
+				/>
+			)}
+
+			{activeModal === MODALS.LARGE_DATASET && (
+				<LargeDatasetModal
+					onConfirm={() => {
+						if (!pendingLayer) return;
+						commitLayer(pendingLayer);
+						setPendingLayer(null);
+						setActiveModal(null);
+						clearStatus();
+						setIsDirty(true);
+					}}
+					onDiscard={() => {
+						setPendingLayer(null);
+						setActiveModal(null);
+						clearStatus();
+					}}
 				/>
 			)}
 

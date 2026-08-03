@@ -58,14 +58,14 @@ async function handleOverpassResponse(res, retryFn, retries) {
 }
 
 /**
- * fetchBoundary
+ * fetchOSMBoundary
  * -------------
  * Fetches a boundary relation from Overpass by name.
  */
-export async function fetchBoundary(boundaryID, boundaryType, retries = 3) {
+export async function fetchOSMBoundary(boundaryID, boundaryType, retries = 3) {
 	if (!boundaryID || boundaryID === 'none') return null;
 
-	console.log('[DEBUG] fetchBoundary ENTER:', {
+	console.log('[DEBUG] fetchOSMBoundary ENTER:', {
 		boundaryID,
 		boundaryType,
 	});
@@ -82,17 +82,17 @@ export async function fetchBoundary(boundaryID, boundaryType, retries = 3) {
 
 	return handleOverpassResponse(
 		res,
-		() => fetchBoundary(boundaryID, boundaryType, retries - 1),
+		() => fetchOSMBoundary(boundaryID, boundaryType, retries - 1),
 		retries
 	);
 }
 
 /**
- * fetchMapFeature
+ * fetchOSMFeature
  * ---------------
  * Fetches OSM features inside a boundary area using tag filters.
  */
-export async function fetchMapFeature(
+export async function fetchOSMFeature(
 	boundaryID,
 	featureTag,
 	featureValue,
@@ -123,6 +123,6 @@ export async function fetchMapFeature(
 	console.log(res);
 
 	return handleOverpassResponse(res, () =>
-		fetchMapFeature(boundaryID, featureTag, featureValue, featureType)
+		fetchOSMFeature(boundaryID, featureTag, featureValue, featureType)
 	);
 }

@@ -801,5 +801,9 @@ export const FEATURE_MAP = {
 			label: 'Cave',
 			type: 'node',
 		},
+		tree: {
+			tag: 'natural',
+			label: 'Trees',
+		},
 	},
 };

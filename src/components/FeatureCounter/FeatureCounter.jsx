@@ -1,4 +1,5 @@
 import './FeatureCounter.css';
+import countFeatures from '../../utils/countFeatures';
 
 /**
  * FeatureCounter
@@ -6,30 +7,7 @@ import './FeatureCounter.css';
  * Displays a summary count across all loaded feature layers.
  */
 const FeatureCounter = ({ features }) => {
-	let nodeCount = 0;
-	let wayCount = 0;
-	let relationCount = 0;
-
-	Object.values(features || {}).forEach((layer) => {
-		layer.data?.elements?.forEach((feature) => {
-			switch (feature.type) {
-				case 'node':
-					nodeCount++;
-					break;
-
-				case 'way':
-					wayCount++;
-					break;
-
-				case 'relation':
-					relationCount++;
-					break;
-
-				default:
-					break;
-			}
-		});
-	});
+	const { nodeCount, wayCount, relationCount } = countFeatures(features);
 
 	return (
 		<div className="feature-count">

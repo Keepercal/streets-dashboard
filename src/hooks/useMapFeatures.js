@@ -1,7 +1,9 @@
 import { useState, useRef, useCallback } from 'react';
 import osmtogeojson from 'osmtogeojson';
 
-import { fetchMapFeature } from '../services/overpass/overpass';
+import { fetchOSMFeature } from '../services/overpass/overpass';
+import generateLayerColour from '../utils/generateLayerColour';
+import countFeatures from '../utils/countFeatures';
 
 /**
  * useMapFeatures
@@ -112,21 +114,6 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		markDirty();
 	};
 
-	/* Generate a colour for feature data, colour will be consistent across projects */
-	function getLayerColour(key) {
-		key = String(key ?? '');
-
-		let hash = 0;
-
-		for (let i = 0; i < key.length; i++) {
-			hash = key.charCodeAt(i) + ((hash << 5) - hash);
-		}
-
-		const colour = (hash & 0x00ffffff).toString(16).padStart(6, '0');
-
-		return `#${colour}`;
-	}
-
 	/* Create label for each layer with an indicator for if it's a duplicate */
 	const generateLayerLabel = (layers, featureKey, featureLabel) => {
 		let count = 0;
@@ -194,8 +181,98 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		cache.current.clear();
 	};
 
+	/* Fetches the requested layer from Overpass and prepares it as an object */
+	async function prepareLayer({
+		layerID,
+		cacheKey,
+		featureKey,
+		boundaryKey,
+		featureTag,
+		featureValue,
+		featureType,
+		featureLabel,
+	}) {
+		// Fetch map feature from Overpass API
+		const payload = await fetchOSMFeature(
+			boundaryKey,
+			featureTag,
+			featureValue,
+			featureType
+		);
+
+		const geojson = osmtogeojson(payload, {
+			meta: true,
+		}); // Convert to geoJSON
+
+		const colour = generateLayerColour(featureKey);
+
+		const { totalCount } = countFeatures({
+			temp: {
+				data: payload,
+			},
+		});
+
+		return {
+			layerID,
+			cacheKey,
+			sourceKey: featureKey,
+			featureLabel,
+			payload,
+			geojson,
+			colour,
+			query: {
+				boundaryKey,
+				featureTag,
+				featureValue,
+				featureType,
+				featureLabel,
+			},
+			totalCount,
+		};
+	}
+
+	function commitLayer(preparedLayer) {
+		const {
+			layerID,
+			cacheKey,
+			sourceKey,
+			featureLabel,
+			payload,
+			geojson,
+			colour,
+			query,
+		} = preparedLayer;
+
+		cacheLayer(cacheKey, {
+			sourceKey,
+			data: payload,
+			geojson,
+			colour,
+			query,
+		});
+
+		setFeatureLayers((prev) => {
+			const label = generateLayerLabel(prev, sourceKey, featureLabel);
+
+			return {
+				// Create a new object for the feature
+				...prev,
+				[layerID]: buildLayer({
+					sourceKey,
+					label,
+					data: payload,
+					geojson,
+					colour,
+				}),
+			};
+		});
+
+		setStatus('success');
+		markDirty();
+	}
+
 	/* Loads features by calling Overpass API */
-	const loadFeatures = async ({
+	const loadLayer = async ({
 		featureKey,
 		boundaryKey,
 		featureTag,
@@ -207,8 +284,6 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 			featureKey,
 			featureTag,
 			featureValue,
-			featureType,
-			featureLabel,
 		});
 
 		if (!featureKey || !boundaryKey || !featureTag) {
@@ -216,15 +291,6 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		}
 
 		const layerID = crypto.randomUUID(); // Generate unique ID for layer
-
-		console.log({
-			featureKey,
-			type: typeof featureKey,
-			boundaryKey,
-			featureTag,
-		});
-
-		const colour = getLayerColour(featureKey);
 
 		const currentId = ++requestId.current;
 
@@ -234,7 +300,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		}
 
 		const cacheKey = JSON.stringify([
-			// Store results in cache
+			// Store payload in cache
 			boundaryKey,
 			featureTag,
 			featureValue,
@@ -258,57 +324,22 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		setStatus('loading');
 
 		try {
-			// Fetch map feature from Overpass API
-			const result = await fetchMapFeature(
+			const preparedLayer = await prepareLayer({
+				layerID,
+				cacheKey,
+				featureKey,
 				boundaryKey,
 				featureTag,
 				featureValue,
 				featureType,
-				featureLabel
-			);
+				featureLabel,
+			});
 
 			if (currentId !== requestId.current) return;
 
-			const geojson = osmtogeojson(result, {
-				meta: true,
-			}); // Convert to geoJSON
+			setStatus('idle');
 
-			cacheLayer(cacheKey, {
-				sourceKey: featureKey,
-				data: result,
-				geojson,
-				colour,
-				query: {
-					boundaryKey,
-					featureTag,
-					featureValue,
-					featureType,
-					featureLabel,
-				},
-			});
-
-			setFeatureLayers((prev) => {
-				const label = generateLayerLabel(
-					prev,
-					featureKey,
-					featureLabel
-				);
-
-				return {
-					// Create a new object for the feature
-					...prev,
-					[layerID]: buildLayer({
-						sourceKey: featureKey,
-						label,
-						data: result,
-						geojson,
-						colour,
-					}),
-				};
-			});
-
-			setStatus('success');
-			markDirty();
+			return preparedLayer;
 		} catch (err) {
 			if (currentId !== requestId.current) return;
 
@@ -353,12 +384,19 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 		markDirty();
 	};
 
+	const clearStatus = () => {
+		setStatus('idle');
+		setError(null);
+		setFailedFeatureKey(null);
+	};
+
 	return {
 		// state
 		featureLayers,
 
 		// data operations
-		loadFeatures,
+		loadLayer,
+		commitLayer,
 		clearFeatures,
 		removeLayer,
 
@@ -377,6 +415,7 @@ export default function useMapFeatures({ onChange = () => {} } = {}) {
 
 		// status
 		failedFeatureKey,
+		clearStatus,
 		status,
 		error,
 	};
