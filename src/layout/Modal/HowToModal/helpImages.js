@@ -19,4 +19,5 @@ export const helpImages = {
 	saveAs: `${base}help/save-as.png`,
 	openProject: `${base}help/open-project.png`,
 	exportProject: `${base}help/export-project.png`,
+	joinOperation: `${base}help/join-operation.png`,
 };
