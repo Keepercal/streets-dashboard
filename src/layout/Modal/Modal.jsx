@@ -6,10 +6,11 @@ export default function Modal({
 	children,
 	onClose,
 	canClose = true,
+	varient,
 }) {
 	return (
 		<div className="modal-overlay">
-			<div className="modal">
+			<div className={`modal modal--${varient}`}>
 				<div className="modal-header">
 					<h3 className={`modal-title ${type || ''}`}>{title}</h3>
 					{canClose && (

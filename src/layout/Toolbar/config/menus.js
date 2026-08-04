@@ -7,7 +7,7 @@ export const menus = [
 		title: 'File',
 		items: [
 			{
-				id: 'new-workspace',
+				id: 'newWorkspace',
 				label: 'New Workspace',
 				icon: CirclePlus,
 				action: 'newWorkspace',
@@ -18,7 +18,7 @@ export const menus = [
 				action: 'openProject',
 			},
 			{
-				id: 'save-as',
+				id: 'saveAs',
 				label: 'Save As...',
 				action: 'modal',
 				modal: 'saveProject',
@@ -35,6 +35,11 @@ export const menus = [
 				label: 'About',
 				disabled: true,
 				modal: 'about',
+				action: 'modal',
+			},
+			{
+				id: 'howTo',
+				label: 'How To',
 				action: 'modal',
 			},
 		],

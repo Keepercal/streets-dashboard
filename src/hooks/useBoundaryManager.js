@@ -16,7 +16,7 @@ import searchBoundaries from '../services/nominatim/searchBoundaries';
  * - resetting state
  * - exporting and restoring boundaries
  */
-export default function useBoundaryManager({ onChange = {} }) {
+export default function useBoundaryManager({ onChange = () => {} } = {}) {
 	const [boundaryResults, setBoundaryResults] = useState([]);
 
 	const [boundaryData, setBoundaryData] = useState(null);
@@ -117,6 +117,7 @@ export default function useBoundaryManager({ onChange = {} }) {
 
 		setStatus('idle');
 		setError(null);
+		markDirty(false);
 	};
 
 	/* Export the boundary data as an object */

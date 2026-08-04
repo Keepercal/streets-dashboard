@@ -22,6 +22,8 @@ import UnsavedChangesModal from './layout/Modal/UnsavedChangesModal/UnsavedChang
 import OpenProjectModal from './layout/Modal/OpenProjectModal/OpenProjectModal.jsx';
 import SaveModal from './layout/Modal/SaveModal/SaveModal.jsx';
 import LargeDatasetModal from './layout/Modal//LargeDatasetModal/LargeDatasetModal.jsx';
+import RestoreSessionModal from './layout/Modal/RestoreSessionModal/RestoreSessionModal.jsx';
+import HowToModal from './layout/Modal/HowToModal/HowToModal.jsx';
 
 /* Map related components */
 import Legend from './components/Legend/Legend.jsx';
@@ -41,8 +43,6 @@ import { createSession } from './models/session.js';
 //import { isProjectSession } from './utils/sessionUtils';
 
 import { getProject } from './db/projectDB.js';
-import RestoreSessionModal from './layout/Modal/RestoreSessionModal/RestoreSessionModal.jsx';
-import { TrendingUpIcon } from 'lucide-react';
 
 export default function App() {
 	const MODALS = {
@@ -500,6 +500,10 @@ export default function App() {
 						clearStatus();
 					}}
 				/>
+			)}
+
+			{activeModal === MODALS.HOW_TO && (
+				<HowToModal onClose={() => setActiveModal(null)} />
 			)}
 
 			{/* Main UI */}

@@ -11,14 +11,14 @@ export default function RestoreSessionModal({
 }) {
 	return (
 		<Modal title="Restore Workspace?" onClose={onClose} canClose={false}>
-			<section className="project-section">
+			<section className="modal-section">
 				<h3>
 					A previous workspace with data was found. Would you like to
 					restore it?
 				</h3>
 			</section>
 
-			<section className="project-actions">
+			<section className="modal-actions">
 				<button className="secondary-btn warning" onClick={onStartNew}>
 					Start New Workspace
 				</button>

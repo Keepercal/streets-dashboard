@@ -28,10 +28,10 @@ export default function SaveModal({ onClose, onSaveAs }) {
 
 	return (
 		<Modal title="Save Project" onClose={onClose}>
-			<section className="project-section">
+			<section className="modal-section">
 				<h3>Project Details</h3>
 
-				<div className="project-metadata">
+				<div className="modal-metadata">
 					<FormInput
 						label="Project Name (required)"
 						value={projectName}
@@ -54,7 +54,7 @@ export default function SaveModal({ onClose, onSaveAs }) {
 				</div>
 			</section>
 
-			<section className="project-actions">
+			<section className="modal-actions">
 				<button className="secondary-btn" onClick={onClose}>
 					Cancel
 				</button>

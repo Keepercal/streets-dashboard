@@ -62,112 +62,7 @@
 }
 
 /* =========================
-    CLOSE BUTTON
-========================= */
-
-.close-btn {
-	border: none;
-
-	background: transparent;
-
-	font-size: 24px;
-	line-height: 1;
-
-	cursor: pointer;
-
-	color: #555;
-
-	transition: color 0.2s ease;
-}
-
-.close-btn:hover {
-	color: #000;
-}
-
-/* =========================
-    STATES
-========================= */
-
-.modal-title {
-	margin: 0;
-}
-
-.modal-title.error {
-	color: #d93025;
-}
-
-.modal-title.loading {
-	color: #333;
-}
-
-/* =========================
-    LOADING SPINNER
-========================= */
-
-.spinner {
-	width: 30px;
-	height: 30px;
-
-	margin-top: 10px;
-
-	border: 4px solid #ccc;
-	border-top-color: #333;
-
-	border-radius: 50%;
-
-	animation: spin 1s linear infinite;
-}
-
-/* =========================
-    ANIMATION
-========================= */
-
-@keyframes spin {
-	to {
-		transform: rotate(360deg);
-	}
-}
-
-/* =========================
-    Master button styling
-========================= */
-
-.primary-btn {
-	background: #3388ff;
-	border: 1px solid #3388ff;
-	color: white;
-}
-
-.primary-btn:hover {
-	background: #2878e8;
-}
-
-.secondary-btn {
-	background: white;
-	border: 1px solid #ccc;
-	color: #555;
-}
-
-.secondary-btn:hover {
-	background: #f5f5f5;
-}
-
-.primary-btn.discard {
-	color: white;
-	border: none;
-	background-color: rgb(212, 50, 21);
-}
-
-.primary-btn.discard:hover {
-	background-color: rgb(196, 43, 16);
-}
-
-.secondary-btn.warning:hover {
-	background-color: rgb(255, 226, 224);
-}
-
-/* =========================
-    Master button styling
+    MODAL LAYOUT
 ========================= */
 
 .modal-section {
@@ -222,4 +117,105 @@
 
 .modal-actions button:active {
 	transform: scale(0.98);
+}
+
+/* =========================
+    TITLE & STATES
+========================= */
+
+.modal-title {
+	margin: 0;
+}
+
+.modal-title.error {
+	color: #d93025;
+}
+
+.modal-title.loading {
+	color: #333;
+}
+
+/* =========================
+    LOADING SPINNER
+========================= */
+
+.spinner {
+	width: 30px;
+	height: 30px;
+
+	margin-top: 10px;
+
+	border: 4px solid #ccc;
+	border-top-color: #333;
+
+	border-radius: 50%;
+
+	animation: spin 1s linear infinite;
+}
+
+/* =========================
+    ANIMATION
+========================= */
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* =========================
+    MASTER BUTTON STYLING
+========================= */
+
+.close-btn {
+	border: none;
+
+	background: transparent;
+
+	font-size: 24px;
+	line-height: 1;
+
+	cursor: pointer;
+
+	color: #555;
+
+	transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+	color: #000;
+}
+
+.primary-btn {
+	background: #3388ff;
+	border: 1px solid #3388ff;
+	color: white;
+}
+
+.primary-btn:hover {
+	background: #2878e8;
+}
+
+.secondary-btn {
+	background: white;
+	border: 1px solid #ccc;
+	color: #555;
+}
+
+.secondary-btn:hover {
+	background: #f5f5f5;
+}
+
+.primary-btn.discard {
+	color: white;
+	border: none;
+	background-color: rgb(212, 50, 21);
+}
+
+.primary-btn.discard:hover {
+	background-color: rgb(196, 43, 16);
+}
+
+.secondary-btn.warning:hover {
+	background-color: rgb(255, 226, 224);
 }
