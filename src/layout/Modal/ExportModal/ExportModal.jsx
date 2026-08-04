@@ -81,6 +81,11 @@ export default function ExportModal({ onClose, featureLayers }) {
             </section>*/}
 
 			<section className="export-section">
+				<p>
+					<strong>NOTE:</strong> Any filters you have added to your
+					layers will impact what data gets exported.
+				</p>
+
 				<h3>Layers</h3>
 
 				<div className="export-options">

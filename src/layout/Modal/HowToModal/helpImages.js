@@ -15,4 +15,8 @@ export const helpImages = {
 	basemapExample: `${base}help/basemap-example.png`,
 	lastEdited: `${base}help/last-edited.png`,
 	heatmap: `${base}help/heatmap.png`,
+	workspaceDirty: `${base}help/workspace-dirty.png`,
+	saveAs: `${base}help/save-as.png`,
+	openProject: `${base}help/open-project.png`,
+	exportProject: `${base}help/export-project.png`,
 };

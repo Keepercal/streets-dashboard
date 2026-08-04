@@ -103,3 +103,32 @@
 	background: #3388ff;
 	color: white;
 }
+
+/* =========================
+    LIST
+========================= */
+
+.list {
+	margin: 1.5rem 0;
+}
+
+.list dt {
+	margin-top: 1rem;
+	margin-bottom: 0.25rem;
+
+	font-size: 1rem;
+	font-weight: 600;
+
+	color: #222;
+}
+
+.list dd {
+	margin: 0 0 1rem 1rem;
+
+	line-height: 1.5;
+	color: #555;
+}
+
+.list strong {
+	color: #333;
+}

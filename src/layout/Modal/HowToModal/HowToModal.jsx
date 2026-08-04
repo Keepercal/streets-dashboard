@@ -7,6 +7,8 @@ import GettingStartedPage from './pages/GettingStartedPage';
 import AddingLayersPage from './pages/AddingLayersPage';
 import ManagingLayersPage from './pages/ManagingLayersPage';
 import DisplaySettingsPage from './pages/DisplaySettingsPage';
+import SaveOpenProjectPage from './pages/SaveOpenProjectPage';
+import ExportProjectPage from './pages/ExportProjectPage';
 
 export default function HowToModal({ onClose }) {
 	const pages = [
@@ -29,6 +31,16 @@ export default function HowToModal({ onClose }) {
 			id: 'display-settings',
 			title: 'Display Settings',
 			component: <DisplaySettingsPage />,
+		},
+		{
+			id: 'save-open-project',
+			title: 'Saving & Loading Projects',
+			component: <SaveOpenProjectPage />,
+		},
+		{
+			id: 'export-project',
+			title: 'Exporting Projects',
+			component: <ExportProjectPage />,
 		},
 	];
 
