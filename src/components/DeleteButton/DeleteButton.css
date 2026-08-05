@@ -7,12 +7,12 @@
 	padding: 6px;
 	margin-bottom: 12px;
 
-	background: rgb(212, 50, 21);
+	background: var(--colour-button-danger-bg);
 
 	border: none;
 	border-radius: 8px;
 
-	color: white;
+	color: var(--colour-button-danger-text);
 	font-family: var(--default-font);
 	font-size: 14px;
 	font-weight: 400;
@@ -27,16 +27,16 @@
 }
 
 .delete-boundary-btn:not(:disabled):hover {
-	background: rgb(196, 43, 16);
+	background: var(--colour-button-danger-hover);
 }
 
 /* Disabled state */
 .delete-boundary-btn:disabled {
-	background: rgba(234, 49, 16, 0.35);
+	background: var(--colour-button-danger-bg-disabled);
 
-	border-color: rgba(255, 255, 255, 0.1);
+	border-color: var(--colour-button-danger-border-disabled);
 
-	color: rgba(255, 255, 255, 0.45);
+	color: var(--colour-button-danger-text-disabled);
 
 	cursor: auto;
 

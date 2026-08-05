@@ -1,4 +1,4 @@
-import { helpImages } from '../helpImages';
+import { helpImages } from '../config/helpImages';
 
 export default function GettingStartedPage() {
 	return (
@@ -32,8 +32,8 @@ export default function GettingStartedPage() {
 				If you cannot find the particular boundary you are looking for
 				in the boundary search, head to
 				<a href="https://www.openstreetmap.org/"> OpenStreetMap.org</a>.
-				Locate where you are trying to query, and click the "Query"
-				button, the question mark on the right side of the interface.
+				Find your desired location on the map, and click the "Query"
+				button (the question mark on the right side of the interface).
 			</p>
 
 			<img
@@ -44,9 +44,9 @@ export default function GettingStartedPage() {
 			<p>
 				Typically you will want to look for Administrative Boundaries,
 				however most of the boundaries under the "Enclosing features"
-				will work. The value you will want to type into the boundary
-				search box within {__APP_NAME__} will be the text highlighted in
-				blue.
+				section will work. The value you will want to type into the
+				boundary search box within {__APP_NAME__} will be the text
+				highlighted in blue.
 			</p>
 
 			<img
@@ -59,7 +59,17 @@ export default function GettingStartedPage() {
 				the search box and click search. After a loading period your
 				boundary should then appear in the list. Click on it to load it,
 				and if successful your boundary will be highlighted on the map.
+				<br />
+				<br />
+				Clicking the <strong>Remove Boundary</strong> button will delete
+				the current boundary, as well as any layers you have loaded, so
+				be careful!
 			</p>
+
+			<img
+				src={helpImages.searchBoundary}
+				alt={`A screenshot of the ${__APP_NAME__} interface, showing the boundary select drawer and Bristol as the selected boundary`}
+			/>
 
 			<p>
 				When trying to load boundaries and layers, you may encounter
@@ -67,11 +77,6 @@ export default function GettingStartedPage() {
 				the OpenStreetMap server, the request may timeout due to a lack
 				of bandwidth. Simply try loading the boundary or layer again.
 			</p>
-
-			<img
-				src={helpImages.searchBoundary}
-				alt={`A screenshot of the ${__APP_NAME__} interface, showing the boundary select drawer and Bristol as the selected boundary`}
-			/>
 		</>
 	);
 }

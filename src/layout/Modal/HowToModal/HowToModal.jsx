@@ -1,5 +1,5 @@
 import './HowToModal.css';
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import Modal from '../Modal';
 
@@ -46,6 +46,11 @@ export default function HowToModal({ onClose }) {
 
 	const [activePage, setActivePage] = useState('getting-started');
 	const currentPage = pages.find((page) => page.id === activePage);
+	const contentRef = useRef(null);
+
+	useEffect(() => {
+		contentRef.current?.scrollTo(0, 0);
+	}, [activePage]);
 
 	return (
 		<Modal
@@ -67,7 +72,7 @@ export default function HowToModal({ onClose }) {
 					))}
 				</nav>
 
-				<section className="how-to-content">
+				<section className="how-to-content" ref={contentRef}>
 					{currentPage.component}
 				</section>
 			</div>

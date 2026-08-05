@@ -59,11 +59,19 @@
 	font-size: 18px;
 	margin-top: 0px;
 	margin-bottom: 0px;
-	color: rgb(161, 84, 84);
+	color: var(--colour-text-h3);
 }
 
 .how-to-content p {
 	font-size: 15px;
+}
+
+.how-to-content a {
+	text-decoration: none;
+}
+
+.how-to-content strong {
+	color: var(--colour-text-strong);
 }
 
 .how-to-content img {
@@ -96,12 +104,12 @@
 }
 
 .how-to-nav button:hover {
-	background: #f5f5f5;
+	background: var(--colour-button-secondary-hover);
 }
 
 .how-to-nav button.active {
-	background: #3388ff;
-	color: white;
+	background: var(--colour-button-primary-bg);
+	color: var(--colour-button-primary-text);
 }
 
 /* =========================

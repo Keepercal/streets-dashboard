@@ -36,7 +36,7 @@
 	border: 1px solid var(--border-colour);
 	border-radius: 10px;
 
-	border-left: 5px solid rgb(15, 106, 217);
+	border-left: 5px solid var(--colour-button-primary-bg);
 
 	background: var(--surface-colour);
 	cursor: pointer;
@@ -53,7 +53,7 @@
 	background: #f1f3f4;
 	border-color: var(--accent-colour);
 
-	border-left: 5px solid rgb(15, 106, 217);
+	border-left: 5px solid var(--colour-button-primary-bg);
 
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 	transform: translateY(-1px);

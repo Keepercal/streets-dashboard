@@ -1,4 +1,4 @@
-import { helpImages } from '../helpImages';
+import { helpImages } from '../config/helpImages';
 
 export default function AddingLayersPage() {
 	return (
@@ -12,11 +12,6 @@ export default function AddingLayersPage() {
 				creep outside of the boundary.
 			</p>
 
-			<img
-				src={helpImages.addLayersDraw}
-				alt={`A screenshot of the ${__APP_NAME__} interface while a layer is loading.`}
-			/>
-
 			<p>
 				The Add Layers panel contains a predefined list of features that
 				OpenStreetMap has data of. To add a layer to your map, simply
@@ -25,8 +20,8 @@ export default function AddingLayersPage() {
 			</p>
 
 			<img
-				src={helpImages.bristolPubs}
-				alt={`A screenshot of the ${__APP_NAME__} interface with all pubs in Bristol displayed on the map`}
+				src={helpImages.addLayersDraw}
+				alt={`A screenshot of the ${__APP_NAME__} interface while a layer is loading.`}
 			/>
 
 			<p>
@@ -35,12 +30,33 @@ export default function AddingLayersPage() {
 				Bristol.
 			</p>
 
+			<img
+				src={helpImages.bristolPubs}
+				alt={`A screenshot of the ${__APP_NAME__} interface with all pubs in Bristol displayed on the map`}
+			/>
+
+			<p>
+				Simply repeat the process to add more layers to the map. Now the
+				map is showing pubs as well as the Local Cycling Network in
+				Bristol.
+			</p>
+
+			<img
+				src={helpImages.multiplLayers}
+				alt={`A screenshot of the ${__APP_NAME__} interface with all pubs in Bristol and the Local Cycling Network`}
+			/>
+
 			<p>
 				Like selecting a boundary, you may encounter a timeout error. If
 				this happens simply try loading the layer again. In the event
 				that your selected boundary doesn't contain any feautres for the
 				layer you selected, an error will popup in the bottom right
 				corner.
+				<br />
+				<br />
+				Be aware that as you add more data to your map, the application
+				may slow down. Some layers can also be very large, for example
+				if you were to load the whole bus network within Greater London.
 			</p>
 
 			<h2>Nodes, Ways & Relations</h2>

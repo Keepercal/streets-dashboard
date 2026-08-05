@@ -1,4 +1,4 @@
-import { helpImages } from '../helpImages';
+import { helpImages } from '../config/helpImages';
 
 export default function SaveOpenProjectPage() {
 	return (
@@ -7,7 +7,8 @@ export default function SaveOpenProjectPage() {
 
 			<p>
 				Any data that you add to your workspace can be exported for use
-				within GIS applications, such as Google My Maps and ArcGIS.
+				within other applications, making {__APP_NAME__} a great tool
+				for filling in data gaps.
 			</p>
 
 			<p>

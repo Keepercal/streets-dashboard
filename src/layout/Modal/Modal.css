@@ -10,7 +10,7 @@
 	justify-content: center;
 	align-items: center;
 
-	background-color: rgba(0, 0, 0, 0.35);
+	background-color: var(--colour-overlay);
 
 	z-index: 9999;
 }
@@ -23,11 +23,11 @@
 	width: 100%;
 	max-width: 640px;
 
-	background: white;
+	background: var(--colour-modal-bg);
 
 	border-radius: 10px;
 
-	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+	box-shadow: 0 10px 30px var(--colour-box-shadow);
 
 	overflow: hidden;
 
@@ -46,7 +46,7 @@
 
 	padding: 14px 20px;
 
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid var(--colour-divider);
 }
 
 .modal-header h3 {
@@ -81,8 +81,6 @@
 
 	font-size: 1rem;
 	font-weight: 600;
-
-	color: #333;
 }
 
 .modal-metadata {
@@ -98,7 +96,7 @@
 
 	margin-top: 24px;
 	padding-top: 16px;
-	border-top: 1px solid #e5e5e5;
+	border-top: 1px solid var(--colour-divider);
 }
 
 .modal-actions button {
@@ -128,7 +126,7 @@
 }
 
 .modal-title.error {
-	color: #d93025;
+	color: var(--colour-danger);
 }
 
 .modal-title.loading {
@@ -187,35 +185,35 @@
 }
 
 .primary-btn {
-	background: #3388ff;
-	border: 1px solid #3388ff;
-	color: white;
+	background: var(--colour-button-primary-bg);
+	border: 1px solid var(--colour-button-primary-bg);
+	color: var(--colour-button-primary-text);
 }
 
 .primary-btn:hover {
-	background: #2878e8;
+	background: var(--colour-button-primary-hover);
 }
 
 .secondary-btn {
-	background: white;
-	border: 1px solid #ccc;
-	color: #555;
+	background: var(--colour-button-secondary-bg);
+	border: 1px solid var(--colour-button-secondary-border);
+	color: var(--colour-button-secondary-text);
 }
 
 .secondary-btn:hover {
-	background: #f5f5f5;
+	background: var(--colour-button-secondary-hover);
 }
 
 .primary-btn.discard {
-	color: white;
+	color: var(--colour-button-danger-text);
 	border: none;
-	background-color: rgb(212, 50, 21);
+	background-color: var(--colour-button-danger-bg);
 }
 
 .primary-btn.discard:hover {
-	background-color: rgb(196, 43, 16);
+	background-color: var(--colour-button-danger-hover);
 }
 
 .secondary-btn.warning:hover {
-	background-color: rgb(255, 226, 224);
+	background-color: var(--colour-button-warning-hover);
 }

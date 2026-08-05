@@ -20,4 +20,5 @@ export const helpImages = {
 	openProject: `${base}help/open-project.png`,
 	exportProject: `${base}help/export-project.png`,
 	joinOperation: `${base}help/join-operation.png`,
+	multiplLayers: `${base}help/multiple-layers.png`,
 };

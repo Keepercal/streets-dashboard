@@ -9,20 +9,6 @@ body,
 	font-family: 'Google Sans Flex', sans-serif;
 }
 
-:root {
-	--default-font: font-family: 'Google Sans Flex', sans-serif;
-
-	--header-height: 60px;
-	--header-bg: #1f2d3d;
-
-	--sidebar-width: 160px;
-	/* --sidebar-width: 140px; */
-	--sidebar-bg: #223d57;
-
-	--drawer-width: 360px;
-	--drawer-bg: #526d82;
-}
-
 /* =========================
     ROOT LAYOUT
 ========================= */
@@ -41,7 +27,7 @@ body,
 .app-header {
 	height: var(--header-height);
 	flex-shrink: 0px;
-	background: var(--header-bg);
+	background: var(--colour-header-bg);
 	color: white;
 
 	display: flex;
@@ -74,7 +60,7 @@ body,
 	z-index: 1000;
 	box-sizing: border-box;
 
-	background-color: var(--sidebar-bg);
+	background-color: var(--colour-sidebar-bg);
 	color: #ecf0f1;
 }
 

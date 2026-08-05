@@ -1,4 +1,4 @@
-import { helpImages } from '../helpImages';
+import { helpImages } from '../config/helpImages';
 
 export default function DisplaySettingsPage() {
 	return (
