@@ -1,4 +1,4 @@
-import Brand from '../../../../components/Brand/Brand';
+import Brand from '../../../../../components/Brand/Brand';
 import { aboutImages } from '../config/aboutImages';
 
 export default function OverviewPage() {

@@ -1,5 +1,3 @@
-import './UnsavedChangesModal.css';
-
 import Modal from '../Modal';
 
 export default function UnsavedChangesModal({ onSave, onDiscard, onClose }) {

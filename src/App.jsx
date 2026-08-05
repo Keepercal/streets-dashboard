@@ -14,17 +14,19 @@ import Toolbar from './layout/Toolbar/Toolbar';
 import Sidebar from './layout/Sidebar/Sidebar';
 import Drawer from './layout/Drawer/Drawer';
 
-/* Popups/Modals */
+/* Popups */
 import StatusPopup from './layout/Popups/StatusPopup/StatusPopup.jsx';
 
-import ExportModal from './layout/Modal/ExportModal/ExportModal.jsx';
-import UnsavedChangesModal from './layout/Modal/UnsavedChangesModal/UnsavedChangesModal.jsx';
-import OpenProjectModal from './layout/Modal/OpenProjectModal/OpenProjectModal.jsx';
-import SaveModal from './layout/Modal/SaveModal/SaveModal.jsx';
-import LargeDatasetModal from './layout/Modal//LargeDatasetModal/LargeDatasetModal.jsx';
-import RestoreSessionModal from './layout/Modal/RestoreSessionModal/RestoreSessionModal.jsx';
-import HowToModal from './layout/Modal/HowToModal/HowToModal.jsx';
-import AboutModal from './layout/Modal/AboutModal/AboutModal.jsx';
+/* MODALS */
+import ExportModal from './layout/Modal/modals/ExportModal/ExportModal.jsx';
+import OpenProjectModal from './layout/Modal/modals/OpenProjectModal/OpenProjectModal.jsx';
+import HowToModal from './layout/Modal/modals/HowToModal/HowToModal.jsx';
+import AboutModal from './layout/Modal/modals/AboutModal/AboutModal.jsx';
+
+import UnsavedChangesModal from './layout/Modal/modals/UnsavedChangesModal.jsx';
+import SaveModal from './layout/Modal/modals/SaveModal.jsx';
+import LargeDatasetModal from './layout/Modal/modals/LargeDatasetModal.jsx';
+import RestoreSessionModal from './layout/Modal/modals/RestoreSessionModal.jsx';
 
 /* Map related components */
 import Legend from './components/Legend/Legend.jsx';

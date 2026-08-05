@@ -1,5 +1,3 @@
-import './RestoreSessionModal.css';
-
 import Modal from '../Modal';
 
 export default function RestoreSessionModal({

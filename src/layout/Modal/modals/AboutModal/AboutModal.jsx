@@ -1,8 +1,8 @@
 import './AboutModal.css';
 import { useRef, useState, useEffect } from 'react';
 
-import Modal from '../Modal';
-import ModalNav from '../components/ModalNav/ModalNav';
+import Modal from '../../Modal';
+import ModalNav from '../../components/ModalNav/ModalNav';
 
 import { pages } from './config/aboutPages.jsx';
 

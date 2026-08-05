@@ -1,5 +1,3 @@
-import './LargeDatasetModal.css';
-
 import Modal from '../Modal';
 
 export default function LargeDatasetModal({ onConfirm, onDiscard }) {
