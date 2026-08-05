@@ -70,6 +70,8 @@ export default function App() {
 	const [basemap, setBasemap] = useState('carto');
 	const [displayMode, setDisplayMode] = useState('default'); // or by last edit
 
+	const [focusTrigger, setFocusTrigger] = useState(0);
+
 	/* DATA STATES */
 	const [sessionInfo, setSessionInfo] = useState(createSession());
 	const [selectedBoundaryKey, setSelectedBoundaryKey] = useState('none');
@@ -521,6 +523,7 @@ export default function App() {
 					canExport={hasFeatures}
 					canSave={hasBoundary}
 					onSave={saveCurrentProject}
+					onFocus={() => setFocusTrigger((t) => t + 1)}
 					isDirty={isDirty}
 					boundaryName={boundaryName}
 				/>
@@ -587,6 +590,7 @@ export default function App() {
 						// display settings
 						displayMode={displayMode}
 						basemap={basemap}
+						focusTrigger={focusTrigger}
 					/>
 				</div>
 			</div>

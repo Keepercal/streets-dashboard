@@ -1,6 +1,6 @@
 /* Style/UI */
 import './Toolbar.css';
-import { Download, CirclePlus, Save } from 'lucide-react';
+import { Download, CirclePlus, Save, Focus } from 'lucide-react';
 
 /* Components */
 import Brand from '../../components/Brand/Brand';
@@ -18,6 +18,7 @@ import { menus } from './config/menus';
 export default function Toolbar({
 	onOpenModal,
 	onNewWorkspace,
+	onFocus,
 	canExport,
 	canSave,
 	onSave,
@@ -100,6 +101,12 @@ export default function Toolbar({
 			</div>
 
 			<div className="toolbar-actions">
+				<ToolbarButton
+					title=""
+					icon={<Focus size={18} />}
+					disabled={!canExport}
+					onClick={onFocus}
+				/>
 				<BoundaryIndicator boundaryName={boundaryName} />
 				<a
 					href="https://github.com/Keepercal/streets-dashboard"

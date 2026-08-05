@@ -9,15 +9,14 @@ import L from 'leaflet';
  *
  * Triggers whenever `boundary` changes.
  */
-export default function FitBounds({ boundary }) {
+export default function FitBounds({ boundary, trigger }) {
 	const map = useMap();
 
 	useEffect(() => {
 		if (!boundary) return;
 
 		// Create bounds directly from GeoJSON without rendering a layer
-		const geoJsonLayer = L.geoJSON(boundary);
-		const bounds = geoJsonLayer.getBounds();
+		const bounds = L.geoJSON(boundary).getBounds();
 
 		if (bounds.isValid()) {
 			map.fitBounds(bounds, {
@@ -25,7 +24,7 @@ export default function FitBounds({ boundary }) {
 				maxZoom: 16,
 			});
 		}
-	}, [boundary, map]);
+	}, [boundary, trigger, map]);
 
 	return null;
 }
