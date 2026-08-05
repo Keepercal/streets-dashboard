@@ -2,8 +2,6 @@ import './RestoreSessionModal.css';
 
 import Modal from '../Modal';
 
-import FormInput from '../components/FormInput/FormInput';
-
 export default function RestoreSessionModal({
 	onRestore,
 	onStartNew,

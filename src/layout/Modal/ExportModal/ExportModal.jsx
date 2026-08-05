@@ -80,7 +80,7 @@ export default function ExportModal({ onClose, featureLayers }) {
                 />
             </section>*/}
 
-			<section className="export-section">
+			<section className="modal-section">
 				<p>
 					<strong>NOTE:</strong> Any filters you have added to your
 					layers will impact what data gets exported.

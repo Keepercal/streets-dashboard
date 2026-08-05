@@ -2,6 +2,7 @@ import './HowToModal.css';
 import { useRef, useState, useEffect } from 'react';
 
 import Modal from '../Modal';
+import ModalNav from '../components/ModalNav/ModalNav';
 
 import GettingStartedPage from './pages/GettingStartedPage';
 import AddingLayersPage from './pages/AddingLayersPage';
@@ -10,40 +11,40 @@ import DisplaySettingsPage from './pages/DisplaySettingsPage';
 import SaveOpenProjectPage from './pages/SaveOpenProjectPage';
 import ExportProjectPage from './pages/ExportProjectPage';
 
-export default function HowToModal({ onClose }) {
-	const pages = [
-		{
-			id: 'getting-started',
-			title: 'Getting Started',
-			component: <GettingStartedPage />,
-		},
-		{
-			id: 'adding-layers',
-			title: 'Adding Layers',
-			component: <AddingLayersPage />,
-		},
-		{
-			id: 'managing-layers',
-			title: 'Managing Layers',
-			component: <ManagingLayersPage />,
-		},
-		{
-			id: 'display-settings',
-			title: 'Display Settings',
-			component: <DisplaySettingsPage />,
-		},
-		{
-			id: 'save-open-project',
-			title: 'Saving & Loading Projects',
-			component: <SaveOpenProjectPage />,
-		},
-		{
-			id: 'export-project',
-			title: 'Exporting Projects',
-			component: <ExportProjectPage />,
-		},
-	];
+const pages = [
+	{
+		id: 'getting-started',
+		title: 'Getting Started',
+		component: <GettingStartedPage />,
+	},
+	{
+		id: 'adding-layers',
+		title: 'Adding Layers',
+		component: <AddingLayersPage />,
+	},
+	{
+		id: 'managing-layers',
+		title: 'Managing Layers',
+		component: <ManagingLayersPage />,
+	},
+	{
+		id: 'display-settings',
+		title: 'Display Settings',
+		component: <DisplaySettingsPage />,
+	},
+	{
+		id: 'save-open-project',
+		title: 'Saving & Loading Projects',
+		component: <SaveOpenProjectPage />,
+	},
+	{
+		id: 'export-project',
+		title: 'Exporting Projects',
+		component: <ExportProjectPage />,
+	},
+];
 
+export default function HowToModal({ onClose }) {
 	const [activePage, setActivePage] = useState('getting-started');
 	const currentPage = pages.find((page) => page.id === activePage);
 	const contentRef = useRef(null);
@@ -57,22 +58,16 @@ export default function HowToModal({ onClose }) {
 			title={`How to use ${__APP_NAME__}`}
 			onClose={onClose}
 			canClose={true}
-			varient="how-to"
+			variant="nav"
 		>
-			<div className="how-to-layout">
-				<nav className="how-to-nav">
-					{pages.map((page) => (
-						<button
-							key={page.id}
-							className={activePage === page.id ? 'active' : ''}
-							onClick={() => setActivePage(page.id)}
-						>
-							{page.title}
-						</button>
-					))}
-				</nav>
+			<div className="modal-nav-layout">
+				<ModalNav
+					items={pages}
+					active={activePage}
+					onChange={setActivePage}
+				/>
 
-				<section className="how-to-content" ref={contentRef}>
+				<section className="modal-nav-content" ref={contentRef}>
 					{currentPage.component}
 				</section>
 			</div>

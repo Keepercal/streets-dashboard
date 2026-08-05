@@ -33,13 +33,13 @@ export const menus = [
 			{
 				id: 'about',
 				label: 'About',
-				disabled: true,
 				modal: 'about',
 				action: 'modal',
 			},
 			{
 				id: 'howTo',
 				label: 'How To',
+				modal: 'howTo',
 				action: 'modal',
 			},
 		],

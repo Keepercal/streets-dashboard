@@ -16,7 +16,7 @@
 }
 
 /* =========================
-    MODAL CONTAINER
+    MODAL CONTAINER & VAREINTS
 ========================= */
 
 .modal {
@@ -131,6 +131,79 @@
 
 .modal-title.loading {
 	color: #333;
+}
+
+/* =========================
+    NAV MODAL VARIENT
+========================= */
+
+.modal--nav {
+	max-width: 62vw;
+	height: 80vh;
+	max-height: 90vh;
+
+	display: flex;
+	flex-direction: column;
+}
+
+.modal--nav .modal-content {
+	padding: 10px 0;
+
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
+
+	display: flex;
+}
+
+.modal-nav-layout {
+	display: grid;
+	grid-template-columns: 140px 1fr;
+
+	flex: 1;
+	min-height: 0;
+}
+
+.modal-nav-content {
+	padding: 20px;
+
+	min-height: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.modal-nav-content h2 {
+	margin-top: 0px;
+}
+
+.modal-nav-content h3 {
+	font-size: 18px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	color: var(--colour-text-h3);
+}
+
+.modal-nav-content p {
+	font-size: 15px;
+}
+
+.modal-nav-content a {
+	text-decoration: none;
+}
+
+.modal-nav-content strong {
+	color: var(--colour-text-strong);
+}
+
+.modal-nav-content img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+
+	margin: 1rem auto;
+
+	border: 1px solid #ddd;
+	border-radius: 8px;
 }
 
 /* =========================

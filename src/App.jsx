@@ -24,6 +24,7 @@ import SaveModal from './layout/Modal/SaveModal/SaveModal.jsx';
 import LargeDatasetModal from './layout/Modal//LargeDatasetModal/LargeDatasetModal.jsx';
 import RestoreSessionModal from './layout/Modal/RestoreSessionModal/RestoreSessionModal.jsx';
 import HowToModal from './layout/Modal/HowToModal/HowToModal.jsx';
+import AboutModal from './layout/Modal/AboutModal/AboutModal.jsx';
 
 /* Map related components */
 import Legend from './components/Legend/Legend.jsx';
@@ -52,6 +53,8 @@ export default function App() {
 		OPEN_PROJECT: 'openProject',
 		RESTORE_SESSION: 'restoreSession',
 		LARGE_DATASET: 'largeDataset',
+		HOW_TO: 'howTo',
+		ABOUT: 'about',
 	};
 
 	const LARGE_DATASET_LIMIT = 5000;
@@ -504,6 +507,10 @@ export default function App() {
 
 			{activeModal === MODALS.HOW_TO && (
 				<HowToModal onClose={() => setActiveModal(null)} />
+			)}
+
+			{activeModal === MODALS.ABOUT && (
+				<AboutModal onClose={() => setActiveModal(null)} />
 			)}
 
 			{/* Main UI */}
