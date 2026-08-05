@@ -61,16 +61,16 @@ export default function AddingLayersPage() {
 
 			<h2>Nodes, Ways & Relations</h2>
 
-			<img
-				src={helpImages.nodesWaysRelations}
-				alt={`A screenshot of the ${__APP_NAME__} interface with all pubs in Bristol displayed on the map`}
-			/>
-
 			<p>
 				There are three different types of data in OpenStreetMap, those
 				being<strong> Nodes</strong>,<strong> Ways</strong> and
 				<strong> Relations</strong>.
 			</p>
+
+			<img
+				src={helpImages.nodesWaysRelations}
+				alt={`A screenshot of the ${__APP_NAME__} interface with all pubs in Bristol displayed on the map`}
+			/>
 
 			<h3>Node</h3>
 

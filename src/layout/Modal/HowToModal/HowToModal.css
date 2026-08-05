@@ -13,7 +13,7 @@
 	font-size: 1rem;
 	font-weight: 600;
 
-	color: #222;
+	color: var(--colour-text-h3);
 }
 
 .list dd {

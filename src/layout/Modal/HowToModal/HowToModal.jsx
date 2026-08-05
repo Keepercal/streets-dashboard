@@ -4,45 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import Modal from '../Modal';
 import ModalNav from '../components/ModalNav/ModalNav';
 
-import GettingStartedPage from './pages/GettingStartedPage';
-import AddingLayersPage from './pages/AddingLayersPage';
-import ManagingLayersPage from './pages/ManagingLayersPage';
-import DisplaySettingsPage from './pages/DisplaySettingsPage';
-import SaveOpenProjectPage from './pages/SaveOpenProjectPage';
-import ExportProjectPage from './pages/ExportProjectPage';
-
-const pages = [
-	{
-		id: 'getting-started',
-		title: 'Getting Started',
-		component: <GettingStartedPage />,
-	},
-	{
-		id: 'adding-layers',
-		title: 'Adding Layers',
-		component: <AddingLayersPage />,
-	},
-	{
-		id: 'managing-layers',
-		title: 'Managing Layers',
-		component: <ManagingLayersPage />,
-	},
-	{
-		id: 'display-settings',
-		title: 'Display Settings',
-		component: <DisplaySettingsPage />,
-	},
-	{
-		id: 'save-open-project',
-		title: 'Saving & Loading Projects',
-		component: <SaveOpenProjectPage />,
-	},
-	{
-		id: 'export-project',
-		title: 'Exporting Projects',
-		component: <ExportProjectPage />,
-	},
-];
+import { pages } from './config/howToPages.jsx';
 
 export default function HowToModal({ onClose }) {
 	const [activePage, setActivePage] = useState('getting-started');
@@ -66,7 +28,6 @@ export default function HowToModal({ onClose }) {
 					active={activePage}
 					onChange={setActivePage}
 				/>
-
 				<section className="modal-nav-content" ref={contentRef}>
 					{currentPage.component}
 				</section>

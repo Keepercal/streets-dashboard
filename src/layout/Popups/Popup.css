@@ -20,7 +20,7 @@
 	display: flex;
 	flex-direction: column;
 
-	border-top: 3px solid rgb(15, 106, 217);
+	border-top: 3px solid var(--colour-button-primary-bg);
 
 	overflow: hidden;
 
@@ -30,7 +30,7 @@
 }
 
 .popup.error {
-	border-top: 3px solid #d93025;
+	border-top: 3px solid var(--colour-button-danger-bg);
 }
 
 .popup.closing {
@@ -61,7 +61,7 @@
 }
 
 .popup-header.error {
-	border-top: 3px solid #d93025;
+	border-top: 3px solid var(--colour-button-danger-bg);
 }
 
 /* =========================
@@ -113,7 +113,7 @@
 }
 
 .popup-title.error {
-	color: #d93025;
+	color: var(--colour-text-danger);
 }
 
 .popup-title.loading {

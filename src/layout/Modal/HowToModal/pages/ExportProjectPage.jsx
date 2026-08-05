@@ -18,6 +18,33 @@ export default function SaveOpenProjectPage() {
 				your workspace is exported.
 			</p>
 
+			<h3>All Layers</h3>
+
+			<p>
+				All the layers within your workspace will be exported,
+				irresective of if they are hidden or not.
+			</p>
+
+			<h3>Visible Layers Only</h3>
+
+			<p>
+				Only visible layers on the map will be exported. This means any
+				layers that you have hidden within the
+				<strong> Manage Layers</strong> drawer will not be exported.
+			</p>
+
+			<h3>Select Layers</h3>
+
+			<p>
+				You can choose which layers get exported. Note this will also
+				export hidden layers if you choose them.
+			</p>
+
+			<img
+				src={helpImages.exportProject}
+				alt={`A screenshot of the ${__APP_NAME__} interface showing the export window.`}
+			/>
+
 			<p>
 				Once you have set your export configuration, you can export in
 				three formats, <strong>GeoJSON</strong>, <strong>KML</strong>{' '}
@@ -51,33 +78,6 @@ export default function SaveOpenProjectPage() {
 			<p>
 				<strong>NOTE:</strong> Any filters you have added to your layers
 				will impact what data gets exported.
-			</p>
-
-			<img
-				src={helpImages.exportProject}
-				alt={`A screenshot of the ${__APP_NAME__} interface showing the export window.`}
-			/>
-
-			<h3>All Layers</h3>
-
-			<p>
-				All the layers within your workspace will be exported,
-				irresective of if they are hidden or not.
-			</p>
-
-			<h3>Visible Layers Only</h3>
-
-			<p>
-				Only visible layers on the map will be exported. This means any
-				layers that you have hidden within the
-				<strong> Manage Layers</strong> drawer will not be exported.
-			</p>
-
-			<h3>Select Layers</h3>
-
-			<p>
-				You can choose which layers get exported. Note this will also
-				export hidden layers if you choose them.
 			</p>
 		</>
 	);

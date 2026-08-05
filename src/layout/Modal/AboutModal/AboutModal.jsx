@@ -4,16 +4,10 @@ import { useRef, useState, useEffect } from 'react';
 import Modal from '../Modal';
 import ModalNav from '../components/ModalNav/ModalNav';
 
-const pages = [
-	{
-		id: 'overview',
-		title: 'Overview',
-		//component: ,
-	},
-];
+import { pages } from './config/aboutPages.jsx';
 
 export default function AboutModal({ onClose }) {
-	const [activePage, setActivePage] = useState('getting-started');
+	const [activePage, setActivePage] = useState('overview');
 	const currentPage = pages.find((page) => page.id === activePage);
 	const contentRef = useRef(null);
 
@@ -23,7 +17,7 @@ export default function AboutModal({ onClose }) {
 
 	return (
 		<Modal
-			title={`How to use ${__APP_NAME__}`}
+			title={`About ${__APP_NAME__}`}
 			onClose={onClose}
 			canClose={true}
 			variant="nav"

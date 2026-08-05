@@ -40,38 +40,3 @@
 	top: 16px;
 	right: 16px;
 }
-
-/* =========================    
-    STATES
-========================= */
-
-.popup-title.error {
-	color: #d93025; /* slightly more modern red */
-}
-
-/* =========================
-    LOADING SPINNER
-========================= */
-
-.spinner {
-	width: 30px;
-	height: 30px;
-
-	margin-top: 10px;
-
-	border: 4px solid #ccc;
-	border-top-color: #333;
-	border-radius: 50%;
-
-	animation: spin 5s linear infinite;
-}
-
-/* =========================
-    ANIMATION
-========================= */
-
-@keyframes spin {
-	to {
-		transform: rotate(360deg);
-	}
-}

@@ -1,7 +1,7 @@
-import './ToolbarBrand.css';
+import './Brand.css';
 
-const ToolbarBrand = () => (
-	<div className="toolbar-brand" href="/">
+const Brand = () => (
+	<div className="brand" href="/">
 		<img
 			className="brand-logo"
 			src="./favicon.svg"
@@ -14,4 +14,4 @@ const ToolbarBrand = () => (
 	</div>
 );
 
-export default ToolbarBrand;
+export default Brand;

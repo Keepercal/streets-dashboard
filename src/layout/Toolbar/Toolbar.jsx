@@ -3,7 +3,7 @@ import './Toolbar.css';
 import { Download, CirclePlus, Save } from 'lucide-react';
 
 /* Components */
-import ToolbarBrand from './components/ToolbarBrand/ToolbarBrand';
+import Brand from '../../components/Brand/Brand';
 import ToolbarDropdown from './components/ToolbarDropdown/ToolbarDropdown';
 import ToolbarButton from './components/ToolbarButton/ToolbarButton';
 import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
@@ -70,7 +70,7 @@ export default function Toolbar({
 
 	return (
 		<div className="toolbar">
-			<ToolbarBrand />
+			<Brand />
 
 			<div className="toolbar-content" ref={toolbarRef}>
 				<ToolbarButton
