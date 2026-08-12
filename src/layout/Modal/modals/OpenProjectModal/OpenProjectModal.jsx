@@ -4,9 +4,9 @@ import { Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 import Modal from '../../Modal';
-import { getProjects, deleteProject } from '../../../../db/projectDB';
+import { getProjects, deleteProject } from '@/db/projectDB';
 
-import { timeAgo } from '../../../../utils/timeAgo';
+import { timeAgo } from '@/utils/timeAgo';
 
 export default function OpenProjectModal({
 	onOpen,

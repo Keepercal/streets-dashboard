@@ -5,8 +5,8 @@ import buildExportGeoJSON from './buildExportGeoJSON';
 
 import Modal from '../../Modal';
 import ExportButton from './components/ExportButton/ExportButton';
-import RadioItem from '../../../../components/RadioItem/RadioItem';
-import CheckboxItem from '../../../../components/CheckboxItem/CheckboxItem';
+import RadioItem from '@/components/RadioItem/RadioItem';
+import CheckboxItem from '@/components/CheckboxItem/CheckboxItem';
 
 /**
  * Export Modal
