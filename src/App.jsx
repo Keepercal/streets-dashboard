@@ -47,18 +47,18 @@ import { createSession } from './models/session.js';
 
 import { getProject } from './db/projectDB.js';
 
-export default function App() {
-	const MODALS = {
-		EXPORT: 'export',
-		UNSAVED_CHANGES: 'unsavedChanges',
-		SAVE_PROJECT: 'saveProject',
-		OPEN_PROJECT: 'openProject',
-		RESTORE_SESSION: 'restoreSession',
-		LARGE_DATASET: 'largeDataset',
-		HOW_TO: 'howTo',
-		ABOUT: 'about',
-	};
+const MODALS = {
+	EXPORT: 'export',
+	UNSAVED_CHANGES: 'unsavedChanges',
+	SAVE_PROJECT: 'saveProject',
+	OPEN_PROJECT: 'openProject',
+	RESTORE_SESSION: 'restoreSession',
+	LARGE_DATASET: 'largeDataset',
+	HOW_TO: 'howTo',
+	ABOUT: 'about',
+};
 
+export default function App() {
 	const LARGE_DATASET_LIMIT = 5000;
 
 	/* UI STATES */
