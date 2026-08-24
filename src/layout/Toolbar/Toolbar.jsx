@@ -1,6 +1,6 @@
 /* Style/UI */
 import './Toolbar.css';
-import { Download, CirclePlus, Save, Focus } from 'lucide-react';
+import { Download, CirclePlus, Save, Focus, Camera } from 'lucide-react';
 
 /* Components */
 import Brand from '../../components/Brand/Brand';
@@ -22,6 +22,7 @@ export default function Toolbar({
 	canExport,
 	canSave,
 	onSave,
+	onScreenshot,
 	isDirty,
 	boundaryName,
 }) {
@@ -104,8 +105,14 @@ export default function Toolbar({
 				<ToolbarButton
 					title=""
 					icon={<Focus size={18} />}
-					disabled={!canExport}
+					disabled={!canSave}
 					onClick={onFocus}
+				/>
+				<ToolbarButton
+					title=""
+					icon={<Camera size={18} />}
+					disabled={!onScreenshot}
+					onClick={onScreenshot}
 				/>
 				<BoundaryIndicator boundaryName={boundaryName} />
 				<a

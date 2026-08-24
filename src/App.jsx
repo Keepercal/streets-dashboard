@@ -73,6 +73,7 @@ export default function App() {
 	const [displayMode, setDisplayMode] = useState('default'); // or by last edit
 
 	const [focusTrigger, setFocusTrigger] = useState(0);
+	const [takeScreenshot, setTakeScreenshot] = useState(null);
 
 	/* DATA STATES */
 	const [sessionInfo, setSessionInfo] = useState(createSession());
@@ -526,6 +527,7 @@ export default function App() {
 					canSave={hasBoundary}
 					onSave={saveCurrentProject}
 					onFocus={() => setFocusTrigger((t) => t + 1)}
+					onScreenshot={() => takeScreenshot?.()}
 					isDirty={isDirty}
 					boundaryName={boundaryName}
 				/>
@@ -593,6 +595,7 @@ export default function App() {
 						displayMode={displayMode}
 						basemap={basemap}
 						focusTrigger={focusTrigger}
+						onScreenshot={setTakeScreenshot}
 					/>
 				</div>
 			</div>
