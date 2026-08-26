@@ -33,7 +33,7 @@ export default function OpenProjectModal({
 	}, []);
 
 	const confirmDelete = (project) => {
-		if (window.confirm(`Delete "${project.metadata.name}"?`)) {
+		if (window.confirm(`Delete project "${project.metadata.name}"?`)) {
 			handleDelete(project.metadata.id);
 		}
 	};
