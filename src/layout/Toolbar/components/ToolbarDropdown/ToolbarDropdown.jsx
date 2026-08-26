@@ -1,6 +1,7 @@
 import './ToolbarDropdown.css';
 
 export default function ToolbarDropdown({
+	label,
 	title,
 	//icon,
 	items,
@@ -13,8 +14,9 @@ export default function ToolbarDropdown({
 			<button
 				className={`dropdown-button ${isOpen ? 'open' : ''}`}
 				onClick={onToggle}
+				title={title}
 			>
-				{title}
+				{label}
 				<span className={`arrow ${isOpen ? 'rotated' : ''}`}>▸</span>
 			</button>
 

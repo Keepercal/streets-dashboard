@@ -12,7 +12,7 @@ export default function BoundaryLayer({ boundary }) {
 		dashArray: '5, 5',
 		weight: 2,
 		opacity: 0.55,
-		fillOpacity: 0.04,
+		fillOpacity: 0.02,
 		interactive: false,
 	};
 

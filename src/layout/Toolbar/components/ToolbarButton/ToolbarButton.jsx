@@ -1,6 +1,7 @@
 import './ToolbarButton.css';
 
 export default function ToolbarButton({
+	label,
 	title,
 	icon,
 	indicator = false,
@@ -12,8 +13,9 @@ export default function ToolbarButton({
 			className="toolbar-button"
 			disabled={disabled}
 			onClick={onClick}
+			title={title}
 		>
-			{title}
+			{label}
 			{icon}
 			{indicator && <span className="toolbar-button-indicator" />}
 		</button>

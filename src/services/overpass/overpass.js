@@ -108,15 +108,20 @@ export async function fetchOSMFeature(
 	});
 
 	const query = `
-        [out:json][timeout:60];
+		[out:json][timeout:60];
 
-        relation(${boundaryID})->.rels;
-        .rels map_to_area -> .area;
+		relation(${boundaryID})->.rels;
+		.rels map_to_area -> .area;
 
-        nwr(area.area)["${featureTag}"="${featureValue}"];
+		nwr(area.area)["${featureTag}"="${featureValue}"]->.features;
 
-        out tags geom meta;
-    `;
+		(
+			.features;
+			node(r.features);
+		);
+
+		out tags geom meta;
+	`;
 
 	const res = await callOverpass(query);
 

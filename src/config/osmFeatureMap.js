@@ -1,5 +1,27 @@
 export const FEATURE_MAP = {
-	networks: {
+	public_transport_networks: {
+		bus: {
+			tag: 'route',
+			label: 'Bus Network',
+			type: 'relation',
+		},
+
+		train: {
+			tag: 'route',
+			label: 'Railway Network',
+		},
+
+		ferry: {
+			tag: 'route',
+			label: 'Ferry Network',
+		},
+
+		tram: {
+			tag: 'route',
+			label: 'Tram Network',
+		},
+	},
+	active_travel_networks: {
 		lcn: {
 			tag: 'network',
 			label: 'Local Cycling Network',
@@ -13,12 +35,6 @@ export const FEATURE_MAP = {
 		ncn: {
 			tag: 'network',
 			label: 'National Cycling Network',
-			type: 'relation',
-		},
-
-		bus: {
-			tag: 'route',
-			label: 'Bus Network',
 			type: 'relation',
 		},
 	},

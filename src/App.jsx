@@ -61,7 +61,7 @@ const MODALS = {
 export default function App() {
 	const LARGE_DATASET_LIMIT = 5000;
 
-	/* UI STATES */
+	/* UI DISPLAY STATES */
 	const [pendingSession, setPendingSession] = useState(null);
 	const didRestore = useRef(false);
 
@@ -72,9 +72,11 @@ export default function App() {
 	const [basemap, setBasemap] = useState('carto');
 	const [displayMode, setDisplayMode] = useState('default'); // or by last edit
 
+	/* UI ACTION STATES */
 	const [focusTrigger, setFocusTrigger] = useState(0);
 	const [takeScreenshot, setTakeScreenshot] = useState(null);
 
+	// prevents infinite loop on startup
 	const handleScreenshotReady = useCallback((fn) => {
 		setTakeScreenshot(() => fn);
 	}, []);
@@ -491,6 +493,7 @@ export default function App() {
 
 			{activeModal === MODALS.EXPORT && (
 				<ExportModal
+					boundaryGeojson={boundaryGeojson}
 					featureLayers={filteredLayers}
 					onClose={() => setActiveModal(null)}
 				/>

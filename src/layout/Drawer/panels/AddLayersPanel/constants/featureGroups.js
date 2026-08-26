@@ -1,6 +1,7 @@
 /* Human-readable group labels */
 const GROUP_LABELS = {
-	networks: 'Networks',
+	public_transport_networks: 'Public Transport Networks',
+	active_travel_networks: 'Active Travel Networks',
 	vehicle_highways: 'Vehicle Highways',
 	active_travel_highways: 'Active Travel Highways',
 	crossings: 'Crossings',

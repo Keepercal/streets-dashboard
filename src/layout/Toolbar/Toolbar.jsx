@@ -76,14 +76,16 @@ export default function Toolbar({
 
 			<div className="toolbar-content" ref={toolbarRef}>
 				<ToolbarButton
-					title="Save"
+					label="Save"
+					title="Save project to file"
 					icon={<Save size={18} />}
 					indicator={isDirty}
 					disabled={!isDirty || !canSave}
 					onClick={onSave}
 				/>
 				<ToolbarButton
-					title="Export"
+					label="Export"
+					title="Export project as geospatial data format"
 					icon={<Download size={18} />}
 					disabled={!canExport}
 					onClick={() => onOpenModal('export')}
@@ -91,7 +93,7 @@ export default function Toolbar({
 				{toolbarMenus.map((menu) => (
 					<ToolbarDropdown
 						key={menu.id}
-						title={menu.title}
+						label={menu.label}
 						icon={<CirclePlus size={18} />}
 						items={menu.items}
 						isOpen={openMenu === menu.id}
@@ -103,19 +105,19 @@ export default function Toolbar({
 
 			<div className="toolbar-actions">
 				<ToolbarButton
-					title=""
+					title="Refocus viewport on current boundary"
 					icon={<Focus size={18} />}
 					disabled={!canSave}
 					onClick={onFocus}
 				/>
 				<ToolbarButton
-					title=""
+					title="Take screenshot of viewport"
 					icon={<Camera size={18} />}
 					disabled={!onScreenshot}
 					onClick={onScreenshot}
 				/>
 				<BoundaryIndicator boundaryName={boundaryName} />
-				<a
+				{/*<a
 					href="https://github.com/Keepercal/streets-dashboard"
 					target="_blank"
 					rel="noopener noreferrer"
@@ -123,7 +125,7 @@ export default function Toolbar({
 					aria-label="Open GitHub repository"
 				>
 					<img src="./github-mark.svg" alt="GitHub" />
-				</a>
+				</a>*/}
 			</div>
 		</div>
 	);

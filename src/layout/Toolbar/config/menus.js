@@ -4,7 +4,7 @@ import { CirclePlus } from 'lucide-react';
 export const menus = [
 	{
 		id: 'file',
-		title: 'File',
+		label: 'File',
 		items: [
 			{
 				id: 'newWorkspace',
@@ -28,7 +28,7 @@ export const menus = [
 	},
 	{
 		id: 'help',
-		title: 'Help',
+		label: 'Help',
 		items: [
 			{
 				id: 'about',

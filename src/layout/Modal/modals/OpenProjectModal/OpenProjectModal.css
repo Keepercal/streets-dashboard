@@ -22,6 +22,11 @@
 	pointer-events: none;
 }
 
+.no-projects {
+	text-align: center;
+	color: rgba(0, 0, 0, 0.52);
+}
+
 /* Main project selection button */
 .project-card {
 	flex: 1;
@@ -139,7 +144,7 @@
 
 .project-item:has(.project-card-delete:hover) .project-card {
 	background: #fef2f2;
-	border-color: #fca5a5;
+	border-color: #dc2626;
 }
 
 .project-item:has(.project-card-delete:hover) .project-card h3 {
@@ -147,11 +152,11 @@
 }
 
 .project-item:has(.project-card-delete:hover) .project-card p {
-	color: #b91c1c;
+	color: #dc2626;
 }
 
 .project-item:has(.project-card-delete:hover) .project-card span {
-	color: #b91c1c;
+	color: #dc2626;
 }
 
 .project-card-delete:hover {

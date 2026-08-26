@@ -53,7 +53,7 @@ export default function ExportButton({
 
 		downloadFile(
 			convertedData,
-			`${filename}-${timestamp}.${fileSettings[format].extension}`,
+			`${filename}_${timestamp}.${fileSettings[format].extension}`,
 			fileSettings[format].mime
 		);
 	}
