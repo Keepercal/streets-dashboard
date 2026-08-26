@@ -13,6 +13,8 @@ function MapScreenshot({ onReady }) {
 			hideElementsWithSelectors: ['.leaflet-control-container'],
 		});
 
+		screenshotter.addTo(map);
+
 		const takeScreenshot = async () => {
 			try {
 				console.log('Taking screenshot...');

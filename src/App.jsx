@@ -5,7 +5,7 @@
  * npm run deploy: Builds and deploys to GitHub Pages
  */
 
-import { useMemo, useEffect, useState, useRef } from 'react';
+import { useMemo, useEffect, useState, useRef, useCallback } from 'react';
 import './App.css';
 
 /* High level components */
@@ -74,6 +74,10 @@ export default function App() {
 
 	const [focusTrigger, setFocusTrigger] = useState(0);
 	const [takeScreenshot, setTakeScreenshot] = useState(null);
+
+	const handleScreenshotReady = useCallback((fn) => {
+		setTakeScreenshot(() => fn);
+	}, []);
 
 	/* DATA STATES */
 	const [sessionInfo, setSessionInfo] = useState(createSession());
@@ -595,7 +599,7 @@ export default function App() {
 						displayMode={displayMode}
 						basemap={basemap}
 						focusTrigger={focusTrigger}
-						onScreenshot={setTakeScreenshot}
+						onScreenshot={handleScreenshotReady}
 					/>
 				</div>
 			</div>
