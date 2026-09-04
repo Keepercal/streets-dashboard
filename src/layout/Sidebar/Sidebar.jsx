@@ -3,7 +3,6 @@ import './Sidebar.css';
 /* UI COMPONENTS */
 import SidebarButton from './components/SidebarButton';
 
-import FeatureCounter from '../../components/FeatureCounter/FeatureCounter';
 import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndicator';
 
 /* CONSTANTS */

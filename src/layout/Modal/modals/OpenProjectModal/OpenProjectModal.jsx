@@ -1,50 +1,29 @@
 import './OpenProjectModal.css';
 import { Trash2 } from 'lucide-react';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import Modal from '../../Modal';
 
-import { getProjects, deleteProject } from '@/db/projectDB';
 import { timeAgo } from '@/utils/timeAgo';
 
 export default function OpenProjectModal({
 	onOpen,
 	onClose,
-	onProjectDeleted,
+	projects,
+	loadProjects,
+	handleDelete,
+	hasSavedProjects,
 }) {
-	const [projects, setProjects] = useState([]);
-	const hasSavedProjects = Object.keys(projects).length > 0;
-
-	async function loadProjects() {
-		const list = await getProjects(); // fetch projects from database
-
-		// sort projects by date last modified
-		const sorted = list.sort((a, b) => {
-			return (
-				new Date(b.metadata.modified) - new Date(a.metadata.modified)
-			);
-		});
-
-		setProjects(sorted);
-	}
 	useEffect(() => {
 		loadProjects();
-	}, []);
+	}, [loadProjects]);
 
 	const confirmDelete = (project) => {
 		if (window.confirm(`Delete project "${project.metadata.name}"?`)) {
 			handleDelete(project.metadata.id);
 		}
 	};
-
-	async function handleDelete(id) {
-		await deleteProject(id);
-
-		onProjectDeleted(id);
-
-		await loadProjects();
-	}
 
 	return (
 		<Modal title="Open project" onClose={onClose}>

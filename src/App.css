@@ -96,7 +96,7 @@ body,
 	width: 100%;
 }
 
-.feature-counter-strip {
+.map-ribbon {
 	flex-shrink: 0;
 
 	height: 18px;

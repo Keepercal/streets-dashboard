@@ -35,9 +35,12 @@ export default function ModalManager({
 	handleCancel,
 
 	handleOpenProject,
-	handleProjectDeleted,
 
+	projects,
+	loadProjects,
+	handleDelete,
 	saveProjectAs,
+	hasSavedProjects,
 
 	commitLayer,
 	clearStatus,
@@ -83,7 +86,11 @@ export default function ModalManager({
 					isDirty={isDirty}
 					onOpen={handleOpenProject}
 					onClose={() => setActiveModal(null)}
-					onProjectDeleted={handleProjectDeleted}
+					handleDelete={handleDelete}
+					projects={projects}
+					loadProjects={loadProjects}
+					saveProjectAs={saveProjectAs}
+					hasSavedProjects={hasSavedProjects}
 				/>
 			)}
 

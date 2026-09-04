@@ -4,7 +4,7 @@ import Map from './Map/Map.jsx';
 import Toolbar from './Toolbar/Toolbar';
 import Sidebar from './Sidebar/Sidebar';
 import Drawer from './Drawer/Drawer';
-import FeatureCounter from '../components/FeatureCounter/FeatureCounter.jsx';
+import MapRibbon from './MapRibbon/MapRibbon.jsx';
 
 import Legend from '@/components/Legend/Legend.jsx';
 
@@ -146,8 +146,8 @@ export default function AppLayout({
 						/>
 					</div>
 
-					<div className="feature-counter-strip">
-						<FeatureCounter features={featureLayers} />
+					<div className="map-ribbon">
+						<MapRibbon features={featureLayers} />
 					</div>
 				</div>
 			</div>

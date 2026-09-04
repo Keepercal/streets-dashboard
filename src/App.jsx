@@ -30,7 +30,7 @@ import useWorkspaceActions from './hooks/useWorkspaceActions.js';
 
 /* Session & Database */
 import { createSession } from './models/session.js';
-import { getProject } from './db/projectDB.js';
+import { getProject, getProjects, deleteProject } from './db/projectDB.js';
 
 export default function App() {
 	// ─────────────────────────────────────────
@@ -53,6 +53,9 @@ export default function App() {
 	const [sessionInfo, setSessionInfo] = useState(createSession());
 	const [pendingSession, setPendingSession] = useState(null);
 	const [pendingLayer, setPendingLayer] = useState(null);
+
+	// Project
+	const [projects, setProjects] = useState([]);
 
 	// Startup
 	const didRestore = useRef(false);
@@ -332,6 +335,7 @@ export default function App() {
 
 	const hasBoundary = Object.keys(boundaryData ?? {}).length > 0; // Flag to check if boundary exists
 	const hasFeatures = Object.keys(featureLayers).length > 0; // Flag to check if features exist
+	const hasSavedProjects = Object.keys(projects).length > 0;
 	const filteredLayers = useFilteredLayers(featureLayers);
 
 	// ─────────────────────────────────────────
@@ -378,6 +382,27 @@ export default function App() {
 		setIsDirty,
 	});
 
+	async function loadProjects() {
+		const list = await getProjects(); // fetch projects from database
+
+		// sort projects by date last modified
+		const sorted = list.sort((a, b) => {
+			return (
+				new Date(b.metadata.modified) - new Date(a.metadata.modified)
+			);
+		});
+
+		setProjects(sorted);
+	}
+
+	async function handleDelete(id) {
+		await deleteProject(id);
+
+		handleProjectDeleted(id);
+
+		await loadProjects();
+	}
+
 	return (
 		<div className="App">
 			{/* Popups */}
@@ -403,12 +428,18 @@ export default function App() {
 				sessionManager={sessionManager}
 				restoreSession={restoreSession}
 				resetWorkspace={resetWorkspace}
+
 				handleSaveAndContinue={handleSaveAndContinue}
 				handleDiscardAndContinue={handleDiscardAndContinue}
 				handleCancel={handleCancel}
 				handleOpenProject={handleOpenProject}
-				handleProjectDeleted={handleProjectDeleted}
+
+				projects={projects}
+				loadProjects={loadProjects}
+				handleDelete={handleDelete}
 				saveProjectAs={saveProjectAs}
+				hasSavedProjects={hasSavedProjects}
+
 				commitLayer={commitLayer}
 				clearStatus={clearStatus}
 			/>

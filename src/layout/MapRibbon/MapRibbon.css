@@ -12,21 +12,24 @@
 	-webkit-backdrop-filter: blur(6px);
 }
 
+.map-ribbon-content {
+	display: flex;
+	flex-direction: row;
+	gap: 30px;
+}
+
+/* Text */
+.map-ribbon-content p {
+	margin: 4px;
+	font-size: 12px;
+}
+
 /* =========================
     ITEM ROW
 ========================= */
 
-.feature-count-item {
+.feature-counter {
 	display: flex;
 	align-items: center;
 	gap: 6px;
-}
-
-/* =========================
-    TEXT
-========================= */
-
-.feature-count-item p {
-	margin: 2px;
-	font-size: 12px;
 }
