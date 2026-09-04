@@ -29,6 +29,10 @@
 	transform: translateX(0);
 }
 
+.app-body.sidebar-collapsed .drawer {
+	left: var(--sidebar-collapsed-width);
+}
+
 /* =========================
     DRAWER HEADER AND CLOSE BUTTON
 ========================= */

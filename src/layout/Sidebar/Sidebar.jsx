@@ -10,7 +10,14 @@ import BoundaryIndicator from '../../components/BoundaryIndicator/BoundaryIndica
 import GROUP_LABELS from '../Drawer/panels/AddLayersPanel/constants/featureGroups';
 
 /* API imports */
-import { Map, LayersPlus, Layers, MonitorCog } from 'lucide-react';
+import {
+	Map,
+	LayersPlus,
+	Layers,
+	MonitorCog,
+	ArrowLeftFromLine,
+	ArrowRightFromLine,
+} from 'lucide-react';
 
 /**
  * Sidebar.jsx
@@ -27,6 +34,9 @@ const Sidebar = ({
 
 	activeDrawer,
 	setActiveDrawer,
+
+	collapsed,
+	setCollapsed,
 }) => {
 	const openDrawer = (name) => {
 		setActiveDrawer((prev) => (prev === name ? null : name));
@@ -36,42 +46,57 @@ const Sidebar = ({
 	//const hasFeatures =  featureLayers && Object.keys(featureLayers).length > 0;
 
 	return (
-		<div className="sidebar-content">
-			<SidebarButton
-				label="Boundary"
-				icon={<Map />}
-				active={activeDrawer === 'boundary'}
-				onClick={() => openDrawer('boundary')}
-			/>
+		<div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+			<div className="sidebar-content">
+				<SidebarButton
+					label="Boundary"
+					icon={<Map />}
+					isCollapsed={collapsed}
+					active={activeDrawer === 'boundary'}
+					onClick={() => openDrawer('boundary')}
+				/>
 
-			<SidebarButton
-				label="Add Layers"
-				icon={<LayersPlus />}
-				disabled={!hasBoundary}
-				active={activeDrawer === 'addLayers'}
-				onClick={() => {
-					openDrawer('addLayers');
-				}}
-			/>
+				<SidebarButton
+					label="Add Layers"
+					icon={<LayersPlus />}
+					isCollapsed={collapsed}
+					disabled={!hasBoundary}
+					active={activeDrawer === 'addLayers'}
+					onClick={() => {
+						openDrawer('addLayers');
+					}}
+				/>
 
-			<SidebarButton
-				label="Manage Layers"
-				icon={<Layers />}
-				disabled={!hasBoundary}
-				active={activeDrawer === 'manageLayers'}
-				onClick={() => {
-					openDrawer('manageLayers');
-				}}
-			/>
+				<SidebarButton
+					label="Manage Layers"
+					icon={<Layers />}
+					isCollapsed={collapsed}
+					disabled={!hasBoundary}
+					active={activeDrawer === 'manageLayers'}
+					onClick={() => {
+						openDrawer('manageLayers');
+					}}
+				/>
 
-			<SidebarButton
-				label="Display"
-				icon={<MonitorCog />}
-				active={activeDrawer === 'display'}
-				onClick={() => openDrawer('display')}
-			/>
+				<SidebarButton
+					label="Display"
+					icon={<MonitorCog />}
+					isCollapsed={collapsed}
+					active={activeDrawer === 'display'}
+					onClick={() => openDrawer('display')}
+				/>
+			</div>
 
-			<FeatureCounter features={featureLayers} />
+			<button
+				className="close-sidebar-button"
+				onClick={() => setCollapsed((prev) => !prev)}
+			>
+				{collapsed ? (
+					<ArrowRightFromLine size={18} />
+				) : (
+					<ArrowLeftFromLine size={18} />
+				)}
+			</button>
 		</div>
 	);
 };

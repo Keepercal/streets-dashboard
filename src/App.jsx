@@ -14,7 +14,7 @@ import AppLayout from './layout/AppLayout.jsx';
 /* Popups */
 import StatusPopup from '@/layout/Popups/StatusPopup/StatusPopup.jsx';
 
-/* MODALS */
+/* Modals */
 import ModalManager from './layout/Modal/ModalManager.jsx';
 import MODALS from './config/modalTypes.js';
 
@@ -28,10 +28,9 @@ import useProjectManager from './hooks/useProjectManager.js';
 import useUnsavedChanges from './hooks/useUnsavedChanges.js';
 import useWorkspaceActions from './hooks/useWorkspaceActions.js';
 
-/* Misc imports */
+/* Session & Database */
 import { createSession } from './models/session.js';
 import { getProject } from './db/projectDB.js';
-//import { isProjectSession } from './utils/sessionUtils';
 
 export default function App() {
 	// ─────────────────────────────────────────
@@ -167,8 +166,6 @@ export default function App() {
 				: 'Temporary session'
 		);
 
-		console.log('[DEBUG] Session data:', session.data);
-
 		setSessionInfo(session);
 
 		// If the session matches the ID of a project
@@ -234,27 +231,6 @@ export default function App() {
 	// ─────────────────────────────────────────
 
 	/*
-	 * Confirm unsaved changes and open project
-	 */
-	const handleOpenProject = (projectId) => {
-		confirmUnsavedChanges(() => {
-			openProject(projectId, restoreSession);
-			setActiveModal(null);
-		});
-	};
-
-	/*
-	 * Reset workspace when active project deleted
-	 */
-	function handleProjectDeleted(id) {
-		if (project?.metadata.id !== id) return;
-
-		console.log('[DEBUG] Deleted active project');
-
-		resetWorkspace();
-	}
-
-	/*
 	 *Handles projects
 	 */
 	const {
@@ -292,6 +268,27 @@ export default function App() {
 		onDirtyChange: setIsDirty,
 		onSaveAsRequested: () => setActiveModal(MODALS.SAVE_PROJECT),
 	});
+
+	/*
+	 * Confirm unsaved changes and open project
+	 */
+	const handleOpenProject = (projectId) => {
+		confirmUnsavedChanges(() => {
+			openProject(projectId, restoreSession);
+			setActiveModal(null);
+		});
+	};
+
+	/*
+	 * Reset workspace when active project deleted
+	 */
+	function handleProjectDeleted(id) {
+		if (project?.metadata.id !== id) return;
+
+		console.log('[DEBUG] Deleted active project');
+
+		resetWorkspace();
+	}
 
 	// ─────────────────────────────────────────
 	// Session

@@ -14,13 +14,13 @@ function getColourByAge(days) {
 		return red;
 	}
 
-	if (days <= 365) {
-		// Less than 1 year
+	if (days <= 92) {
+		// Less than 3 months
 		return green;
 	}
 
-	if (days <= 3 * 365) {
-		// Less than 3 years
+	if (days <= 365) {
+		// Less than 1 year
 		return yellow;
 	}
 

@@ -12,6 +12,7 @@
 
 	/* Sidebar */
 	--sidebar-width: 160px;
+	--sidebar-collapsed-width: 60px;
 	/* --sidebar-width: 140px; */
 	--colour-sidebar-bg: #223d57;
 

@@ -1,7 +1,10 @@
+import { useState } from 'react';
+
 import Map from './Map/Map.jsx';
 import Toolbar from './Toolbar/Toolbar';
 import Sidebar from './Sidebar/Sidebar';
 import Drawer from './Drawer/Drawer';
+import FeatureCounter from '../components/FeatureCounter/FeatureCounter.jsx';
 
 import Legend from '@/components/Legend/Legend.jsx';
 
@@ -53,8 +56,10 @@ export default function AppLayout({
 	focusTrigger,
 	handleScreenshotReady,
 }) {
+	const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+
 	return (
-		<>
+		<div className="app-layout">
 			<header className="app-header">
 				<Toolbar
 					onOpenModal={setActiveModal}
@@ -69,16 +74,19 @@ export default function AppLayout({
 				/>
 			</header>
 
-			<div className="app-body">
-				<div className="sidebar">
-					<Sidebar
-						boundaryData={boundaryData}
-						featureLayers={featureLayers}
+			<div
+				className={`app-body ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}
+			>
+				<Sidebar
+					boundaryData={boundaryData}
+					featureLayers={featureLayers}
 
-						activeDrawer={activeDrawer}
-						setActiveDrawer={setActiveDrawer}
-					/>
-				</div>
+					activeDrawer={activeDrawer}
+					setActiveDrawer={setActiveDrawer}
+
+					collapsed={sidebarCollapsed}
+					setCollapsed={setSidebarCollapsed}
+				/>
 
 				<Drawer
 					hasBoundary={hasBoundary}
@@ -117,24 +125,32 @@ export default function AppLayout({
 				/>
 
 				<div className="main-content">
-					{hasFeatures && displayMode === 'lastEdited' && <Legend />}
+					<div className="map-container">
+						{hasFeatures && displayMode === 'lastEdited' && (
+							<Legend />
+						)}
 
-					<Map
-						// boundary
-						boundary={boundaryGeojson}
-						boundaryKey={selectedBoundaryKey}
+						<Map
+							// boundary
+							boundary={boundaryGeojson}
+							boundaryKey={selectedBoundaryKey}
 
-						// features
-						featureLayers={filteredLayers}
+							// features
+							featureLayers={filteredLayers}
 
-						// display settings
-						displayMode={displayMode}
-						basemap={basemap}
-						focusTrigger={focusTrigger}
-						onScreenshot={handleScreenshotReady}
-					/>
+							// display settings
+							displayMode={displayMode}
+							basemap={basemap}
+							focusTrigger={focusTrigger}
+							onScreenshot={handleScreenshotReady}
+						/>
+					</div>
+
+					<div className="feature-counter-strip">
+						<FeatureCounter features={featureLayers} />
+					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

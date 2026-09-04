@@ -1,6 +1,13 @@
 import './SidebarButton.css';
 
-const SidebarButton = ({ label, icon, active, disabled, onClick }) => (
+const SidebarButton = ({
+	label,
+	icon,
+	isCollapsed,
+	active,
+	disabled,
+	onClick,
+}) => (
 	<button
 		className={`sidebar-button 
             ${active ? 'active' : ''}
@@ -11,7 +18,11 @@ const SidebarButton = ({ label, icon, active, disabled, onClick }) => (
 	>
 		{icon && <span className="sidebar-button-icon">{icon}</span>}
 
-		<span className="sidebar-button-label">{label}</span>
+		{!isCollapsed ? (
+			<span className="sidebar-button-label">{label}</span>
+		) : (
+			<span className="sidebar-button-label"></span>
+		)}
 	</button>
 );
 

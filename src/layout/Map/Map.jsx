@@ -56,9 +56,9 @@ function Map({
 				zoom={6} // UK
 				//zoom={2} // Global
 				zoomControl={false}
-				style={{ height: '100vh', width: '100%' }}
+				style={{ height: '100%', width: '100%' }}
 			>
-				<ZoomControl position="topright" />
+				<ZoomControl position="bottomright" />
 
 				<MapScreenshot onReady={handleScreenshotReady} />
 

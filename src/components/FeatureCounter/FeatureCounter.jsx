@@ -10,15 +10,13 @@ const FeatureCounter = ({ features }) => {
 	const { nodeCount, wayCount, relationCount } = countFeatures(features);
 
 	return (
-		<div className="feature-count">
-			<div className="feature-count-content">
-				<div className="feature-count-item">
-					<p>Nodes {nodeCount}</p>
+		<div className="feature-count-content">
+			<div className="feature-count-item">
+				<p>Nodes {nodeCount}</p>
 
-					<p>Ways {wayCount}</p>
+				<p>Ways {wayCount}</p>
 
-					<p>Relations {relationCount}</p>
-				</div>
+				<p>Relations {relationCount}</p>
 			</div>
 		</div>
 	);
