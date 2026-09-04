@@ -55,6 +55,8 @@ export default function AppLayout({
 	filteredLayers,
 	focusTrigger,
 	handleScreenshotReady,
+
+	projectName,
 }) {
 	const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
@@ -147,7 +149,10 @@ export default function AppLayout({
 					</div>
 
 					<div className="map-ribbon">
-						<MapRibbon features={featureLayers} />
+						<MapRibbon
+							features={featureLayers}
+							projectName={projectName}
+						/>
 					</div>
 				</div>
 			</div>

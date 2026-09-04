@@ -30,7 +30,7 @@ import useWorkspaceActions from './hooks/useWorkspaceActions.js';
 
 /* Session & Database */
 import { createSession } from './models/session.js';
-import { getProject, getProjects, deleteProject } from './db/projectDB.js';
+import { getProject, getAllProjects, deleteProject } from './db/projectDB.js';
 
 export default function App() {
 	// ─────────────────────────────────────────
@@ -233,9 +233,6 @@ export default function App() {
 	// Projects
 	// ─────────────────────────────────────────
 
-	/*
-	 *Handles projects
-	 */
 	const {
 		project,
 		setProject,
@@ -285,12 +282,32 @@ export default function App() {
 	/*
 	 * Reset workspace when active project deleted
 	 */
-	function handleProjectDeleted(id) {
+	async function handleDeleteProject(id) {
+		await deleteProject(id);
+
+		await loadProjects();
+
 		if (project?.metadata.id !== id) return;
 
 		console.log('[DEBUG] Deleted active project');
 
 		resetWorkspace();
+	}
+
+	/*
+	 * Creates a list of projects
+	 */
+	async function loadProjects() {
+		const list = await getAllProjects(); // fetch projects from database
+
+		// sort projects by date last modified
+		const sorted = list.sort((a, b) => {
+			return (
+				new Date(b.metadata.modified) - new Date(a.metadata.modified)
+			);
+		});
+
+		setProjects(sorted);
 	}
 
 	// ─────────────────────────────────────────
@@ -338,6 +355,8 @@ export default function App() {
 	const hasSavedProjects = Object.keys(projects).length > 0;
 	const filteredLayers = useFilteredLayers(featureLayers);
 
+	const projectName = project?.metadata.name;
+
 	// ─────────────────────────────────────────
 	// Managers
 	// ─────────────────────────────────────────
@@ -382,27 +401,6 @@ export default function App() {
 		setIsDirty,
 	});
 
-	async function loadProjects() {
-		const list = await getProjects(); // fetch projects from database
-
-		// sort projects by date last modified
-		const sorted = list.sort((a, b) => {
-			return (
-				new Date(b.metadata.modified) - new Date(a.metadata.modified)
-			);
-		});
-
-		setProjects(sorted);
-	}
-
-	async function handleDelete(id) {
-		await deleteProject(id);
-
-		handleProjectDeleted(id);
-
-		await loadProjects();
-	}
-
 	return (
 		<div className="App">
 			{/* Popups */}
@@ -436,7 +434,7 @@ export default function App() {
 
 				projects={projects}
 				loadProjects={loadProjects}
-				handleDelete={handleDelete}
+				handleDeleteProject={handleDeleteProject}
 				saveProjectAs={saveProjectAs}
 				hasSavedProjects={hasSavedProjects}
 
@@ -456,6 +454,8 @@ export default function App() {
 				takeScreenshot={takeScreenshot}
 				isDirty={isDirty}
 				boundaryName={boundaryName}
+
+				projectName={projectName}
 
 				// sidebar
 				boundaryData={boundaryData}

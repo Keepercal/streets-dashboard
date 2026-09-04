@@ -7,21 +7,27 @@ import Modal from '../../Modal';
 
 import { timeAgo } from '@/utils/timeAgo';
 
+/**
+ * OpenProjectModal
+ * ------------
+ * Creates a modal with a list of saved projects, allowing the user to open and delete projects.
+ */
 export default function OpenProjectModal({
 	onOpen,
 	onClose,
 	projects,
 	loadProjects,
-	handleDelete,
+	handleDeleteProject,
 	hasSavedProjects,
 }) {
 	useEffect(() => {
 		loadProjects();
 	}, [loadProjects]);
 
+	// Prompt user to confirm deletion
 	const confirmDelete = (project) => {
 		if (window.confirm(`Delete project "${project.metadata.name}"?`)) {
-			handleDelete(project.metadata.id);
+			handleDeleteProject(project.metadata.id);
 		}
 	};
 

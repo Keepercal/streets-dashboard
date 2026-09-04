@@ -20,7 +20,7 @@ export async function getProject(id) {
 	return db.get('projects', id);
 }
 
-export async function getProjects() {
+export async function getAllProjects() {
 	const db = await dbPromise;
 	return db.getAll('projects');
 }

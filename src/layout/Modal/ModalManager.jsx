@@ -10,6 +10,11 @@ import RestoreSessionModal from '@/layout/Modal/modals/RestoreSessionModal.jsx';
 
 import MODALS from '@/config/modalTypes.js';
 
+/**
+ * ModalManager
+ * ------------
+ * Centralised management for modals
+ */
 export default function ModalManager({
 	activeModal,
 	setActiveModal,
@@ -38,7 +43,7 @@ export default function ModalManager({
 
 	projects,
 	loadProjects,
-	handleDelete,
+	handleDeleteProject,
 	saveProjectAs,
 	hasSavedProjects,
 
@@ -86,7 +91,7 @@ export default function ModalManager({
 					isDirty={isDirty}
 					onOpen={handleOpenProject}
 					onClose={() => setActiveModal(null)}
-					handleDelete={handleDelete}
+					handleDeleteProject={handleDeleteProject}
 					projects={projects}
 					loadProjects={loadProjects}
 					saveProjectAs={saveProjectAs}

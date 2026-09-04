@@ -6,7 +6,7 @@ import countFeatures from '../../utils/countFeatures';
  * ------------
  * Displays a summary count across all loaded feature layers.
  */
-const MapRibbon = ({ features }) => {
+const MapRibbon = ({ features, projectName }) => {
 	const { nodeCount, wayCount, relationCount } = countFeatures(features);
 
 	return (
@@ -20,7 +20,7 @@ const MapRibbon = ({ features }) => {
 			</div>
 
 			<div className="current-project">
-				<p>Current Project:</p>
+				<p>Current Project: {projectName}</p>
 			</div>
 		</div>
 	);

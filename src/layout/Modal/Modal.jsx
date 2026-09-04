@@ -1,5 +1,10 @@
 import './Modal.css';
 
+/**
+ * Modal
+ * ------------
+ * A generic template for all modals.
+ */
 export default function Modal({
 	title,
 	type,
